@@ -110,6 +110,8 @@ import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 			overlay = new JButton("Overlay Audio");
 			replace.addActionListener(this);
 			overlay.addActionListener(this);
+			replace.setEnabled(false);
+			overlay.setEnabled(false);
 	
 			output = new JLabel("Enter name for output file: ");
 			outputName = new JTextField(5000);
@@ -173,6 +175,19 @@ import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					selectedFile = fileChooser.getSelectedFile();
 					showInputVideo.setText("Input Video: " + selectedFile.getName());
+					
+					InvalidCheck i = new InvalidCheck();
+					boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+					
+					if (!isValidMedia) {
+						JOptionPane.showMessageDialog(ReplaceAudio.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+						replace.setEnabled(false);
+						overlay.setEnabled(false);
+						return;
+					}else{
+						replace.setEnabled(true);
+						overlay.setEnabled(true);
+					}
 				}
 	
 			}
@@ -195,6 +210,19 @@ import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					selectedFile2 = fileChooser.getSelectedFile();
 					showInputAudio.setText("Input Audio: " + selectedFile2.getName());
+					
+					InvalidCheck i = new InvalidCheck();
+					boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+					
+					if (!isValidMedia) {
+						JOptionPane.showMessageDialog(ReplaceAudio.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+						replace.setEnabled(false);
+						overlay.setEnabled(false);
+						return;
+					}else{
+						replace.setEnabled(true);
+						overlay.setEnabled(true);
+					}
 				}
 			}
 	

@@ -65,6 +65,7 @@ public class Images extends JFrame implements ActionListener{
 		showOutput = new JLabel("Output destination: ");
 		makeImages = new JButton("Get the images");
 		makeImages.addActionListener(this);
+		makeImages.setEnabled(false);
 		
 		
 		forInputVideoButton.add(chooseVideo);
@@ -103,6 +104,16 @@ public class Images extends JFrame implements ActionListener{
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
 				showVideo.setText("Video chosen: " + selectedFile.getName());
+				InvalidCheck i = new InvalidCheck();
+				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+				
+				if (!isValidMedia) {
+					JOptionPane.showMessageDialog(Images.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					makeImages.setEnabled(false);
+					return;
+				}else{
+					makeImages.setEnabled(true);
+				}
 			}
 		}
 		
