@@ -1,7 +1,11 @@
+package vamix;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -22,6 +26,7 @@ public class MainFrame {
 			@Override
 			public void run() {
 				
+				/**
 				 try {
 					UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
 				} catch (ClassNotFoundException e1) {
@@ -37,6 +42,8 @@ public class MainFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				
+				**/
 				
 				try {
 					setupLibVLC();
@@ -61,6 +68,9 @@ public class MainFrame {
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
+				
+				
+				
 				
 				 
 			}

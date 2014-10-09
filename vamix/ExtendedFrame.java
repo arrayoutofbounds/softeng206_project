@@ -1,7 +1,11 @@
+package vamix;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -21,7 +25,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private ExtractFrame extractFrame;
 	private EditTextFrame editTextFrame;
 	private JMenuBar menuBar;
-    private JMenu featuresMenu;
+    private JMenu audioFeatures;
     private JMenuItem extractMenuItem;
     private JMenuItem editTextMenuItem;
     private JMenuItem replaceAudio;
@@ -33,7 +37,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
     private JMenuItem hide;
     
     private HelpFrame helpFrame;;
-
+    
+    private JMenu videoFeatures;
+    private JMenu other;
     
     private Gif gifFrame;
 	private Images i;
@@ -41,6 +47,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	
 	public ExtendedFrame() {
 		super("Vamix");
+		
+		//Container mainContainer = this.getContentPane(); 
+		//mainContainer.add(new JLabel(new ImageIcon("/home/anmol/Downloads/light_background-wallpaper-1280x800.jpg")));
 		
 		tabsPane = new JTabbedPane();
 		downloadTab = new Download();
@@ -50,9 +59,17 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	    menuBar = new JMenuBar();
         add(menuBar);
 
-        featuresMenu = new JMenu("Features");
-        featuresMenu.setMnemonic('f');
-        menuBar.add(featuresMenu);
+        audioFeatures = new JMenu("Audio Features");
+        audioFeatures.setMnemonic('a');
+        menuBar.add(audioFeatures);
+        
+        videoFeatures = new JMenu("Video Features");
+        videoFeatures.setMnemonic('v');
+        menuBar.add(videoFeatures);
+        
+        other = new JMenu("Tools");
+        other.setMnemonic('t');
+        menuBar.add(other);
         
         help = new JMenu("Help");
         help.setMnemonic('h');
@@ -62,30 +79,30 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 
         extractMenuItem = new JMenuItem("Extract Audio");
         extractMenuItem.setMnemonic('e');
-        featuresMenu.add(extractMenuItem);
+        audioFeatures.add(extractMenuItem);
         
         editTextMenuItem = new JMenuItem("Add text to video");
         editTextMenuItem.setMnemonic('t');
-        featuresMenu.add(editTextMenuItem);
+        videoFeatures.add(editTextMenuItem);
         
         replaceAudio = new JMenuItem("Replace/Overlay Audio of a Video");
         replaceAudio.setMnemonic('r');
-        featuresMenu.add(replaceAudio);
+        audioFeatures.add(replaceAudio);
         
         makeGif = new JMenuItem("Make a GIF Image");
         makeGif.setMnemonic('g');
-        featuresMenu.add(makeGif);
+        videoFeatures.add(makeGif);
         
         extractImagesFromVideo = new JMenuItem("Extract Images from video");
         extractImagesFromVideo.setMnemonic('i');
-        featuresMenu.add(extractImagesFromVideo);
+        videoFeatures.add(extractImagesFromVideo);
         
         delete = new JMenuItem("Delete history");
         delete.setMnemonic('d');
-        featuresMenu.add(delete);
+        other.add(delete);
         
         hide = new JMenuItem("Hide/Load History");
-        featuresMenu.add(hide);
+        other.add(hide);
        
         setJMenuBar(menuBar);
         

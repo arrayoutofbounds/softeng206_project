@@ -36,10 +36,12 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
+import vamix.InvalidCheck;
 
 @SuppressWarnings("serial")
 public class VideoPlayer extends JPanel  implements ActionListener, ChangeListener, MouseListener{
@@ -666,6 +668,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				String newFile = fc.getSelectedFile().getAbsolutePath();
 				// Check that file is a video or audio file.
+				InvalidCheck i = new InvalidCheck();
+				boolean isValidMedia = i.invalidCheck(newFile);
+				/**
 				String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
 				ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
 				boolean isValidMedia = false;
@@ -682,11 +687,18 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 					JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				
+				**/
+				
 				if (!isValidMedia) {
 					JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				} else if (!newFile.equals(filePath)) {
 					VideoPlayer.this.filePath = newFile;
+					
+					
+					// before starting the video add it to the log
+					
 					LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
 					VideoPlayer.this.hasPlayed = false;
 					

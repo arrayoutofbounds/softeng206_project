@@ -1,3 +1,4 @@
+package vamix;
 
 @SuppressWarnings("serial")
 public class LibraryNotFoundException extends Exception {
