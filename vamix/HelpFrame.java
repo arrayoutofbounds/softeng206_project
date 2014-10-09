@@ -41,7 +41,7 @@ public class HelpFrame extends JFrame{
 		
 		p.add(scroll,BorderLayout.CENTER);
 		add(p,BorderLayout.CENTER);
-		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "ReadmeFile.txt");
+		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "README.md");
 		
 		 
 	}

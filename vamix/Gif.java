@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
+import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 
 
@@ -73,6 +74,7 @@ public class Gif extends JFrame implements ActionListener {
 		chooseName.setText("");
 		chooseName.setColumns(40);
 		makeGif = new JButton("Make the GIF");
+		makeGif.setEnabled(false);
 		makeGif.addActionListener(this);
 		
 		
@@ -118,6 +120,17 @@ public class Gif extends JFrame implements ActionListener {
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
 				showVideo.setText("Video chosen: " + selectedFile.getName());
+				InvalidCheck i = new InvalidCheck();
+				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+				
+				if (!isValidMedia) {
+					JOptionPane.showMessageDialog(Gif.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					makeGif.setEnabled(false);
+					return;
+				}else{
+					makeGif.setEnabled(true);
+				}
+				
 			}
 		}
 		
