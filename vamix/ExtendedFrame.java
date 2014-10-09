@@ -40,9 +40,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
     
     private JMenu videoFeatures;
     private JMenu other;
+    private JMenuItem download;
     
     private Gif gifFrame;
 	private Images i;
+	
+	private DownloadFrame downloadFrame;
     
 	
 	public ExtendedFrame() {
@@ -76,6 +79,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         menuBar.add(help);
         help.addMenuListener(this);
         
+        download = new JMenuItem("Download audio/video");
+        download.setMnemonic('o');
+        other.add(download);
+        download.addActionListener(this);
 
         extractMenuItem = new JMenuItem("Extract Audio");
         extractMenuItem.setMnemonic('e');
@@ -160,7 +167,11 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		helpFrame.setLocationRelativeTo(null);
 		helpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		
+		downloadFrame = new DownloadFrame();
+		downloadFrame.setResizable(false);
+		downloadFrame.setSize(700, 500);
+		downloadFrame.setLocationRelativeTo(null);
+		downloadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		
 	}
@@ -182,6 +193,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			LogFile.delete();
 		}else if(e.getSource() == hide){
 			LogFile.hide();
+		}else if(e.getSource() == download){
+			//get the download frame and do the download.
+			downloadFrame.setVisible(true);
 		}
 	}
 
