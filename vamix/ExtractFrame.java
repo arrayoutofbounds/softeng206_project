@@ -93,6 +93,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		chooseInputFileButton.addActionListener(this);
 		chooseOutputDirectoryButton.addActionListener(this);
 		extractButton.addActionListener(this);
+		extractButton.setEnabled(false);
 		
 	}
 
@@ -115,7 +116,18 @@ public class ExtractFrame extends JFrame implements ActionListener {
 	        if (returnValue == JFileChooser.APPROVE_OPTION) {
 	          selectedFile = fileChooser.getSelectedFile();
 	          showInputFileLabel.setText("Input file: " + selectedFile.getName());
+	          InvalidCheck i = new InvalidCheck();
+			  boolean isValidMedia = i.invalidCheck(selectedFile.getAbsolutePath());
+			  
+			  if (!isValidMedia) {
+					JOptionPane.showMessageDialog(ExtractFrame.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					extractButton.setEnabled(false);
+					return;
+				}else{
+					extractButton.setEnabled(true);
+				}
 	        }
+	        
 		}
 		
 		

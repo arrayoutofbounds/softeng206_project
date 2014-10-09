@@ -10,7 +10,7 @@ import mediacomponent.VideoPlayer;
 public class InvalidCheck {
 
 
-	public static boolean invalidCheck(String newFile){
+	public boolean invalidCheck(String newFile){
 		String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
 		ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
 		boolean isValidMedia = false;
