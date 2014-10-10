@@ -70,7 +70,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		FontDetectorWorker fontWorker = new FontDetectorWorker(fontPaths, fontNames, fontFiles);
 		fontWorker.execute();
 		
-		this.setLayout(new BorderLayout(2, 2));
+		getContentPane().setLayout(new BorderLayout(2, 2));
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		
 		selectInputFileButton = new JButton("Select input file");
@@ -104,12 +104,12 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		subTopPanel2.setBorder(blackline);
 		topPanel.add(subTopPanel1, BorderLayout.NORTH);
 		topPanel.add(subTopPanel2, BorderLayout.SOUTH);
-		this.add(topPanel, BorderLayout.NORTH);
+		getContentPane().add(topPanel, BorderLayout.NORTH);
 		
 		leftEditPane = new TextEditPanel("Text to show at start", fontNames, fontFiles);	
-		this.add(leftEditPane, BorderLayout.WEST);
+		getContentPane().add(leftEditPane, BorderLayout.WEST);
 		rightEditPane = new TextEditPanel("Text to show at end", fontNames, fontFiles);
-		this.add(rightEditPane, BorderLayout.EAST);
+		getContentPane().add(rightEditPane, BorderLayout.EAST);
 		
 		selectOutputDirectoryButton = new JButton("Select output directory");
 		selectOutputDirectoryButton.addActionListener(this);
@@ -129,7 +129,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		bottomPanel.add(panel, BorderLayout.SOUTH);
 		
 		bottomPanel.setBorder(blackline);
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		
 	}
 

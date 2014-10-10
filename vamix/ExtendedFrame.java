@@ -3,17 +3,20 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import mediacomponent.LogFile;
+import mediacomponent.VideoPlayer;
 
 
 @SuppressWarnings("serial")
@@ -48,6 +51,11 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private DownloadFrame downloadFrame;
     
 	
+	private JMenu speed;
+	private static JRadioButtonMenuItem playingSpeed[];
+	private ButtonGroup group;
+	
+	
 	public ExtendedFrame() {
 		super("Vamix");
 		
@@ -61,10 +69,16 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		
 	    menuBar = new JMenuBar();
         add(menuBar);
+        
+       
+        
 
         audioFeatures = new JMenu("Audio Features");
         audioFeatures.setMnemonic('a');
         menuBar.add(audioFeatures);
+        
+        speed = new JMenu("Playback speed");
+        audioFeatures.add(speed);
         
         videoFeatures = new JMenu("Video Features");
         videoFeatures.setMnemonic('v');
@@ -132,26 +146,26 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		// and maintain extraction progress
 		extractFrame = new ExtractFrame();
 		extractFrame.setResizable(false);
-		extractFrame.setSize(400, 300);
+		extractFrame.setSize(600, 400);
 		extractFrame.setLocationRelativeTo(null);
 		extractFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		// Create single edit text frame
 		editTextFrame = new EditTextFrame();
 		editTextFrame.setResizable(false);
-		editTextFrame.setSize(600, 500);
+		editTextFrame.setSize(750, 700);
 		editTextFrame.setLocationRelativeTo(null);
 		editTextFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		replaceAudioFrame = new ReplaceAudio();
 		replaceAudioFrame.setResizable(false);
-		replaceAudioFrame.setSize(500, 400);
+		replaceAudioFrame.setSize(700, 600);
 		replaceAudioFrame.setLocationRelativeTo(null);
 		replaceAudioFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		gifFrame = new Gif();
 		gifFrame.setResizable(false);
-		gifFrame.setSize(500, 400);
+		gifFrame.setSize(600, 500);
 		gifFrame.setLocationRelativeTo(null);
 		gifFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -173,6 +187,22 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		downloadFrame.setLocationRelativeTo(null);
 		downloadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		
+		
+		// initialise all the speed radio buttons and set the 1x speed to the inital speed
+		String speeds[] = {"0.5x","1.0x","1.5x","2.0x","2.5x","3.0x"};
+		playingSpeed = new JRadioButtonMenuItem[speeds.length];
+		
+		group = new ButtonGroup();
+		
+		
+		for(int count = 0;count<playingSpeed.length;count++){
+			playingSpeed[count] = new JRadioButtonMenuItem(speeds[count]);
+			speed.add(playingSpeed[count]);
+			group.add(playingSpeed[count]);
+			playingSpeed[count].addActionListener(this);
+		}
+		playingSpeed[1].setSelected(true);
 		
 	}
 
@@ -196,6 +226,18 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		}else if(e.getSource() == download){
 			//get the download frame and do the download.
 			downloadFrame.setVisible(true);
+		}else if(e.getSource() == playingSpeed[0]){
+			VideoPlayer.setCurrentRate((float) 0.5);
+		}else if(e.getSource() == playingSpeed[1]){
+			VideoPlayer.setCurrentRate(1);
+		}else if(e.getSource() == playingSpeed[2]){
+			VideoPlayer.setCurrentRate((float) 1.5);
+		}else if(e.getSource() == playingSpeed[3]){
+			VideoPlayer.setCurrentRate(2);
+		}else if(e.getSource() == playingSpeed[4]){
+			VideoPlayer.setCurrentRate((float) 2.5);
+		}else if(e.getSource() == playingSpeed[5]){
+			VideoPlayer.setCurrentRate(3);
 		}
 	}
 
@@ -219,6 +261,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		helpFrame.setVisible(true);
 		helpFrame.appendReadmeFile();
 		
+		
+	}
+
+
+	public static void setRadioButton(int j) {
+		playingSpeed[j].setSelected(true);
 		
 	}
 

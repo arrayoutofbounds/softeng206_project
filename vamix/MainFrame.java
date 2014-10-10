@@ -26,7 +26,7 @@ public class MainFrame {
 			@Override
 			public void run() {
 				
-				/**
+				
 				 try {
 					UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
 				} catch (ClassNotFoundException e1) {
@@ -43,7 +43,7 @@ public class MainFrame {
 					e1.printStackTrace();
 				}
 				
-				**/
+			
 				
 				try {
 					setupLibVLC();
