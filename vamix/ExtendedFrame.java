@@ -55,8 +55,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private static JRadioButtonMenuItem playingSpeed[];
 	private ButtonGroup group;
 	
-	private JMenuItem filters;
-	
+	private JMenuItem videoFilters;
+	private VideoFilter v;
 	
 	public ExtendedFrame() {
 		super("Vamix");
@@ -120,9 +120,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         extractImagesFromVideo.setMnemonic('i');
         videoFeatures.add(extractImagesFromVideo);
         
-        filters = new JMenuItem("Add Video Filters");
-        filters.setMnemonic('f');
-        videoFeatures.add(filters);
+        videoFilters = new JMenuItem("Add Video Filters");
+        videoFilters.setMnemonic('f');
+        videoFeatures.add(videoFilters);
         
         delete = new JMenuItem("Delete history");
         delete.setMnemonic('d');
@@ -140,7 +140,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		extractImagesFromVideo.addActionListener(this);
 		delete.addActionListener(this);
 		hide.addActionListener(this);
-		filters.addActionListener(this);
+		videoFilters.addActionListener(this);
 
         tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);
@@ -194,6 +194,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		downloadFrame.setLocationRelativeTo(null);
 		downloadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		v = new VideoFilter();
+		v.setResizable(false);
+		v.setSize(700, 500);
+		v.setLocationRelativeTo(null);
+		v.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
 		
 		
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
@@ -245,6 +251,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			VideoPlayer.setCurrentRate((float) 2.5);
 		}else if(e.getSource() == playingSpeed[5]){
 			VideoPlayer.setCurrentRate(3);
+		}else if(e.getSource() == videoFilters){
+			v.setVisible(true);
 		}
 	}
 
