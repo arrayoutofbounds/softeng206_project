@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -57,6 +58,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	
 	private JMenuItem videoFilters;
 	private VideoFilter v;
+	
+	
+	private static JCheckBoxMenuItem replay;
+	
 	
 	public ExtendedFrame() {
 		super("Vamix");
@@ -130,6 +135,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         
         hide = new JMenuItem("Hide/Load History");
         other.add(hide);
+        
+        replay = new JCheckBoxMenuItem("Replay");
+        replay.setMnemonic('r');
+        audioFeatures.add(replay);
        
         setJMenuBar(menuBar);
         
@@ -284,6 +293,15 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		playingSpeed[j].setSelected(true);
 		
 	}
+
+
+	public static boolean getReplay() {
+		// TODO Auto-generated method stub
+		return replay.isSelected();
+	}
+
+
+	
 
 	
 }

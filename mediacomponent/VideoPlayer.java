@@ -145,6 +145,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private static long end;
 	private static long length;
 
+	
+	
 
 	public VideoPlayer()  {
 		super(new BorderLayout(10,10));
@@ -876,7 +878,17 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				playButton.setIcon(play);
 				timeSlider.setValue(0);
 				mediaPlayer.stop();
+				
+				if(ExtendedFrame.getReplay()){
+					//mediaPlayer.start();
+					playButton.doClick();
+				}
+			
 			}
+			
+			
+			
+			
 
 			if (slider.getValueIsAdjusting()) {
 				mediaPlayer.setTime(slider.getValue());
@@ -884,7 +896,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 
-
+	
+	
+	
 	private class rewindWorker extends SwingWorker<Void, Void>{
 
 		@Override
