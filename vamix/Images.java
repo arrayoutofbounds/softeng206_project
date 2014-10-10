@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
@@ -38,11 +39,14 @@ public class Images extends JFrame implements ActionListener{
 	
 	private ImagesWorker worker;
 	
+	private JProgressBar progress;
+	private JPanel forBar;
+	
 	public Images(){
 		
 		super("Get Images from a video file");
 		
-		setLayout(new GridLayout(5,1));
+		setLayout(new GridLayout(6,1));
 		
 		forInputVideoButton = new JPanel(new FlowLayout());
 		forInputVideoButton.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -54,7 +58,8 @@ public class Images extends JFrame implements ActionListener{
 		forOutputLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		forImagesButton = new JPanel(new FlowLayout());
 		forImagesButton.setBorder(new EmptyBorder(10, 10, 10, 10));
-		
+		forBar = new JPanel(new FlowLayout());
+		forBar.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
 		
 		chooseVideo = new JButton("Choose Video");
@@ -66,6 +71,7 @@ public class Images extends JFrame implements ActionListener{
 		makeImages = new JButton("Get the images");
 		makeImages.addActionListener(this);
 		makeImages.setEnabled(false);
+		progress = new JProgressBar();
 		
 		
 		forInputVideoButton.add(chooseVideo);
@@ -73,13 +79,14 @@ public class Images extends JFrame implements ActionListener{
 		forOutputButton.add(chooseOutput);
 		forOutputLabel.add(showOutput,BorderLayout.WEST);
 		forImagesButton.add(makeImages);
+		forBar.add(progress);
 		
 		add(forInputVideoButton);
 		add(forInputVideoLabel);
 		add(forOutputButton);
 		add(forOutputLabel);
 		add(forImagesButton);
-		
+		add(forBar);
 		
 	}
 

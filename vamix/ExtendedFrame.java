@@ -172,7 +172,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		
 		gifFrame = new Gif();
 		gifFrame.setResizable(false);
-		gifFrame.setSize(600, 500);
+		gifFrame.setSize(700, 500);
 		gifFrame.setLocationRelativeTo(null);
 		gifFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		

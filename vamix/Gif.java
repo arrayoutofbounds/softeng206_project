@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
@@ -45,9 +46,14 @@ public class Gif extends JFrame implements ActionListener {
 	private GifWorker worker;
 	private File toOverride;
 	
+	private JLabel labelForOutputName;
+	
+	private JProgressBar progress;
+	private JPanel forBar;
+	
 	public Gif(){
 		super("Making a GIF image");
-		setLayout(new GridLayout(6,1));
+		setLayout(new GridLayout(7,1));
 		
 		
 		forInputVideoButton = new JPanel(new FlowLayout());
@@ -62,6 +68,8 @@ public class Gif extends JFrame implements ActionListener {
 		forOutputName.setBorder(new EmptyBorder(10, 10, 10, 10));
 		forGifButton = new JPanel(new FlowLayout());
 		forGifButton.setBorder(new EmptyBorder(10, 10, 10, 10));
+		forBar = new JPanel(new FlowLayout());
+		forBar.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
 		
 		chooseVideo = new JButton("Choose Video");
@@ -76,14 +84,19 @@ public class Gif extends JFrame implements ActionListener {
 		makeGif = new JButton("Make the GIF");
 		makeGif.setEnabled(false);
 		makeGif.addActionListener(this);
+		labelForOutputName = new JLabel("Choose Output name:");
+		progress = new JProgressBar();
+		
 		
 		
 		forInputVideoButton.add(chooseVideo);
 		forInputVideoLabel.add(showVideo,BorderLayout.WEST);
 		forOutputButton.add(chooseOutput);
 		forOutputLabel.add(showOutput,BorderLayout.WEST);
+		forOutputName.add(labelForOutputName);
 		forOutputName.add(chooseName);
 		forGifButton.add(makeGif);
+		forBar.add(progress);
 		
 		add(forInputVideoButton);
 		add(forInputVideoLabel);
@@ -91,7 +104,7 @@ public class Gif extends JFrame implements ActionListener {
 		add(forOutputLabel);
 		add(forOutputName);
 		add(forGifButton);
-		
+		add(forBar);
 		
 		
 		
@@ -162,7 +175,7 @@ public class Gif extends JFrame implements ActionListener {
 			}
 			
 			if(carryOn){
-				JOptionPane.showMessageDialog(Gif.this,"WARNING! If the video is too big, there may be problems in making the gif. Extract a part of the video by features given and then make the gif.");
+				JOptionPane.showMessageDialog(Gif.this,"WARNING! If the video is too small or big, the making of the gif fails!");
 				// call the swing worker and make the gif
 				
 				
@@ -170,7 +183,7 @@ public class Gif extends JFrame implements ActionListener {
 
 				boolean override = false;
 				
-				File propFile = new File(outputDirectory,chooseName.getText());
+				File propFile = new File(outputDirectory,chooseName.getText() + ".gif");
 				if(propFile.exists()){
 					toOverride = propFile;
 					// ask the user if they want to overrride or not. If not then they must change the name of their file
@@ -190,14 +203,17 @@ public class Gif extends JFrame implements ActionListener {
 						toOverride.delete();
 						worker = new GifWorker();
 						worker.execute();
+						makeGif.setEnabled(false);
+						progress.setIndeterminate(true);
 					}else{
-						JOptionPane.showMessageDialog(Gif.this, "Please choose another name to carry on extracting!");
+						JOptionPane.showMessageDialog(Gif.this, "Please choose another name to carry on making a GIF!");
 					}
 				}else{
 
 					worker = new GifWorker();
 					makeGif.setEnabled(false);
 					worker.execute();
+					progress.setIndeterminate(true);
 				}
 				
 				
@@ -252,13 +268,14 @@ public class Gif extends JFrame implements ActionListener {
 		@Override
 		protected void done() {
 			makeGif.setEnabled(true);
+			progress.setIndeterminate(false);
 			try {
 				int i = get();
 				
 				if(i==0){
 					JOptionPane.showMessageDialog(Gif.this, "The GIF has successfully been made!");
 				}else{
-					JOptionPane.showMessageDialog(Gif.this, "The making of the GIF was unsucessful!");
+					JOptionPane.showMessageDialog(Gif.this, "The making of the GIF was unsuccessful!");
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

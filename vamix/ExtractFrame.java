@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 
@@ -47,10 +48,13 @@ public class ExtractFrame extends JFrame implements ActionListener {
 	File toOverride;
 	
 	
+	private JPanel showDestination;
+	private JLabel showing;
+	
 	public ExtractFrame(){
 		super("Extract Audio From Video");
 
-		setLayout(new GridLayout(6,1));
+		setLayout(new GridLayout(7,1));
 		
 		fileSelectionPanel = new JPanel();
 		chooseInputFileButton = new JButton("Choose File");
@@ -59,6 +63,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		allowExtractPanel = new JPanel();
 		showprogressbar = new JPanel();
 		showOutputDirectoryButton = new JPanel();
+		showDestination = new JPanel();
 		
 		chooseOutputDirectoryButton = new JButton("Choose output directory");
 		showInputFileLabel  = new JLabel("Input file: ");
@@ -69,11 +74,29 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		extractButton = new JButton("Extract");
 		extractProgressBar = new JProgressBar();
 		extractProgressBar.setStringPainted(true);
+		showing = new JLabel("Output Destination: ");
 		
 		fileSelectionPanel.setLayout(new FlowLayout());
 		DisplayChosenFilePanel.setLayout(new BorderLayout());
 		getOutputNamePanel.setLayout(new FlowLayout());
 		allowExtractPanel.setLayout(new FlowLayout());
+		showDestination.setLayout(new BorderLayout());
+		
+		
+		
+		fileSelectionPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		DisplayChosenFilePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		getOutputNamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		allowExtractPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		showprogressbar.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		showOutputDirectoryButton.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		showDestination.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
 		fileSelectionPanel.add(chooseInputFileButton);
 		DisplayChosenFilePanel.add(showInputFileLabel,BorderLayout.WEST);
@@ -82,11 +105,13 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		allowExtractPanel.add(extractButton);
 		showprogressbar.add(extractProgressBar);
 		showOutputDirectoryButton.add(chooseOutputDirectoryButton);
+		showDestination.add(showing,BorderLayout.WEST);
 		
 		add(fileSelectionPanel);
 		add(DisplayChosenFilePanel);
 		add(getOutputNamePanel);
 		add(showOutputDirectoryButton);
+		add(showDestination);
 		add(allowExtractPanel);
 		add(showprogressbar);
 		
@@ -142,7 +167,8 @@ public class ExtractFrame extends JFrame implements ActionListener {
 			
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				JOptionPane.showMessageDialog(ExtractFrame.this, "Your file will be extracted to " + outputDirectory);
+				showing.setText("Output Destination: " + outputDirectory);
+				//JOptionPane.showMessageDialog(ExtractFrame.this, "Your file will be extracted to " + outputDirectory);
 			}
 		}
 		
@@ -307,6 +333,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 					worker.execute();
 				}else{
 					JOptionPane.showMessageDialog(ExtractFrame.this, "Please choose another name to carry on extracting!");
+					extractButton.setEnabled(true);
 				}
 			} else {
 				worker.execute();
