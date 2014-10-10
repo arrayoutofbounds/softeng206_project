@@ -55,6 +55,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private static JRadioButtonMenuItem playingSpeed[];
 	private ButtonGroup group;
 	
+	private JMenuItem filters;
+	
 	
 	public ExtendedFrame() {
 		super("Vamix");
@@ -118,6 +120,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         extractImagesFromVideo.setMnemonic('i');
         videoFeatures.add(extractImagesFromVideo);
         
+        filters = new JMenuItem("Add Video Filters");
+        filters.setMnemonic('f');
+        videoFeatures.add(filters);
+        
         delete = new JMenuItem("Delete history");
         delete.setMnemonic('d');
         other.add(delete);
@@ -134,6 +140,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		extractImagesFromVideo.addActionListener(this);
 		delete.addActionListener(this);
 		hide.addActionListener(this);
+		filters.addActionListener(this);
 
         tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);

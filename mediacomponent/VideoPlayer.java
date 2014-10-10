@@ -204,8 +204,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		// history.setPreferredSize(new Dimension(50,50));;
 		history.setEditable(false);
 
-
-
 		//scroll = new JScrollPane(history);
 		//scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		//scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
