@@ -43,6 +43,7 @@ import javax.swing.event.ChangeListener;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.TrackDescription;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import vamix.ExtendedFrame;
@@ -166,6 +167,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		videoSurface.canvas().setBackground(Color.BLACK);
 
 		canvas.addMouseListener(this);
+		
 
 		popup = new JPopupMenu("Popup");
 		slow = new JMenuItem("0.5x");
@@ -607,6 +609,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 
 		if (e.getSource() == playButton) {
+			
 			if (isRewinding) {
 				worker.cancel(true);
 				isRewinding = false;
@@ -649,6 +652,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 					}
 				}
 			} else if (!this.hasPlayed) {
+			
 				mediaPlayer.startMedia(filePath);
 				this.hasPlayed = true;
 
@@ -885,10 +889,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				}
 			
 			}
-			
-			
-			
-			
+
 
 			if (slider.getValueIsAdjusting()) {
 				mediaPlayer.setTime(slider.getValue());

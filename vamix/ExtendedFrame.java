@@ -62,6 +62,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	
 	private static JCheckBoxMenuItem replay;
 	
+	private JMenuItem audioFilters;
+	private AudioFilter af;
+	
+	private JMenuItem extractAPart;
+	
+	private ExtractPart ep;
 	
 	public ExtendedFrame() {
 		super("Vamix");
@@ -70,7 +76,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		//mainContainer.add(new JLabel(new ImageIcon("/home/anmol/Downloads/light_background-wallpaper-1280x800.jpg")));
 		
 		tabsPane = new JTabbedPane();
-		downloadTab = new Download();
+		//downloadTab = new Download();
 		playTab  = new Play();
 		
 		
@@ -104,6 +110,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         download.setMnemonic('o');
         other.add(download);
         download.addActionListener(this);
+        
+        extractAPart  = new JMenuItem("Extract part of video/audio");
+        other.add(extractAPart);
+        extractAPart.addActionListener(this);
 
         extractMenuItem = new JMenuItem("Extract Audio");
         extractMenuItem.setMnemonic('e');
@@ -136,9 +146,16 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         hide = new JMenuItem("Hide/Load History");
         other.add(hide);
         
+        audioFilters = new JMenuItem("Add Audio Filters");
+        audioFeatures.add(audioFilters);
+        
         replay = new JCheckBoxMenuItem("Replay");
         replay.setMnemonic('r');
         audioFeatures.add(replay);
+        
+        
+       
+        
        
         setJMenuBar(menuBar);
         
@@ -150,8 +167,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		delete.addActionListener(this);
 		hide.addActionListener(this);
 		videoFilters.addActionListener(this);
+		audioFilters.addActionListener(this);
 
-        tabsPane.add("Download",downloadTab);
+        //tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);
         
         tabsPane.setSelectedComponent(playTab);
@@ -209,6 +227,17 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		v.setLocationRelativeTo(null);
 		v.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		af = new AudioFilter();
+		af.setResizable(false);
+		af.setSize(700, 500);
+		af.setLocationRelativeTo(null);
+		af.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		ep = new ExtractPart();
+		ep.setResizable(false);
+		ep.setSize(700, 500);
+		ep.setLocationRelativeTo(null);
+		ep.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
@@ -262,6 +291,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			VideoPlayer.setCurrentRate(3);
 		}else if(e.getSource() == videoFilters){
 			v.setVisible(true);
+		}else if(e.getSource() == audioFilters){
+			af.setVisible(true);
+		}else if(e.getSource() == extractAPart){
+			ep.setVisible(true);
 		}
 	}
 
