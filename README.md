@@ -1,6 +1,6 @@
 README FILE
 
-VAMIX - version 1.0 
+VAMIX - version 2.0 (BETA)
 Main Author : Anmol Desai  
 Other Author : Nicholas Molloy
 Date of release: Monday 13th October 2014
