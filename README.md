@@ -45,7 +45,6 @@ Features given are:
  - Replace or overlay the audio of a video
  - Delete history
  - Make a library
- - extract part of a video file
  - add audio and video filters
  - replay and set playback speed
 
