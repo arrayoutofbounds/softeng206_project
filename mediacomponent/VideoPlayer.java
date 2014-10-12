@@ -304,6 +304,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		gb1.weighty = 0;
 		gb1.insets = new Insets(0,5,0,5);
 		everythingElse.add(muteButton,gb1);
+		muteButton.setToolTipText("Mute/Unmute");
 
 
 		boolean iconLoaded = true;

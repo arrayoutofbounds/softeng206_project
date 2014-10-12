@@ -24,7 +24,7 @@ import mediacomponent.VideoPlayer;
 public class ExtendedFrame extends JFrame implements ActionListener, MenuListener {
 	
 	private JTabbedPane tabsPane;
-	private Download downloadTab;
+	//private Download downloadTab;
 	private Play playTab;
 	private ExtractFrame extractFrame;
 	private EditTextFrame editTextFrame;
@@ -69,6 +69,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	
 	private ExtractPart ep;
 	
+	
+	private Library library;
+	
 	public ExtendedFrame() {
 		super("Vamix");
 		
@@ -78,6 +81,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		tabsPane = new JTabbedPane();
 		//downloadTab = new Download();
 		playTab  = new Play();
+		library = new Library();
+		
 		
 		
 	    menuBar = new JMenuBar();
@@ -111,9 +116,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         other.add(download);
         download.addActionListener(this);
         
-        extractAPart  = new JMenuItem("Extract part of video");
+        extractAPart  = new JMenuItem("Extract part of a video");
         other.add(extractAPart);
         extractAPart.addActionListener(this);
+
 
         extractMenuItem = new JMenuItem("Extract Audio");
         extractMenuItem.setMnemonic('e');
@@ -154,7 +160,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         audioFeatures.add(replay);
         
         
-       
+     
         
        
         setJMenuBar(menuBar);
@@ -171,6 +177,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 
         //tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);
+        tabsPane.add("Library",library);
+        
         
         tabsPane.setSelectedComponent(playTab);
 		
@@ -238,6 +246,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		ep.setSize(700, 500);
 		ep.setLocationRelativeTo(null);
 		ep.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		
 		
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
