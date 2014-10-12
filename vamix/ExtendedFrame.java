@@ -23,7 +23,7 @@ import mediacomponent.VideoPlayer;
 @SuppressWarnings("serial")
 public class ExtendedFrame extends JFrame implements ActionListener, MenuListener {
 	
-	private JTabbedPane tabsPane;
+	static JTabbedPane tabsPane;
 	//private Download downloadTab;
 	private Play playTab;
 	private ExtractFrame extractFrame;
@@ -71,6 +71,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	
 	
 	private Library library;
+	
+	
 	
 	public ExtendedFrame() {
 		super("Vamix");

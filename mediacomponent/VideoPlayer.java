@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -95,7 +97,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private JButton snapShotButton;
 	private JButton rewindBack;
 	private JButton fastForwardButton;
-	private JButton playButton; 
+	private static JButton playButton; 
 	private JButton muteButton;
 	private JButton forwardButton;
 	private JButton backButton;
@@ -106,7 +108,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private JPanel everythingElse = new JPanel(new FlowLayout());
 	private JLabel volumeLabel;
 
-	private String filePath;
+
+	public static String filePath;
 	private boolean hasPlayed;
 
 	//references to the images for the icons
@@ -543,7 +546,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		add(extra,BorderLayout.EAST);
 		add(everythingElse,BorderLayout.SOUTH);
 
-
+	
+		
 		setupListeners();
 	}
 
@@ -1077,6 +1081,16 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 
 	}
+	
+
+	public static void startPlaying() {
+		mediaPlayer.stop();
+		playButton.doClick();
+		AddToFile a = new AddToFile();
+		a.add();
+	}
+
+
 
 
 }
