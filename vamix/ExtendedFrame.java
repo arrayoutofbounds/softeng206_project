@@ -111,7 +111,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         other.add(download);
         download.addActionListener(this);
         
-        extractAPart  = new JMenuItem("Extract part of video/audio");
+        extractAPart  = new JMenuItem("Extract part of video");
         other.add(extractAPart);
         extractAPart.addActionListener(this);
 
