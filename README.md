@@ -1,14 +1,14 @@
 README FILE
 
 VAMIX - version 1.0 
-Authors : Anmol Desai and Nicholas Molloy
-Date of release: Friday 26 September 2014
+Main Author : Anmol Desai  
+Other Author : Nicholas Molloy
+Date of release: Monday 13th October 2014
 Contact emails : ades597@aucklanduni.ac.nz, nmol886@aucklandduni.ac.nz
 
 
 This file is to help you navigate around this software. All images used in the making of this software come from iconfinder.com. Those images have 
-been used for educational purposes only and no other purpose. Any other source material used has also been used for educational purposes only and we give full credit to those sources. This software is the preoprty of Anmol Desai and Nicholas Molloy and is not to be distributed anywhere without the permission
-of any one of them.
+been used for educational purposes only and no other purpose. Any other source material used has also been used for educational purposes only and we give full credit to those sources. This software is the property of Anmol Desai and Nicholas Molloy and is not to be distributed anywhere without the permission of Anmol Desai.
 
 
 GENERAL USAGE INFORMATION:
@@ -44,6 +44,11 @@ Features given are:
  - Add text to start and end of a video
  - Replace or overlay the audio of a video
  - Delete history
+ - Make a library
+ - extract part of a video file
+ - add audio and video filters
+ - replay and set playback speed
+
 
 
 
@@ -52,7 +57,7 @@ INSTRUCTIONS FOR EACH FEATURE
 
 Download a video or Audio
 
-Enter the url of the audio or video in the given textfield of the download tab. 
+Open the tools menu and click on the download menuitem. Enter the url of the audio or video in the given textfield of the download tab. 
 Choose a destination folder (where your output file will go)
 Click download to start the download. If you want to cancel the download then press the cancel button. If you want to resume the download
 then click "Resume" when starting download again.
@@ -90,20 +95,20 @@ The extracted file will be saved to your home folder.
 
 Make a GIF:
 
-Go to the features menu and click on the menu item that says "Make a GIF". Then in the new frame that opens, select a input video file -which 
+Go to the video features menu and click on the menu item that says "Make a GIF". Then in the new frame that opens, select a input video file -which 
 you want to make a a gif of- and then select an output directory. Also write the name of the output file in the text field. ( ADDING .gif AT
 THE END IS NOT MANDATORY). Click the "Make the gif" button to make the gif.
 
 
 Get all images from the video:
 	
-Go to the features menu and then click on the menu item that says "Extract images from video". In the pop up frame, select the video file to 
+Go to the Video features menu and then click on the menu item that says "Extract images from video". In the pop up frame, select the video file to 
 extract images from and then choose an destination for the output to go to. Then click the extract images button to start the process.
 
 
 Extract Audio from Video;
 
-Go to the features menu and click on the menu item that says "Extract Audio". Then enter a video file input and choose the input destination.
+Go to the Audio features menu and click on the menu item that says "Extract Audio". Then enter a video file input and choose the input destination.
 Also write the name of the output file. Then click the extract button and wait for the progress bar to complete.
 Once the progress bar is finished the audio of that video will have been extracted.	
 
@@ -128,7 +133,7 @@ Previous settings can be loaded by selecting 'File -> 'Open'
 
 Replace or Overlay the audio of a video:
 
-Go to the features menu and click the menu item that says "Replace/Overlay Audio of a Video". Then choose the input video and audio file.
+Go to the Audio features menu and click the menu item that says "Replace/Overlay Audio of a Video". Then choose the input video and audio file.
 The audio file will either replace or overlay the audio in the input video. Then choose the output destination.
 Then give an output name for the new video. Finally, either click the Overlay or Replace button. The overlay will overlay the input
 audio to the input video and give a new file. The replace button will cause the input audio to replace the audio of the input video.
@@ -137,4 +142,38 @@ audio to the input video and give a new file. The replace button will cause the 
 Delete History:
 	
 Go to the features menu and click the menu item that says "Delete history". WARNING! HISTORY iS NOT RECOVERABLE!
+
+Hide/Load historu:
+
+Go to the tools menu and click on the hide/load history item.
+
+Set playback speed:
+
+There are two ways to do this. First is to right click on the black screen and then choose a speed. The second is to go to the Audio Features menu and then click on the playback speed
+menu item and then choose a speed.
+
+Replay:
+
+Go to the Audio Features menu and then click on the replay box. If the box is ticked then the current audio/video file playing will repeat, else it won't repeat.
+
+Audio Filter:
+
+Go to the Audio Features menu and click on the audio filters menu item. Then select the input file, output destination, output name and the filter to add.
+Then just apply the filter and your file will be created.
+
+Video Filter:
+
+Go to the Video Features menu. Then go to the "add video filters" menu item and then select the input file, output destination, output name and the filter to add.
+Then choose the filter to add and apply it.
+
+
+Library:
+
+This has the list of video and audio files and their information. The list of files is on the left and their information is on the text area in the right. The information
+is the name of the file, where it is stored and its size in megabytes. 
+
+There are 2 buttons. The Add button will add a media file to the list and the remove button will remove the currently selected file from the list.
+Multiple files can be removed at once by selecting multiple files using the control key on your keyboard. 
+
+Click once on the file in the list to get its information show up. Clicking twice on the file in the list will cause that file to be played.
 	
