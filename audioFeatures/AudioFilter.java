@@ -1,17 +1,13 @@
-package vamix;
+package audioFeatures;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -24,11 +20,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import vamix.InvalidCheck;
 
-public class ExtractPart extends JFrame implements ActionListener {
-	
+
+public class AudioFilter extends JFrame implements ActionListener{
+
 	private JPanel chooseInput;
 	private JPanel showInput;
 	private JPanel chooseOutput;
@@ -47,24 +44,20 @@ public class ExtractPart extends JFrame implements ActionListener {
 	private JTextField field;
 	private JButton start;
 	private JProgressBar progress;
-
+	private JLabel selectFilterlabel;
+	private JComboBox selectFilter;
 	private JLabel nameOutputLabel;
+
+	private String[] inComboBox = {"Remove Audio"};
 	private File selectedFile;
 	private File outputDirectory;
 	private File toOverride;
-
-
-	private JTextField startTime;
-	private JTextField lengthTime;
-	private JLabel length;
-	private JLabel startLabel;
-	private JPanel forTime;
-	private boolean carryOn;
 	private FilterWorker worker;
 
 
-	public ExtractPart(){
-		super("Extract part of a video");
+
+	public AudioFilter(){
+		super("Add Audio Filter");
 		setLayout(new GridLayout(8,1));
 
 		chooseInput = new JPanel(new FlowLayout());
@@ -88,9 +81,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 		showProgress = new JPanel(new FlowLayout());
 		showProgress.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		forTime  = new JPanel(new FlowLayout());
-		forTime.setBorder(new EmptyBorder(10,10,10,10));
-		
+		chooseFilters = new JPanel(new BorderLayout());
+		chooseFilters.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 
 		chooseInputButton = new JButton("Choose Input Video File");
 		showingInput = new JLabel("Input File:");
@@ -98,20 +91,11 @@ public class ExtractPart extends JFrame implements ActionListener {
 		showingOutput = new JLabel("Output destination:");
 		field = new JTextField(50);
 		field.setColumns(50);
-		start = new JButton("Extract");
-		start.setEnabled(false);
+		start = new JButton("Add Filter");
 		progress = new JProgressBar();
-
+		selectFilterlabel = new JLabel("Select Filter ");
 		nameOutputLabel = new JLabel("Name Output:");
-		
-		startTime = new JTextField(10);
-		startTime.setColumns(10);
 
-		lengthTime  = new JTextField(10);
-		lengthTime.setColumns(10);
-		
-		startLabel = new JLabel("Start Time (hh:mm:ss)");
-		length = new JLabel("Length (hh:mm:ss)");
 
 
 		chooseInputButton.addActionListener(this);
@@ -119,6 +103,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 		start.addActionListener(this);
 
 
+
+		selectFilter = new JComboBox(inComboBox);
+		selectFilter.setEditable(false);
 
 
 		chooseInput.add(chooseInputButton);
@@ -129,11 +116,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 		nameOutput.add(field);
 		startProcess.add(start);
 		showProgress.add(progress);
+		chooseFilters.add(selectFilterlabel,BorderLayout.WEST);
+		chooseFilters.add(selectFilter,BorderLayout.CENTER);
 
-		forTime.add(startLabel);
-		forTime.add(startTime);
-		forTime.add(length);
-		forTime.add(lengthTime);
 
 
 
@@ -142,7 +127,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 		add(chooseOutput);
 		add(showOutput);
 		add(nameOutput);
-		add(forTime);
+		add(chooseFilters);
 		add(startProcess);
 		add(showProgress);
 
@@ -151,41 +136,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 	}
 
 
-	private void checkTime(){
-		String inputStartTime = startTime.getText();
-		String inputLengthTime = lengthTime.getText();
-		String pattern = "^[0-9]{1,}:[0-9]{1,2}:[0-9]{1,2}$";
-		Pattern regex = Pattern.compile(pattern);
-		Matcher check = regex.matcher(inputStartTime);
-		Matcher check2 = regex.matcher(inputLengthTime);
-
-
-		boolean carryOn2;
-		boolean carryOn3;
-		if(!check.find()){
-			JOptionPane.showMessageDialog(ExtractPart.this, "Sorry the start time is not the correct format!");
-			carryOn2 = false;
-		}else{
-			carryOn2 = true;
-		}
-
-		if(!check2.find()){
-			JOptionPane.showMessageDialog(ExtractPart.this, "Sorry the length time is not the correct format!");
-			carryOn3 = false;
-		}else{
-			carryOn3 = true;
-		}
-		
-		if(carryOn3 && carryOn2 ){
-			carryOn = true;
-		}else{
-			carryOn = false;
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+
 		if(e.getSource() == chooseInputButton){
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -200,7 +153,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(ExtractPart.this);
+			int returnValue = fileChooser.showOpenDialog(AudioFilter.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
@@ -209,7 +162,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
 
 				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(ExtractPart.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(AudioFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 					start.setEnabled(false);
 					return;
 				}else{
@@ -227,7 +180,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-			int returnValue = outputChooser.showOpenDialog(ExtractPart.this);
+			int returnValue = outputChooser.showOpenDialog(AudioFilter.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
@@ -235,23 +188,27 @@ public class ExtractPart extends JFrame implements ActionListener {
 				showingOutput.setText("Output Destination: " + outputDirectory);
 			}
 		}
-		
+
+
 		if(e.getSource() == start){
 
-			carryOn = true;
+			boolean carryOn = true;
 
 			if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(ExtractPart.this, "Sorry you must fill all fields before carrying on!");
+				JOptionPane.showMessageDialog(AudioFilter.this, "Sorry you must fill all fields before carrying on!");
 				carryOn = false;
 			}
-			
-			checkTime();
-			
 
 			if(carryOn){
 
 				//carry on with the process
-				
+
+
+				JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
+
+
+
+
 				boolean override = false;
 
 				File propFile = new File(outputDirectory,field.getText() + ".mp4");
@@ -259,7 +216,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 					toOverride = propFile;
 					// ask the user if they want to overrride or not. If not then they must change the name of their file
 					String[] options = {"Yes,Override!","No! Do not override!"};
-					int code = JOptionPane.showOptionDialog(ExtractPart.this, 
+					int code = JOptionPane.showOptionDialog(AudioFilter.this, 
 							"This file already exists! Would you like to override it?", 
 							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
 							null, options, "Yes,Override!");
@@ -276,7 +233,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 						worker.execute();
 						progress.setIndeterminate(true);
 					}else{
-						JOptionPane.showMessageDialog(ExtractPart.this, "Please choose another name to continue!");
+						JOptionPane.showMessageDialog(AudioFilter.this, "Please choose another name to continue and add the filter!");
 					}
 				}else{
 					worker = new FilterWorker();
@@ -287,9 +244,8 @@ public class ExtractPart extends JFrame implements ActionListener {
 			}
 
 		}
-		
+
 	}
-	
 	
 	private class FilterWorker extends SwingWorker<Integer,Void>{
 
@@ -303,17 +259,18 @@ public class ExtractPart extends JFrame implements ActionListener {
 				name = name + ".mp4";
 			}
 
-			int exitValue;
-			
-			String cmd = "/usr/bin/avconv -i " + selectedFile.getAbsolutePath() + " -ss " + startTime.getText() + " -t " + lengthTime.getText() + " -c:a copy -c:v copy "  + outputDirectory.getAbsolutePath() + File.separator + name; 
+			int exitValue = 1;
 
-			ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c",cmd);
-			
-			Process process = builder.start();
-			process.waitFor();
+			if(selectFilter.getSelectedIndex() == 0){
+				// it is the flip 90 degress so do the avconv related to that
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -an "  + outputDirectory.getAbsolutePath() + File.separator + name;
 
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
 
-			exitValue = process.exitValue();			
+				exitValue = process.exitValue();
+			}
 			
 			return exitValue;
 		}
@@ -326,9 +283,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 				int i = get();
 
 				if(i == 0){
-					JOptionPane.showMessageDialog(ExtractPart.this, "The extraction of the part was successful");
+					JOptionPane.showMessageDialog(AudioFilter.this, "The filter was added successfully!");
 				}else{
-					JOptionPane.showMessageDialog(ExtractPart.this, "The extraction of the part failed!");
+					JOptionPane.showMessageDialog(AudioFilter.this, "The adding of filter failed!");
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -342,7 +299,6 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 
 	}
-	
 	
 
 }

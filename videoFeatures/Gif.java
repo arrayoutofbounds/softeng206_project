@@ -1,4 +1,4 @@
-package vamix;
+package videoFeatures;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -14,39 +14,48 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
+import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import vamix.InvalidCheck;
 
 
 @SuppressWarnings("serial")
-public class Images extends JFrame implements ActionListener{
+public class Gif extends JFrame implements ActionListener {
 
 	private JPanel forInputVideoButton;
 	private JPanel forInputVideoLabel;
 	private JPanel forOutputButton;
 	private JPanel forOutputLabel;
-	private JPanel forImagesButton;
+	private JPanel forOutputName;
+	private JPanel forGifButton;
+	
 	
 	private JButton chooseVideo;
 	private JLabel showVideo;
 	private JButton chooseOutput;
 	private JLabel showOutput;
-	private JButton makeImages;
+	private JTextField chooseName;
+	private JButton makeGif;
 	private File selectedFile;
 	private File outputDirectory;
 	
-	private ImagesWorker worker;
+	
+	private GifWorker worker;
+	private File toOverride;
+	
+	private JLabel labelForOutputName;
 	
 	private JProgressBar progress;
 	private JPanel forBar;
 	
-	public Images(){
+	public Gif(){
+		super("Making a GIF image");
+		setLayout(new GridLayout(7,1));
 		
-		super("Get Images from a video file");
-		
-		setLayout(new GridLayout(6,1));
 		
 		forInputVideoButton = new JPanel(new FlowLayout());
 		forInputVideoButton.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -56,8 +65,10 @@ public class Images extends JFrame implements ActionListener{
 		forOutputButton.setBorder(new EmptyBorder(10, 10, 10, 10));
 		forOutputLabel = new JPanel(new BorderLayout());
 		forOutputLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		forImagesButton = new JPanel(new FlowLayout());
-		forImagesButton.setBorder(new EmptyBorder(10, 10, 10, 10));
+		forOutputName = new JPanel(new FlowLayout());
+		forOutputName.setBorder(new EmptyBorder(10, 10, 10, 10));
+		forGifButton = new JPanel(new FlowLayout());
+		forGifButton.setBorder(new EmptyBorder(10, 10, 10, 10));
 		forBar = new JPanel(new FlowLayout());
 		forBar.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
@@ -68,30 +79,42 @@ public class Images extends JFrame implements ActionListener{
 		chooseOutput = new JButton("Choose output directory");
 		chooseOutput.addActionListener(this);
 		showOutput = new JLabel("Output destination: ");
-		makeImages = new JButton("Get the images");
-		makeImages.addActionListener(this);
-		makeImages.setEnabled(false);
+		chooseName = new JTextField(5000);
+		chooseName.setText("");
+		chooseName.setColumns(40);
+		makeGif = new JButton("Make the GIF");
+		makeGif.setEnabled(false);
+		makeGif.addActionListener(this);
+		labelForOutputName = new JLabel("Choose Output name:");
 		progress = new JProgressBar();
+		
 		
 		
 		forInputVideoButton.add(chooseVideo);
 		forInputVideoLabel.add(showVideo,BorderLayout.WEST);
 		forOutputButton.add(chooseOutput);
 		forOutputLabel.add(showOutput,BorderLayout.WEST);
-		forImagesButton.add(makeImages);
+		forOutputName.add(labelForOutputName);
+		forOutputName.add(chooseName);
+		forGifButton.add(makeGif);
 		forBar.add(progress);
 		
 		add(forInputVideoButton);
 		add(forInputVideoLabel);
 		add(forOutputButton);
 		add(forOutputLabel);
-		add(forImagesButton);
+		add(forOutputName);
+		add(forGifButton);
 		add(forBar);
+		
+		
 		
 	}
 
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		if(e.getSource() == chooseVideo){
 			JFileChooser fileChooser = new JFileChooser();
 			
@@ -106,7 +129,7 @@ public class Images extends JFrame implements ActionListener{
 
 			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(Images.this);
+			int returnValue = fileChooser.showOpenDialog(Gif.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
@@ -115,12 +138,13 @@ public class Images extends JFrame implements ActionListener{
 				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
 				
 				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(Images.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-					makeImages.setEnabled(false);
+					JOptionPane.showMessageDialog(Gif.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					makeGif.setEnabled(false);
 					return;
 				}else{
-					makeImages.setEnabled(true);
+					makeGif.setEnabled(true);
 				}
+				
 			}
 		}
 		
@@ -132,7 +156,7 @@ public class Images extends JFrame implements ActionListener{
 
 			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-			int returnValue = outputChooser.showOpenDialog(Images.this);
+			int returnValue = outputChooser.showOpenDialog(Gif.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
@@ -141,62 +165,118 @@ public class Images extends JFrame implements ActionListener{
 			}
 		}
 		
-		if(e.getSource() == makeImages){
+		if(e.getSource() == makeGif){
 			
+			// check that that everything has been filled
 			boolean carryOn = true;
 			
-			if((selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(Images.this, "Sorry you must fill all fields before carrying on!");
+			if((chooseName.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
+				JOptionPane.showMessageDialog(Gif.this, "Sorry you must fill all fields before carrying on!");
 				carryOn = false;
 			}
 			
 			if(carryOn){
-				JOptionPane.showMessageDialog(Images.this,"WARNING! If the video is too big, there will be a LOT if images!");
-				// call the swing worker and make the images
+				JOptionPane.showMessageDialog(Gif.this,"WARNING! If the video is too small or big, the making of the gif fails!");
+				// call the swing worker and make the gif
 				
-				worker = new ImagesWorker();
-				makeImages.setEnabled(false);
-				worker.execute();
+				
+				
+
+				boolean override = false;
+				
+				File propFile = new File(outputDirectory,chooseName.getText() + ".gif");
+				if(propFile.exists()){
+					toOverride = propFile;
+					// ask the user if they want to overrride or not. If not then they must change the name of their file
+					String[] options = {"Yes,Override!","No! Do not override!"};
+					int code = JOptionPane.showOptionDialog(Gif.this, 
+							"This file already exists! Would you like to override it?", 
+							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
+							null, options, "Yes,Override!");
+					if (code == 0) {
+						// Allow override
+						override = true;
+					} else if(code == 1) {
+						override = false;
+					}
+
+					if(override){
+						toOverride.delete();
+						worker = new GifWorker();
+						worker.execute();
+						makeGif.setEnabled(false);
+						progress.setIndeterminate(true);
+					}else{
+						JOptionPane.showMessageDialog(Gif.this, "Please choose another name to carry on making a GIF!");
+					}
+				}else{
+
+					worker = new GifWorker();
+					makeGif.setEnabled(false);
+					worker.execute();
+					progress.setIndeterminate(true);
+				}
+				
+				
+				
+				
+				
+				
+				
+				//worker = new GifWorker();
+				//worker.execute();
 				
 				
 			}
+			
+			
 			
 		}
 		
 		
 	}
 	
-	
-	private class ImagesWorker extends SwingWorker<Integer,Void>{
+	private class GifWorker extends SwingWorker<Integer, Void>{
 
 		@Override
 		protected Integer doInBackground() throws Exception {
 			
-			String name = "image-%3d.jpeg";
+			
+			String name = chooseName.getText();
+			
+			if(!name.contains(".gif")){
+				name = name + ".gif";
+			}
+			
 			int exitValue = 1;
 			
 			
-			String cmd = "/usr/bin/avconv -i " + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -r 1 " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator +name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -pix_fmt rgb24 " + outputDirectory.getAbsolutePath() + File.separator + name;
+			
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+			
+			
 			
 			Process process = builder.start();
 			process.waitFor();
 			
+			
 			exitValue = process.exitValue();
 	
 			return exitValue;
-
 		}
 
 		@Override
 		protected void done() {
-			makeImages.setEnabled(true);
+			makeGif.setEnabled(true);
+			progress.setIndeterminate(false);
 			try {
 				int i = get();
-				if(i == 0){
-					JOptionPane.showMessageDialog(Images.this, "Images created!");
+				
+				if(i==0){
+					JOptionPane.showMessageDialog(Gif.this, "The GIF has successfully been made!");
 				}else{
-					JOptionPane.showMessageDialog(Images.this, "Sorry! Failed to create images");
+					JOptionPane.showMessageDialog(Gif.this, "The making of the GIF was unsuccessful!");
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -208,7 +288,8 @@ public class Images extends JFrame implements ActionListener{
 			
 		}
 		
-		
-		
 	}
+	
+	
+	
 }

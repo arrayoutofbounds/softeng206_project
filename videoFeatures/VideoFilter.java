@@ -1,10 +1,12 @@
-package vamix;
+package videoFeatures;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 
@@ -18,12 +20,14 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import vamix.InvalidCheck;
 
+public class VideoFilter extends JFrame implements ActionListener {
 
-public class AudioFilter extends JFrame implements ActionListener{
 
 	private JPanel chooseInput;
 	private JPanel showInput;
@@ -47,16 +51,15 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private JComboBox selectFilter;
 	private JLabel nameOutputLabel;
 
-	private String[] inComboBox = {"Remove Audio"};
+	private String[] inComboBox = {"Rotate 90 degrees","Rotate 270 degrees","Negate and vertical flip","Negate","Vertical flip","Blur (barely)","Blur (noticable)","Blur (A lot!)","Scale to 320x240 (240p)","Scale to 480x360 (360p)","Scale to 640x480 (480p)","Scale to 1280x720 (720p)","Scale to 1920x1080 (1080p)"};
 	private File selectedFile;
 	private File outputDirectory;
 	private File toOverride;
 	private FilterWorker worker;
 
 
-
-	public AudioFilter(){
-		super("Add Audio Filter");
+	public VideoFilter(){
+		super("Add Video Filter");
 		setLayout(new GridLayout(8,1));
 
 		chooseInput = new JPanel(new FlowLayout());
@@ -152,7 +155,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(AudioFilter.this);
+			int returnValue = fileChooser.showOpenDialog(VideoFilter.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
@@ -161,7 +164,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
 
 				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(AudioFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(VideoFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 					start.setEnabled(false);
 					return;
 				}else{
@@ -179,7 +182,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-			int returnValue = outputChooser.showOpenDialog(AudioFilter.this);
+			int returnValue = outputChooser.showOpenDialog(VideoFilter.this);
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
@@ -191,10 +194,12 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 		if(e.getSource() == start){
 
+			// make a check to ensure that all the fields are filled and valid. If not then dont allow the filter application to happen.
+
 			boolean carryOn = true;
 
 			if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(AudioFilter.this, "Sorry you must fill all fields before carrying on!");
+				JOptionPane.showMessageDialog(VideoFilter.this, "Sorry you must fill all fields before carrying on!");
 				carryOn = false;
 			}
 
@@ -203,7 +208,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 				//carry on with the process
 
 
-				JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
+				JOptionPane.showMessageDialog(VideoFilter.this,"WARNING! Large files can take a long time!");
 
 
 
@@ -215,7 +220,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 					toOverride = propFile;
 					// ask the user if they want to overrride or not. If not then they must change the name of their file
 					String[] options = {"Yes,Override!","No! Do not override!"};
-					int code = JOptionPane.showOptionDialog(AudioFilter.this, 
+					int code = JOptionPane.showOptionDialog(VideoFilter.this, 
 							"This file already exists! Would you like to override it?", 
 							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
 							null, options, "Yes,Override!");
@@ -232,7 +237,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 						worker.execute();
 						progress.setIndeterminate(true);
 					}else{
-						JOptionPane.showMessageDialog(AudioFilter.this, "Please choose another name to continue and add the filter!");
+						JOptionPane.showMessageDialog(VideoFilter.this, "Please choose another name to continue and add the filter!");
 					}
 				}else{
 					worker = new FilterWorker();
@@ -241,11 +246,17 @@ public class AudioFilter extends JFrame implements ActionListener{
 					progress.setIndeterminate(true);
 				}	
 			}
-
 		}
 
+
+
+
+
 	}
-	
+
+
+
+
 	private class FilterWorker extends SwingWorker<Integer,Void>{
 
 		@Override
@@ -262,7 +273,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 			if(selectFilter.getSelectedIndex() == 0){
 				// it is the flip 90 degress so do the avconv related to that
-				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -an "  + outputDirectory.getAbsolutePath() + File.separator + name;
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
 
 				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				Process process = builder.start();
@@ -270,7 +281,129 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 				exitValue = process.exitValue();
 			}
-			
+
+			if(selectFilter.getSelectedIndex() == 1){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=0 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+			if(selectFilter.getSelectedIndex() == 2){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate,vflip " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+
+			if(selectFilter.getSelectedIndex() == 3){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 4){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "vflip " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 5){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=2:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 6){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=5:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 7){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=10:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 8){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=320:240 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 9){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=480:360 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 10){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=640:480 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+
+			if(selectFilter.getSelectedIndex() == 11){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1280:720 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+			if(selectFilter.getSelectedIndex() == 12){
+				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1920:1080 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+
+				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
+				Process process = builder.start();
+				process.waitFor();
+
+				exitValue = process.exitValue();
+			}
+
+
 			return exitValue;
 		}
 
@@ -282,9 +415,9 @@ public class AudioFilter extends JFrame implements ActionListener{
 				int i = get();
 
 				if(i == 0){
-					JOptionPane.showMessageDialog(AudioFilter.this, "The filter was added successfully!");
+					JOptionPane.showMessageDialog(VideoFilter.this, "The filter was added successfully!");
 				}else{
-					JOptionPane.showMessageDialog(AudioFilter.this, "The adding of filter failed!");
+					JOptionPane.showMessageDialog(VideoFilter.this, "The adding of filter failed!");
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -298,6 +431,12 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 
 	}
-	
+
+
+
+
+
+
+
 
 }

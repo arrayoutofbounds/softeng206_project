@@ -16,6 +16,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import videoFeatures.ExtractPart;
+import videoFeatures.Gif;
+import videoFeatures.Images;
+import videoFeatures.VideoFilter;
+import audioFeatures.AudioFilter;
+import audioFeatures.ExtractFrame;
+import audioFeatures.ReplaceAudio;
 import mediacomponent.LogFile;
 import mediacomponent.VideoPlayer;
 

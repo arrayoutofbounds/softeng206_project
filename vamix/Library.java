@@ -10,9 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,8 +34,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import mediacomponent.LogFile;
 import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import videoFeatures.ExtractPart;
 
 public class Library extends JPanel implements ActionListener, ListSelectionListener, MouseListener{
 
@@ -56,6 +62,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 	List playlist = new ArrayList<>();
 	List allPathPlaylist = new ArrayList<>();
+
+	GetPlayList playlistName = new GetPlayList();
+	private JButton loadPlaylist;
+	private File playlistDirectory;
 
 	public Library(){
 
@@ -121,6 +131,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		makePlayList = new JButton("Make a playlist");
 		container.add(makePlayList);
 		makePlayList.addActionListener(this);
+
+
+		loadPlaylist = new JButton("Load a playlist");
+		container.add(loadPlaylist);
+		loadPlaylist.addActionListener(this);
 		/**
 		GridBagConstraints g1 = new GridBagConstraints();
 		g1.gridx = 1;
@@ -131,6 +146,13 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		g1.gridwidth = 1;
 		add(button2,g1);
 		 **/
+
+
+		playlistName = new GetPlayList();
+		playlistName.setResizable(false);
+		playlistName.setSize(700, 500);
+		playlistName.setLocationRelativeTo(null);
+		playlistName.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
 		button1.addActionListener(this);
@@ -209,60 +231,142 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			// get all the selected options and their file paths and then store them in the file with a each file and its path 
 			// seperated from the next one by a a newline character so they can be split at that point.
 
-			
+
 
 			playlist = allMedia.getSelectedValuesList();
 
-			// get all the paths of the selected items and put them in a list
-			
+			// get all the paths of the selected items and put them in a list and make sure that they are not zero
 
-			for(Object o : playlist){
-				allPathPlaylist.add(paths.get(o.toString()));
+			if(playlist.size() != 0){
+
+				// now open up a jfile chooser and make the user pick a directory and make a folder
+				// with the name of the playlist.. The name of the text file is the location chosen and 
+				// the name of the playlist
+
+
+				// open up a option pane and get the name of a playlist.
+
+				playlistName.setVisible(true);
+
+
+				for(Object o : playlist){
+					allPathPlaylist.add(paths.get(o.toString()));
+				}
+
+				writeToFile();
 			}
 
-			writeToFile();
+		}
 
+		if(e.getSource() == loadPlaylist){
+			// go to the selected folder and look for a file called list.txt and then load all the names of the files onto the jlist
+
+			JFileChooser outputChooser = new JFileChooser();
+			outputChooser.setCurrentDirectory(new java.io.File("."));
+			outputChooser.setDialogTitle("Choose a directory to output to");
+
+			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+			int returnValue = outputChooser.showOpenDialog(Library.this);
+
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				playlistDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
+				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			}
+
+
+			// now look in the playlist directory for the list.txt file. If there is one then go to all the paths and then load the file 
+			// names onto the jlist
+			File[] files;
+			if(playlistDirectory !=null){
+				files = playlistDirectory.listFiles();
+
+				boolean textFileExists = false;
+				File a = null;
+				for(File f : files ){
+					if(f.getName().toLowerCase().endsWith(".txt")){
+						textFileExists = true;
+						a = f;
+					}
+
+				}
+
+
+				if(textFileExists){
+
+					try {
+						l.clear();
+						BufferedReader br = new BufferedReader(new FileReader(a));
+						String line = br.readLine();
+						while (line != null) {
+							
+							
+							String[] split = line.split(File.separator);
+							int last = split.length;
+							String lastString = split[last-1];
+							paths.put(lastString, line);
+							File mock = new File(line);
+							sizes.put(lastString,mock.length());
+							l.addElement(lastString);
+							line = br.readLine();
+						}
+						br.close();
+					} catch (IOException e3) {
+						// Could not read log file, display error message
+						JOptionPane.showMessageDialog(null, "Could not open file", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+
+
+				}else{
+					JOptionPane.showMessageDialog(Library.this, "Sorry, no plyalist exists in this folder!");
+				}
+			}
 		}
 	}
 
-	
+
 	private void createDirectoryIfNeeded(String directoryName)
 	{
-	  File theDir = new File(directoryName);
-	 
-	  // if the directory does not exist, create it
-	  if (!theDir.exists())
-	  {
-	    //System.out.println("creating directory: " + directoryName);
-	    theDir.mkdir();
-	  }
+		File theDir = new File(directoryName);
+
+		// if the directory does not exist, create it
+		if (!theDir.exists())
+		{
+			//System.out.println("creating directory: " + directoryName);
+			theDir.mkdir();
+		}
 	}
-	
+
 	private void writeToFile() {
-		
-		createDirectoryIfNeeded(System.getProperty("user.home") + File.separator + ".playlist");
-		
-		File file = new File(System.getProperty("user.home") + File.separator + ".playlist" + File.separator + "list.txt" );
+
+		String nameOfPlaylist = GetPlayList.selectedplaylistname;
+		//System.out.println(GetPlayList.outputDirectory.getAbsolutePath());
+		createDirectoryIfNeeded(GetPlayList.outputDirectory.getAbsolutePath() + File.separator + nameOfPlaylist);
+
+		File file = new File(GetPlayList.outputDirectory.getAbsoluteFile() + File.separator  + nameOfPlaylist + File.separator + "list.txt" );
 		try{
-			
+
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
-				 file.createNewFile();
+				file.createNewFile();
 			}
-			
-			
+
+
 
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			
+
 			// loop through the list of playlist and their paths and add to file
-			
+
 			for(int i = 0;i<playlist.size();i++){
-				String content = playlist.get(i) + " " + allPathPlaylist.get(i) + "\n";
+				//String content = playlist.get(i) + " " + allPathPlaylist.get(i) + "\n";
+				String content = allPathPlaylist.get(i) + "\n";
 				bw.write(content);
 			}
 			bw.close();
-			
+
+
+
 		}catch(Exception e){
 
 		}
@@ -283,10 +387,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		}
 
 		if(!e.getValueIsAdjusting()){
-			
-			
+
+
 			// to ensure that the item is not clicked twice ensure that the value is not adjusting
-			
+
 
 			if(allMedia.getSelectedValue() != null){
 
@@ -325,11 +429,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		if(e.getClickCount() == 2){
 			//ExtendedFrame.tabsPane.setSelectedIndex(0);
 			// then load the video in the videoplayers filepath;
-			
-			
+
+
 			// make sure that the value is not adjusting so that you dont get the click twice
-			
-			
+
+
 			if(!allMedia.getValueIsAdjusting()){
 				String apath = paths.get(allMedia.getSelectedValue()).toString();
 				VideoPlayer.filePath = apath;

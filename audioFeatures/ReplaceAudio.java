@@ -1,4 +1,4 @@
-package vamix;
+package audioFeatures;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -26,6 +26,8 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import vamix.InvalidCheck;
+import vamix.MediaLengthWorker;
 	
 	
 	@SuppressWarnings("serial")
