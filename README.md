@@ -1,14 +1,8 @@
 README FILE
 
-DUE TO PROBLEMS WITH COMPRESSION OF ZIP FILES. PLEASE OPEN A PROJECT AND RUN THE SOURCE CODE!!!
+VAMIX - version 2.0 
+=======
 
-
-BUGS:
---readme file does not open when jar file is made
---the program may hang up sometime when you try to play a video/audio from the library by double clicking on the name
-
-
-VAMIX - version 1.0 
 Main Author : Anmol Desai  
 Other Author : Nicholas Molloy
 Date of release: Monday 13th October 2014
@@ -53,7 +47,6 @@ Features given are:
  - Replace or overlay the audio of a video
  - Delete history
  - Make a library
- - extract part of a video file
  - add audio and video filters
  - replay and set playback speed
 
