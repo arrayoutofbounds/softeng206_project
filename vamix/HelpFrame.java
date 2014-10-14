@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -49,6 +51,29 @@ public class HelpFrame extends JFrame{
 	
 	public void appendReadmeFile(){
 		
+		/**
+		try{
+			 InputStream is = getClass().getResourceAsStream(readme.getName());
+			  InputStreamReader isr = new InputStreamReader(is);
+			  BufferedReader br = new BufferedReader(isr);
+			  StringBuffer sb = new StringBuffer();
+			  String line;
+			  while ((line = br.readLine()) != null) 
+			  {
+			    sb.append(line);
+			    sb.append(System.lineSeparator());
+			  }
+			  br.close();
+			  isr.close();
+			  is.close();
+			  area.setText(sb.toString());
+			
+		}catch(Exception e){
+			
+		}
+		**/
+		
+		
 		try {
  			
  			BufferedReader br = new BufferedReader(new FileReader(readme));
@@ -63,6 +88,8 @@ public class HelpFrame extends JFrame{
  			// Could not read log file, display error message
  			JOptionPane.showMessageDialog(null, "Could not open log file: No log available", "ERROR", JOptionPane.ERROR_MESSAGE);
  		}
+ 		
+		
 		area.setCaretPosition(0);
 	}
 	

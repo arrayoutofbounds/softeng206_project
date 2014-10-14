@@ -3,13 +3,16 @@ package vamix;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,13 +50,29 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	private HashMap paths = new HashMap<>();
 	private HashMap sizes = new HashMap<>();
 
+	private JPanel container;
 
-	
+	private JButton makePlayList;
+
+	List playlist = new ArrayList<>();
+	List allPathPlaylist = new ArrayList<>();
+
 	public Library(){
 
 		setLayout(new GridBagLayout());
 
 		l = new DefaultListModel<>();
+
+		container = new JPanel(new FlowLayout());
+		GridBagConstraints a = new GridBagConstraints();
+		a.gridx = 0;
+		a.gridy = 1;
+		a.gridheight = 1;
+		a.gridwidth = 2;
+		a.fill = GridBagConstraints.BOTH;
+		a.weightx = 0.4;
+		a.weighty = 0.4;
+		add(container,a);
 
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -66,7 +85,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		gbc.weighty=1;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		
+
 		gbc.fill = GridBagConstraints.BOTH;
 		add(scroll,gbc);
 
@@ -84,6 +103,8 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 
 		button1 = new JButton("Add Video/Audio");
+		container.add(button1);
+		/**
 		GridBagConstraints g = new GridBagConstraints();
 		g.gridx=0;
 		g.gridy=1;
@@ -92,8 +113,15 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		g.gridheight = 1;
 		g.gridwidth =1;
 		add(button1,g);
+		 **/
 
 		button2 = new JButton("Remove Video/Audio");
+		container.add(button2);
+
+		makePlayList = new JButton("Make a playlist");
+		container.add(makePlayList);
+		makePlayList.addActionListener(this);
+		/**
 		GridBagConstraints g1 = new GridBagConstraints();
 		g1.gridx = 1;
 		g1.gridy = 1;
@@ -102,9 +130,13 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		g1.gridheight = 1;
 		g1.gridwidth = 1;
 		add(button2,g1);
+		 **/
+
 
 		button1.addActionListener(this);
 		button2.addActionListener(this);
+
+
 
 
 		info.append("Name of File:");
@@ -113,7 +145,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 		allMedia.addListSelectionListener(this);
 		allMedia.addMouseListener(this);
-		
+
 	}
 
 
@@ -172,6 +204,68 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			}
 
 		}
+
+		if(e.getSource() == makePlayList){
+			// get all the selected options and their file paths and then store them in the file with a each file and its path 
+			// seperated from the next one by a a newline character so they can be split at that point.
+
+			
+
+			playlist = allMedia.getSelectedValuesList();
+
+			// get all the paths of the selected items and put them in a list
+			
+
+			for(Object o : playlist){
+				allPathPlaylist.add(paths.get(o.toString()));
+			}
+
+			writeToFile();
+
+		}
+	}
+
+	
+	private void createDirectoryIfNeeded(String directoryName)
+	{
+	  File theDir = new File(directoryName);
+	 
+	  // if the directory does not exist, create it
+	  if (!theDir.exists())
+	  {
+	    //System.out.println("creating directory: " + directoryName);
+	    theDir.mkdir();
+	  }
+	}
+	
+	private void writeToFile() {
+		
+		createDirectoryIfNeeded(System.getProperty("user.home") + File.separator + ".playlist");
+		
+		File file = new File(System.getProperty("user.home") + File.separator + ".playlist" + File.separator + "list.txt" );
+		try{
+			
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				 file.createNewFile();
+			}
+			
+			
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			// loop through the list of playlist and their paths and add to file
+			
+			for(int i = 0;i<playlist.size();i++){
+				String content = playlist.get(i) + " " + allPathPlaylist.get(i) + "\n";
+				bw.write(content);
+			}
+			bw.close();
+			
+		}catch(Exception e){
+
+		}
 	}
 
 
@@ -187,8 +281,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			info.append("\n\n\n\n\n\nPath to File:");
 			info.append("\n\n\n\n\n\n\nFile Size:");
 		}
-		
+
 		if(!e.getValueIsAdjusting()){
+			
+			
+			// to ensure that the item is not clicked twice ensure that the value is not adjusting
 			
 
 			if(allMedia.getSelectedValue() != null){
@@ -202,17 +299,17 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				String pathOfFile = paths.get(selected).toString();
 				String size = sizes.get(selected).toString();
 				int megabytes =(int)((Double.parseDouble(size))/1024)/1024;
-				
+
 				info.setText("");
-				
-				
+
+
 				info.append("Name of File: " + name);
 				info.append("\n\n\n\n\n\nPath to File: " + pathOfFile);
 				info.append("\n\n\n\n\n\n\nFile Size: " + megabytes + " megabytes");
 
-				
 
-				
+
+
 
 			}
 		}
@@ -223,11 +320,15 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		
-		
+
+
 		if(e.getClickCount() == 2){
 			//ExtendedFrame.tabsPane.setSelectedIndex(0);
 			// then load the video in the videoplayers filepath;
+			
+			
+			// make sure that the value is not adjusting so that you dont get the click twice
+			
 			
 			if(!allMedia.getValueIsAdjusting()){
 				String apath = paths.get(allMedia.getSelectedValue()).toString();
@@ -236,35 +337,35 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				ExtendedFrame.tabsPane.setSelectedIndex(0);
 			}
 		}	
-		
+
 	}
 
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

@@ -1,5 +1,13 @@
 README FILE
 
+DUE TO PROBLEMS WITH COMPRESSION OF ZIP FILES. PLEASE OPEN A PROJECT AND RUN THE SOURCE CODE!!!
+
+
+BUGS:
+--readme file does not open when jar file is made
+--the program may hang up sometime when you try to play a video/audio from the library by double clicking on the name
+
+
 VAMIX - version 1.0 
 Main Author : Anmol Desai  
 Other Author : Nicholas Molloy
