@@ -54,7 +54,7 @@ import vamix.InvalidCheck;
 @SuppressWarnings("serial")
 public class VideoPlayer extends JPanel  implements ActionListener, ChangeListener, MouseListener{
 
-	private static EmbeddedMediaPlayer mediaPlayer;
+	public static EmbeddedMediaPlayer mediaPlayer;
 
 	private int clicked = 0;
 
@@ -102,7 +102,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private JButton forwardButton;
 	private JButton backButton;
 	private JLabel timeLabel;
-	private JSlider timeSlider;
+	public static JSlider timeSlider;
 	private JSlider volumeSlider;
 
 	private JPanel everythingElse = new JPanel(new FlowLayout());

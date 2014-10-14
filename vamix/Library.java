@@ -31,6 +31,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -66,7 +69,8 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	GetPlayList playlistName = new GetPlayList();
 	private JButton loadPlaylist;
 	private File playlistDirectory;
-
+	private JButton playTheList;
+	
 	public Library(){
 
 		setLayout(new GridBagLayout());
@@ -136,6 +140,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		loadPlaylist = new JButton("Load a playlist");
 		container.add(loadPlaylist);
 		loadPlaylist.addActionListener(this);
+		
+		playTheList = new JButton("Play the list");
+		container.add(playTheList);
+		playTheList.addActionListener(this);
 		/**
 		GridBagConstraints g1 = new GridBagConstraints();
 		g1.gridx = 1;
@@ -322,6 +330,50 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				}
 			}
 		}
+		
+		if(e.getSource() == playTheList){
+			
+			if(l.size() != 0){
+				
+				@SuppressWarnings("unchecked")
+				SwingWorker<Void,Void> w = new SwingWorker(){
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						// TODO Auto-generated method stub
+						for(int index = 0;index<l.size();index++){
+							String apath = "" + paths.get(l.get(index));
+							System.out.println(apath);
+							VideoPlayer.filePath = apath;
+							VideoPlayer.startPlaying();
+							
+							
+							while(VideoPlayer.mediaPlayer.isPlaying()){
+								// do nothing
+								// once it stops loop again
+							}
+							
+							
+							
+							
+							
+						}
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						
+					}
+
+					
+				};
+				w.execute();
+				
+			
+			}
+			
+		}
 	}
 
 
@@ -471,6 +523,9 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		// TODO Auto-generated method stub
 
 	}
+
+
+	
 
 
 }
