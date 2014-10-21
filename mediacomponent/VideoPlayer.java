@@ -67,8 +67,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private JPanel area;
 	private JPanel other;
 
-
-
 	// inside the "other" panel, put 2 more panels
 	private JPanel chooseFilePanel;
 	private JPanel skipButtonsPanel;
@@ -76,9 +74,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	// in the area panel
 	private JLabel showHistoryTitle = new JLabel("History");
 	public static JTextArea history;
-
-
-
 	private JPopupMenu popup;
 	private JMenuItem normalPlay;
 	private JMenuItem onepointfivePlay;
@@ -86,10 +81,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private JMenuItem twopointfivePlay;
 	private JMenuItem threePlay;
 	private JMenuItem slow;
-
-
-	//private JScrollPane scroll;
-
 
 	private JButton hide;
 	private JButton load;
@@ -149,9 +140,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private static long end;
 	private static long length;
 
-	
-	
-
 	public VideoPlayer()  {
 		super(new BorderLayout(10,10));
 
@@ -171,7 +159,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		canvas.addMouseListener(this);
 		
-
 		popup = new JPopupMenu("Popup");
 		slow = new JMenuItem("0.5x");
 		normalPlay = new JMenuItem("1x");
@@ -180,7 +167,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		twopointfivePlay = new JMenuItem("2.5x");
 		threePlay = new JMenuItem("3x");
 		
-
 		popup.add(slow);
 		popup.add(normalPlay);
 		popup.add(onepointfivePlay);
@@ -188,7 +174,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		popup.add(twopointfivePlay);
 		popup.add(threePlay);
 		
-	
 		slow.addActionListener(this);
 		normalPlay.addActionListener(this);
 		onepointfivePlay.addActionListener(this);
@@ -196,13 +181,11 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		twopointfivePlay.addActionListener(this);
 		threePlay.addActionListener(this);
 	
-
 		// declare all the panels in the extra
 		extra = new JPanel(new BorderLayout());
 
 		area = new JPanel(new BorderLayout());
 		other = new JPanel(new BorderLayout());
-
 
 		chooseFilePanel = new JPanel(new BorderLayout());
 		skipButtonsPanel = new JPanel(new BorderLayout(5, 5));
@@ -216,10 +199,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		//scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		//scroll.setPreferredSize(new Dimension(0, 0));
 		//area.add(scroll);
-
 		// history.setEditable(false); 
-
-
+		
 		// Read log file into log panel
 		try {
 			File logFile = LogFile.getLogFile();
@@ -236,7 +217,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			JOptionPane.showMessageDialog(null, "Could not open log file: No log available", "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 
-
 		try {
 			snapshot = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/snapshot.png")));
 		} catch (IllegalArgumentException | IOException e) {
@@ -248,13 +228,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		snapShotButton = new JButton(snapshot);
 		snapShotButton.setToolTipText("Take Screenshot");
 		snapShotButton.addActionListener(this);
-
-
-
+		
 		// Everything is in a grid bag layout for the panel. now add stuff to the panel and
 		// put it in a grid bag layout
 		everythingElse.setLayout(new GridBagLayout());
-
 
 		volumeLabel = new JLabel("Volume");
 		GridBagConstraints gb0 = new GridBagConstraints();
@@ -346,7 +323,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		rewindBack.setToolTipText("Rewind");
-
 
 		GridBagConstraints gb2 = new GridBagConstraints();
 		gb2.gridx = 3;
@@ -542,11 +518,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		extra.add(other,BorderLayout.NORTH);
 		extra.add(area,BorderLayout.CENTER);
 
-
 		add(extra,BorderLayout.EAST);
 		add(everythingElse,BorderLayout.SOUTH);
-
-	
 		
 		setupListeners();
 	}
@@ -589,113 +562,15 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	public void actionPerformed(ActionEvent e) {
 
 		if(e.getSource() == toggleExtraPanel){
-			boolean visible = extra.isVisible();
-			boolean change = true;
-			if(change){
-				if(!visible){
-
-					change = false;
-					toggleExtraPanel.setIcon(collapse);
-					extra.setVisible(true);
-				}
-			}
-
-			if(change){
-				if(visible){
-					change = false;
-					toggleExtraPanel.setIcon(show);
-					extra.setVisible(false);
-				}
-			}
-
-
+			togglePanelPressed();
 		}
 
-
-
 		if (e.getSource() == playButton) {
-			
-			if (isRewinding) {
-				worker.cancel(true);
-				isRewinding = false;
-				rewindBack.setBackground(null);
-			}
-			if (isFastForwarding) {
-				mediaPlayer.setRate(1.0f);
-				fastForwardButton.setBackground(null);
-				isFastForwarding = false;
-			}
-			if (mediaPlayer.isPlaying()) {
-
-				if (loadedPlayIcon) {
-					playButton.setIcon(play);
-				} else {
-					playButton.setText("Play");
-				}
-			} else if (filePath != null) {
-				if (loadedPauseIcon) {
-					playButton.setIcon(pause);
-				} else {
-					playButton.setText("Pause");
-				}
-			}
-			mediaPlayer.pause();
-
-			if (!mediaPlayer.isPlayable()) {
-				if (filePath != null) {
-					mediaPlayer.startMedia(filePath);
-					this.hasPlayed = true;
-					// Continually try to set correct volume on player, and get total length.
-					// This is necessary as, it takes a while for the audio output to be created
-					// and the volume won't get set until then
-					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
-						if (volumeSlider.getValue() > 1) {
-							mediaPlayer.mute(false);
-						}
-						mediaPlayer.setVolume(volumeSlider.getValue());
-						timeSlider.setMaximum((int)mediaPlayer.getLength());
-					}
-				}
-			} else if (!this.hasPlayed) {
-			
-				mediaPlayer.startMedia(filePath);
-				this.hasPlayed = true;
-
-				// check if the file path is the same, if it is then don't add it to the history
-
-				// if file path is not the same then add it to the file path
-
-
-				while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
-					mediaPlayer.setVolume(volumeSlider.getValue());
-					timeSlider.setMaximum((int)mediaPlayer.getLength());
-				}
-			}
-
+			playButtonPress();
 		} 
 
 		if (e.getSource() == muteButton) {
-			if (volumeSlider.getValue() <= 1) {
-				// The volume is mute so now the user presses unmute so change the icon.
-				// Restore the volume of the volume slider to one before mute
-				if (loadedUnmuteIcon) {
-					muteButton.setIcon(unmuted);
-				} else {
-					muteButton.setText("Unmuted");
-				}
-				volumeSlider.setValue(volumeBeforeMuted);
-				mediaPlayer.setVolume(volumeBeforeMuted);
-			} else {
-				volumeBeforeMuted = volumeSlider.getValue();
-				if (loadedMuteIcon) {
-					muteButton.setIcon(mute);
-				} else {
-					muteButton.setText("Mute");
-				}
-				volumeSlider.setValue(0);
-			}
-			mediaPlayer.mute();
-			volumeSlider.setToolTipText("" + volumeSlider.getValue());
+			muteButtonPress();
 		}		
 		if (e.getSource() == forwardButton) {
 			if (mediaPlayer.getTime() + 10000 <= mediaPlayer.getLength()) { // Prevent skipping past end of file
@@ -708,66 +583,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if (e.getSource() == chooseFileToPlay) {
-
-			//check if a file is already playing
-			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
-
-			// Get selection from user
-			JFileChooser fc = new JFileChooser();
-			fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
-			int returnVal = fc.showOpenDialog(VideoPlayer.this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-				String newFile = fc.getSelectedFile().getAbsolutePath();
-				// Check that file is a video or audio file.
-				InvalidCheck i = new InvalidCheck();
-				boolean isValidMedia = i.invalidCheck(newFile);
-				/**
-				String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
-				ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
-				boolean isValidMedia = false;
-
-				try {
-					Process process = builder.start();
-					process.waitFor();
-					if (process.exitValue() == 0) {
-						isValidMedia = true;
-					}
-
-				} catch (IOException | InterruptedException e1) {
-					// Couldn't determine file type. Warn user
-					JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-
-				 **/
-
-				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				} else if (!newFile.equals(filePath)) {
-					
-					
-					VideoPlayer.this.filePath = newFile;
-
-
-					// before starting the video add it to the log
-
-					LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
-					VideoPlayer.this.hasPlayed = false;
-
-
-					mediaPlayer.startMedia(filePath);
-					playButton.setIcon(pause);
-					this.hasPlayed = true;
-					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
-						mediaPlayer.setVolume(volumeSlider.getValue());
-						timeSlider.setMaximum((int)mediaPlayer.getLength());
-					}
-
-
-				}
-			}
+			chooseFilePressed();
 		}
 
 		if(e.getSource() == stopVideo){
@@ -777,47 +593,14 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if(e.getSource() == snapShotButton){
-			BufferedImage image = mediaPlayer.getSnapshot();
-			boolean ifNull = (image == null);
-
-			if(!ifNull){
-				File outputImage = new File(System.getProperty("user.home") + File.separator +  +mediaPlayer.getTime() + ".png");
-				try {
-					ImageIO.write(image, "png", outputImage);
-					JOptionPane.showMessageDialog(VideoPlayer.this,"The snapshot was saved to your home folder");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(VideoPlayer.this,"Sorry, snapshot failed!");
-					e1.printStackTrace();
-				}
-			}
+			snapShotPressed();
 		}
 
 		if(e.getSource() == fastForwardButton){
-
-			if (isFastForwarding) {
-				mediaPlayer.setRate(1.0f);
-				fastForwardButton.setBackground(null);
-				isFastForwarding = false;
-			} else {
-				mediaPlayer.setRate(3.0f);
-				fastForwardButton.setBackground(Color.gray);
-				isFastForwarding = true;
-			}
-
+			fastForwardPressed();
 		}
 		if (e.getSource() == rewindBack) {
-
-			if (isRewinding) {
-				worker.cancel(true);
-				rewindBack.setBackground(null);
-				isRewinding = false;
-			} else {
-				worker = new rewindWorker();
-				rewindBack.setBackground(Color.gray);
-				worker.execute();
-				isRewinding = true;
-			}
+			rewindPressed();
 		}
 		
 		if(e.getSource() == slow){
@@ -849,8 +632,70 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			mediaPlayer.setRate(3.0f);
 			ExtendedFrame.setRadioButton(5);
 		}
-		
+	}
+	
+	private void fastForwardPressed(){
 
+		if (isFastForwarding) {
+			mediaPlayer.setRate(1.0f);
+			fastForwardButton.setBackground(null);
+			isFastForwarding = false;
+		} else {
+			mediaPlayer.setRate(3.0f);
+			fastForwardButton.setBackground(Color.gray);
+			isFastForwarding = true;
+		}
+	}
+	
+	private void rewindPressed(){
+
+		if (isRewinding) {
+			worker.cancel(true);
+			rewindBack.setBackground(null);
+			isRewinding = false;
+		} else {
+			worker = new rewindWorker();
+			rewindBack.setBackground(Color.gray);
+			worker.execute();
+			isRewinding = true;
+		}
+	}
+
+	private void togglePanelPressed() {
+		boolean visible = extra.isVisible();
+		boolean change = true;
+		if(change){
+			if(!visible){
+
+				change = false;
+				toggleExtraPanel.setIcon(collapse);
+				extra.setVisible(true);
+			}
+		}
+		if(change){
+			if(visible){
+				change = false;
+				toggleExtraPanel.setIcon(show);
+				extra.setVisible(false);
+			}
+		}
+	}
+	
+	private void snapShotPressed(){
+		BufferedImage image = mediaPlayer.getSnapshot();
+		boolean ifNull = (image == null);
+
+		if(!ifNull){
+			File outputImage = new File(System.getProperty("user.home") + File.separator +  +mediaPlayer.getTime() + ".png");
+			try {
+				ImageIO.write(image, "png", outputImage);
+				JOptionPane.showMessageDialog(VideoPlayer.this,"The snapshot was saved to your home folder with name " + outputImage.getName());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(VideoPlayer.this,"Sorry, snapshot failed!");
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -896,9 +741,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			}
 		}
 	}
-
-	
-	
 	
 	private class rewindWorker extends SwingWorker<Void, Void>{
 
@@ -934,8 +776,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		if(arg0.getModifiers() == MouseEvent.BUTTON3_MASK){
 			popup.show(arg0.getComponent(), arg0.getX(), arg0.getY());
-
-
+			
 		}else if(arg0.getModifiers() == MouseEvent.BUTTON1_MASK){
 			clicked++;
 			if(clicked == 2){
@@ -989,76 +830,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	public void mouseReleased(MouseEvent ev) {
 	}
 	
-	
 	public static void setCurrentRate(float i){
 		mediaPlayer.setRate(i);
 	}
-	
-	/**
-	private class VideoExtracter extends SwingWorker<Integer,Void>{
-
-		String startTime;
-		String lengthTime;
-		String name;
-
-		public VideoExtracter(String startTime, String lengthTime) {
-			this.startTime = startTime;
-			this.lengthTime = lengthTime;
-		}
-
-		@Override
-		protected Integer doInBackground() throws Exception {
-
-			// time gives a unique name...i mean whats the probabilty that the time is exact ...down to the milliseconds! lol
-			name =  "" + mediaPlayer.getTime() + ".mp4";
-
-
-
-			int exitValue = 1;
-
-			String cmd = "/usr/bin/avconv -i " + VideoPlayer.this.filePath + " -ss " + startTime + " -t " + lengthTime + " -c:a copy -c:v copy "  + System.getProperty("user.home") + File.separator + name; 
-
-			//ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
-			ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c",cmd);
-
-			Process process = builder.start();
-			process.waitFor();
-
-
-			exitValue = process.exitValue();
-
-
-
-			return exitValue;
-		}
-
-		@Override
-		protected void done() {
-			try {
-				int i = get();
-
-				if(i == 0){
-					JOptionPane.showMessageDialog(VideoPlayer.this, "Video was extracted successfully to your home folder."
-							+ " Name of the video is " + name );
-					// go to the current directory folder and find the file and then move it to the home folder
-
-
-				}else{
-					JOptionPane.showMessageDialog(VideoPlayer.this, "Video Extraction failed!");
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-	
-	**/
 	
 	public static void startPlaying() {
 		mediaPlayer.stop();
@@ -1066,8 +840,152 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		AddToFile a = new AddToFile();
 		a.add();
 	}
+	
+	private void playButtonPress(){
+
+		if (isRewinding) {
+			worker.cancel(true);
+			isRewinding = false;
+			rewindBack.setBackground(null);
+		}
+		if (isFastForwarding) {
+			mediaPlayer.setRate(1.0f);
+			fastForwardButton.setBackground(null);
+			isFastForwarding = false;
+		}
+		if (mediaPlayer.isPlaying()) {
+
+			if (loadedPlayIcon) {
+				playButton.setIcon(play);
+			} else {
+				playButton.setText("Play");
+			}
+		} else if (filePath != null) {
+			if (loadedPauseIcon) {
+				playButton.setIcon(pause);
+			} else {
+				playButton.setText("Pause");
+			}
+		}
+		mediaPlayer.pause();
+
+		if (!mediaPlayer.isPlayable()) {
+			if (filePath != null) {
+				mediaPlayer.startMedia(filePath);
+				this.hasPlayed = true;
+				// Continually try to set correct volume on player, and get total length.
+				// This is necessary as, it takes a while for the audio output to be created
+				// and the volume won't get set until then
+				while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
+					if (volumeSlider.getValue() > 1) {
+						mediaPlayer.mute(false);
+					}
+					mediaPlayer.setVolume(volumeSlider.getValue());
+					timeSlider.setMaximum((int)mediaPlayer.getLength());
+				}
+			}
+		} else if (!this.hasPlayed) {
+		
+			mediaPlayer.startMedia(filePath);
+			this.hasPlayed = true;
+
+			// check if the file path is the same, if it is then don't add it to the history
+
+			// if file path is not the same then add it to the file path
 
 
+			while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
+				mediaPlayer.setVolume(volumeSlider.getValue());
+				timeSlider.setMaximum((int)mediaPlayer.getLength());
+			}
+		}
+	}
+	
+	private void muteButtonPress(){
+		if (volumeSlider.getValue() <= 1) {
+			// The volume is mute so now the user presses unmute so change the icon.
+			// Restore the volume of the volume slider to one before mute
+			if (loadedUnmuteIcon) {
+				muteButton.setIcon(unmuted);
+			} else {
+				muteButton.setText("Unmuted");
+			}
+			volumeSlider.setValue(volumeBeforeMuted);
+			mediaPlayer.setVolume(volumeBeforeMuted);
+		} else {
+			volumeBeforeMuted = volumeSlider.getValue();
+			if (loadedMuteIcon) {
+				muteButton.setIcon(mute);
+			} else {
+				muteButton.setText("Mute");
+			}
+			volumeSlider.setValue(0);
+		}
+		mediaPlayer.mute();
+		volumeSlider.setToolTipText("" + volumeSlider.getValue());
+	}
 
+	private void chooseFilePressed() {
+		//check if a file is already playing
+		boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
+
+		// Get selection from user
+		JFileChooser fc = new JFileChooser();
+		fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
+		int returnVal = fc.showOpenDialog(VideoPlayer.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+			String newFile = fc.getSelectedFile().getAbsolutePath();
+			// Check that file is a video or audio file.
+			InvalidCheck i = new InvalidCheck();
+			boolean isValidMedia = i.invalidCheck(newFile);
+			/**
+			String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
+			ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
+			boolean isValidMedia = false;
+
+			try {
+				Process process = builder.start();
+				process.waitFor();
+				if (process.exitValue() == 0) {
+					isValidMedia = true;
+				}
+
+			} catch (IOException | InterruptedException e1) {
+				// Couldn't determine file type. Warn user
+				JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			 **/
+
+			if (!isValidMedia) {
+				JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			} else if (!newFile.equals(filePath)) {
+				
+				
+				VideoPlayer.this.filePath = newFile;
+
+
+				// before starting the video add it to the log
+
+				LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
+				VideoPlayer.this.hasPlayed = false;
+
+
+				mediaPlayer.startMedia(filePath);
+				playButton.setIcon(pause);
+				this.hasPlayed = true;
+				while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
+					mediaPlayer.setVolume(volumeSlider.getValue());
+					timeSlider.setMaximum((int)mediaPlayer.getLength());
+				}
+
+
+			}
+		}
+		
+	}
 
 }
