@@ -709,19 +709,14 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		if (e.getSource() == chooseFileToPlay) {
 
-
 			//check if a file is already playing
 			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
-
-
 
 			// Get selection from user
 			JFileChooser fc = new JFileChooser();
 			fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 			int returnVal = fc.showOpenDialog(VideoPlayer.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-				
 
 				String newFile = fc.getSelectedFile().getAbsolutePath();
 				// Check that file is a video or audio file.
@@ -981,42 +976,25 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 		return time;
 	}
-
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
-
-
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
-
-
 	@Override
 	public void mousePressed(MouseEvent ev) {
-		// TODO Auto-generated method stub
-
-
 	}
-
-
 	@Override
 	public void mouseReleased(MouseEvent ev) {
-		//if(ev.isPopupTrigger())
-
-
 	}
 	
 	
 	public static void setCurrentRate(float i){
 		mediaPlayer.setRate(i);
 	}
-
-
+	
+	/**
 	private class VideoExtracter extends SwingWorker<Integer,Void>{
 
 		String startTime;
@@ -1078,11 +1056,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		}
 
-
-
 	}
 	
-
+	**/
+	
 	public static void startPlaying() {
 		mediaPlayer.stop();
 		playButton.doClick();

@@ -1,4 +1,4 @@
-package vamix;
+package help;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -43,7 +43,7 @@ public class HelpFrame extends JFrame{
 		
 		p.add(scroll,BorderLayout.CENTER);
 		add(p,BorderLayout.CENTER);
-		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "README.md");
+		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "help" + File.separator + "README.md");
 		
 		 
 	}
