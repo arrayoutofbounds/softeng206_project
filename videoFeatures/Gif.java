@@ -216,21 +216,9 @@ public class Gif extends JFrame implements ActionListener {
 					worker.execute();
 					progress.setIndeterminate(true);
 				}
-				
-				
-				
-				
-				
-				
-				
 				//worker = new GifWorker();
 				//worker.execute();
-				
-				
 			}
-			
-			
-			
 		}
 		
 		
@@ -240,29 +228,18 @@ public class Gif extends JFrame implements ActionListener {
 
 		@Override
 		protected Integer doInBackground() throws Exception {
-			
-			
 			String name = chooseName.getText();
 			
 			if(!name.contains(".gif")){
 				name = name + ".gif";
 			}
-			
 			int exitValue = 1;
-			
-			
 			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -pix_fmt rgb24 " + outputDirectory.getAbsolutePath() + File.separator + name;
 			
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
-			
-			
-			
 			Process process = builder.start();
 			process.waitFor();
-			
-			
 			exitValue = process.exitValue();
-	
 			return exitValue;
 		}
 
@@ -272,7 +249,6 @@ public class Gif extends JFrame implements ActionListener {
 			progress.setIndeterminate(false);
 			try {
 				int i = get();
-				
 				if(i==0){
 					JOptionPane.showMessageDialog(Gif.this, "The GIF has successfully been made!");
 				}else{

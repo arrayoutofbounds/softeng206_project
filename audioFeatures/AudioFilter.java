@@ -35,8 +35,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private JPanel showProgress;
 	private JPanel chooseFilters;
 
-
-
 	private JButton chooseInputButton;
 	private JLabel showingInput;
 	private JButton chooseOutputButton;
@@ -53,8 +51,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private File outputDirectory;
 	private File toOverride;
 	private FilterWorker worker;
-
-
 
 	public AudioFilter(){
 		super("Add Audio Filter");
@@ -84,7 +80,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 		chooseFilters = new JPanel(new BorderLayout());
 		chooseFilters.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-
 		chooseInputButton = new JButton("Choose Input Video File");
 		showingInput = new JLabel("Input File:");
 		chooseOutputButton = new JButton("Choose Destination of Output");
@@ -96,17 +91,12 @@ public class AudioFilter extends JFrame implements ActionListener{
 		selectFilterlabel = new JLabel("Select Filter ");
 		nameOutputLabel = new JLabel("Name Output:");
 
-
-
 		chooseInputButton.addActionListener(this);
 		chooseOutputButton.addActionListener(this);
 		start.addActionListener(this);
 
-
-
 		selectFilter = new JComboBox(inComboBox);
 		selectFilter.setEditable(false);
-
 
 		chooseInput.add(chooseInputButton);
 		showInput.add(showingInput,BorderLayout.WEST);
@@ -119,9 +109,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 		chooseFilters.add(selectFilterlabel,BorderLayout.WEST);
 		chooseFilters.add(selectFilter,BorderLayout.CENTER);
 
-
-
-
 		add(chooseInput);
 		add(showInput);
 		add(chooseOutput);
@@ -130,12 +117,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 		add(chooseFilters);
 		add(startProcess);
 		add(showProgress);
-
-
-
 	}
-
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -189,11 +172,9 @@ public class AudioFilter extends JFrame implements ActionListener{
 			}
 		}
 
-
 		if(e.getSource() == start){
 
 			boolean carryOn = true;
-
 			if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
 				JOptionPane.showMessageDialog(AudioFilter.this, "Sorry you must fill all fields before carrying on!");
 				carryOn = false;
@@ -202,12 +183,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 			if(carryOn){
 
 				//carry on with the process
-
-
 				JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
-
-
-
 
 				boolean override = false;
 
@@ -226,7 +202,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 					} else if(code == 1) {
 						override = false;
 					}
-
 					if(override){
 						toOverride.delete();
 						worker = new FilterWorker();
@@ -242,23 +217,18 @@ public class AudioFilter extends JFrame implements ActionListener{
 					progress.setIndeterminate(true);
 				}	
 			}
-
 		}
-
 	}
 	
 	private class FilterWorker extends SwingWorker<Integer,Void>{
-
 		@Override
 		protected Integer doInBackground() throws Exception {
 
 			// based on what item is selected, do the respective adding of filter
 			String name = field.getText();
-
 			if(!name.contains(".mp4")){
 				name = name + ".mp4";
 			}
-
 			int exitValue = 1;
 
 			if(selectFilter.getSelectedIndex() == 0){
@@ -268,10 +238,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				Process process = builder.start();
 				process.waitFor();
-
 				exitValue = process.exitValue();
 			}
-			
 			return exitValue;
 		}
 
@@ -288,10 +256,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 					JOptionPane.showMessageDialog(AudioFilter.this, "The adding of filter failed!");
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

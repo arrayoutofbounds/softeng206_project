@@ -279,7 +279,7 @@ import vamix.MediaLengthWorker;
 
 						if(override){
 							toOverride.delete();
-							worker = new ReplaceWorker();
+							worker = new ReplaceWorker(replace,selectedFile,selectedFile2,outputDirectory, overlay,  progressBar,outputName);
 							replace.setEnabled(false);
 							overlay.setEnabled(false);
 							worker.execute();
@@ -287,7 +287,7 @@ import vamix.MediaLengthWorker;
 							JOptionPane.showMessageDialog(ReplaceAudio.this, "Please choose another name to carry on extracting!");
 						}
 					}else{
-						worker = new ReplaceWorker();
+						worker = new ReplaceWorker(replace,selectedFile,selectedFile2,outputDirectory, overlay,  progressBar,outputName);
 						replace.setEnabled(false);
 						overlay.setEnabled(false);
 						worker.execute();
@@ -352,6 +352,7 @@ import vamix.MediaLengthWorker;
 	
 	}
 	
+		/**
 	
 	private class ReplaceWorker extends SwingWorker<Integer, Integer> {
 		
@@ -449,7 +450,7 @@ import vamix.MediaLengthWorker;
 
 	
 	}
-	
+	**/
 	
 private class OverlayWorker extends SwingWorker<Integer, Integer>{
 		

@@ -3,6 +3,7 @@ package vamix;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -86,8 +87,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		a.fill = GridBagConstraints.BOTH;
 		a.weightx = 0.4;
 		a.weighty = 0.4;
+		
 		add(container,a);
-
+		
+		
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scroll = new JScrollPane(allMedia);
@@ -101,6 +104,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		gbc.gridheight = 1;
 
 		gbc.fill = GridBagConstraints.BOTH;
+		
 		add(scroll,gbc);
 
 
@@ -352,10 +356,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 								// do nothing
 								// once it stops loop again
 							}
-							
-							
-							
-							
+
 							
 						}
 						return null;
