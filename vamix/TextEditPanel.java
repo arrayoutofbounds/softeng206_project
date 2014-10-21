@@ -39,9 +39,7 @@ public class TextEditPanel extends JPanel {
 	private JCheckBox enableCheckBox;
 	private boolean isEnabled = false;
 	
-	
 	TextEditPanel (String title, Vector<String> fontNames, final ArrayList<Font> fontList) {
-		
 		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		textArea = new JTextArea(10, 26);
@@ -102,7 +100,6 @@ public class TextEditPanel extends JPanel {
 			}
 		});
 		
-		
 		JPanel p1 = new JPanel();
 		enableCheckBox = new JCheckBox("Enable");
 		p1.add(enableCheckBox);
@@ -125,7 +122,6 @@ public class TextEditPanel extends JPanel {
 		
 		this.add(subPanel);
 		this.setBorder(blackline);
-	
 		
 		colorComboBox.addActionListener(new ActionListener() {
 			
@@ -148,7 +144,6 @@ public class TextEditPanel extends JPanel {
 				}
 			}
 		});
-		
 
 	}
 	
@@ -199,7 +194,6 @@ public class TextEditPanel extends JPanel {
 		} else {
 			enabled = "0";
 		}
-		
 		String[] settings = {enabled, timeField.getText(), fontSizeField.getText(), colorComboBox.getSelectedIndex() + "", fontSelectionComboBox.getSelectedIndex() + "", "{", textArea.getText(), "}"};
 		
 		return settings;
@@ -212,7 +206,7 @@ public class TextEditPanel extends JPanel {
 		} else if (settings[0].equals("1")) {
 			enableCheckBox.setSelected(true);
 		} else {
-			// TODO something went wrong warn user and move on to next setting
+			// something went wrong warn user and move on to next setting
 		}
 		
 		timeField.setText(settings[1]);
@@ -220,12 +214,12 @@ public class TextEditPanel extends JPanel {
 		try {
 			colorComboBox.setSelectedIndex(Integer.parseInt(settings[3]));
 		} catch (IllegalArgumentException e) {
-			// TODO warn user and move on
+			// warn user and move on
 		}
 		try {
 			fontSelectionComboBox.setSelectedIndex(Integer.parseInt(settings[4]));
 		} catch (IllegalArgumentException e) {
-			// TODO warn user and move on
+			// warn user and move on
 		}
 		
 		textArea.setText(settings[5]);

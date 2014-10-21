@@ -50,39 +50,26 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
     private JMenuItem hide;
     
     private HelpFrame helpFrame;;
-    
     private JMenu videoFeatures;
     private JMenu other;
     private JMenuItem download;
-    
     private Gif gifFrame;
 	private Images i;
 	
 	private DownloadFrame downloadFrame;
-    
-	
+
 	private JMenu speed;
 	private static JRadioButtonMenuItem playingSpeed[];
 	private ButtonGroup group;
-	
 	private JMenuItem videoFilters;
 	private VideoFilter v;
-	
-	
 	private static JCheckBoxMenuItem replay;
-	
 	private JMenuItem audioFilters;
 	private AudioFilter af;
-	
 	private JMenuItem extractAPart;
-	
 	private ExtractPart ep;
-	
-	
 	private Library library;
-	
-	
-	
+
 	public ExtendedFrame() {
 		super("Vamix");
 		
@@ -93,14 +80,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		//downloadTab = new Download();
 		playTab  = new Play();
 		library = new Library();
-		
-		
-		
+
 	    menuBar = new JMenuBar();
         add(menuBar);
-        
-       
-        
 
         audioFeatures = new JMenu("Audio Features");
         audioFeatures.setMnemonic('a');
@@ -169,11 +151,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         replay = new JCheckBoxMenuItem("Replay");
         replay.setMnemonic('r');
         audioFeatures.add(replay);
-        
-        
-     
-        
-       
+
         setJMenuBar(menuBar);
         
         extractMenuItem.addActionListener(this);
@@ -258,8 +236,6 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		ep.setLocationRelativeTo(null);
 		ep.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		
-		
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
 		String speeds[] = {"0.5x","1.0x","1.5x","2.0x","2.5x","3.0x"};
 		playingSpeed = new JRadioButtonMenuItem[speeds.length];
@@ -317,39 +293,26 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			ep.setVisible(true);
 		}
 	}
-
-
+	
 	@Override
 	public void menuCanceled(MenuEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
-
-
 	@Override
 	public void menuDeselected(MenuEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
-
-
 	@Override
 	public void menuSelected(MenuEvent arg0) {
 		helpFrame.setVisible(true);
 		helpFrame.appendReadmeFile();
-		
-		
 	}
-
 
 	public static void setRadioButton(int j) {
 		playingSpeed[j].setSelected(true);
-		
 	}
 
-
 	public static boolean getReplay() {
-		// TODO Auto-generated method stub
 		return replay.isSelected();
 	}
 

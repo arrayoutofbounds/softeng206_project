@@ -273,21 +273,7 @@ public class Download extends JPanel implements ActionListener {
 
 		// If the button to select the directory to save to is chosen
 		if (e.getSource() == choosePlaceToSaveToButton) {
-
-			JFileChooser chooser = new JFileChooser();
-			chooser.setCurrentDirectory(new java.io.File("."));
-			chooser.setDialogTitle("Choose Directory");
-			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int response = chooser.showOpenDialog(Download.this);
-
-			if (response == JFileChooser.APPROVE_OPTION) {
-
-				// Chose the directory to save to
-				chosenDirectory = chooser.getSelectedFile().getAbsoluteFile();
-
-				// Show the directory chosen
-				showChosenDirectoryLabel.setText("Saved To: " + chosenDirectory.getAbsolutePath());
-			}
+			choosePlaceToSavePressed();
 		}
 
 		// if the user presses the download button then the program has to check if that chosen File exists and 
@@ -301,84 +287,106 @@ public class Download extends JPanel implements ActionListener {
 
 
 		if (e.getSource() == downloadButton) {
-
-			String text = Url.getText();
-
-			// We have the url.. now we need the basename
-			String cmd = "basename " + text;
-			try {
-
-				ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c", cmd);
-				Process process = builder.start();
-
-				// Wait for the process to finish otherwise you will get improper exit values.
-				process.waitFor();
-
-				InputStream stdout = process.getInputStream();
-				BufferedReader stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
-
-				int exitValue = process.exitValue();
-
-				if(exitValue == 0){
-					basename = stdoutBuffered.readLine();
-				}
-
-			} catch(Exception exception) {
-				JOptionPane.showMessageDialog(Download.this,"Error 404. URL not found!");
-			}
-
-			
-			if ((text.equals("") || text.equals(null)) && (chosenDirectory == null)) {
-				JOptionPane.showMessageDialog(Download.this,"Please give URL of mp3 and choose a destination to save the file");
-			} else if(text.equals("") || text.equals(null)) {
-				JOptionPane.showMessageDialog(Download.this,"Please fill out the URL of the file for download.");
-			} else if(chosenDirectory == null) {
-				JOptionPane.showMessageDialog(Download.this,"Please choose a destination to save the file.");
-			} else {
-
-				int answer = JOptionPane.showConfirmDialog(Download.this,"Is the file open source?");
-
-				if(answer == JOptionPane.YES_OPTION){
-
-					// If everything is fine then proceed to download the file. 
-					File propFile  = new File(chosenDirectory,basename);
-					toOverride = propFile;
-					
-					if (propFile.exists()) {
-
-						String[] options = {"Override","Resume"};
-						int code = JOptionPane.showOptionDialog(Download.this, 
-								"This file already exists! Would you like to override it or resume downloading it?", 
-								"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
-								null, options, "Override");
-						if (code == 0) {
-							// Allow override
-							override = true;
-							resume =false;
-						} else if(code == 1) {
-							//Allow resume
-							resume = true;
-							override = false;
-						}
-					}
-
-					worker = new ButtonHandler();
-					cancelButton.setEnabled(true);
-					downloadButton.setEnabled(false);
-					worker.execute();
-
-				} else if(answer == JOptionPane.NO_OPTION) {
-					JOptionPane.showMessageDialog(Download.this, "Sorry, you cannot download a file that is not open source!");
-				} else {
-					JOptionPane.showMessageDialog(Download.this, "P.s you have to choose a open source file to continue download");
-				}
-			}
+			downloadPressed();
 		}
 		
 		if (e.getSource() == cancelButton) {
 			downloadButton.setEnabled(true);
 			cancelButton.setEnabled(false);
 			worker.cancel(true);
+		}
+	}
+
+	private void downloadPressed() {
+
+		String text = Url.getText();
+
+		// We have the url.. now we need the basename
+		String cmd = "basename " + text;
+		try {
+
+			ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c", cmd);
+			Process process = builder.start();
+
+			// Wait for the process to finish otherwise you will get improper exit values.
+			process.waitFor();
+
+			InputStream stdout = process.getInputStream();
+			BufferedReader stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
+
+			int exitValue = process.exitValue();
+
+			if(exitValue == 0){
+				basename = stdoutBuffered.readLine();
+			}
+
+		} catch(Exception exception) {
+			JOptionPane.showMessageDialog(Download.this,"Error 404. URL not found!");
+		}
+
+		
+		if ((text.equals("") || text.equals(null)) && (chosenDirectory == null)) {
+			JOptionPane.showMessageDialog(Download.this,"Please give URL of mp3 and choose a destination to save the file");
+		} else if(text.equals("") || text.equals(null)) {
+			JOptionPane.showMessageDialog(Download.this,"Please fill out the URL of the file for download.");
+		} else if(chosenDirectory == null) {
+			JOptionPane.showMessageDialog(Download.this,"Please choose a destination to save the file.");
+		} else {
+
+			int answer = JOptionPane.showConfirmDialog(Download.this,"Is the file open source?");
+
+			if(answer == JOptionPane.YES_OPTION){
+
+				// If everything is fine then proceed to download the file. 
+				File propFile  = new File(chosenDirectory,basename);
+				toOverride = propFile;
+				
+				if (propFile.exists()) {
+
+					String[] options = {"Override","Resume"};
+					int code = JOptionPane.showOptionDialog(Download.this, 
+							"This file already exists! Would you like to override it or resume downloading it?", 
+							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
+							null, options, "Override");
+					if (code == 0) {
+						// Allow override
+						override = true;
+						resume =false;
+					} else if(code == 1) {
+						//Allow resume
+						resume = true;
+						override = false;
+					}
+				}
+
+				worker = new ButtonHandler();
+				cancelButton.setEnabled(true);
+				downloadButton.setEnabled(false);
+				worker.execute();
+
+			} else if(answer == JOptionPane.NO_OPTION) {
+				JOptionPane.showMessageDialog(Download.this, "Sorry, you cannot download a file that is not open source!");
+			} else {
+				JOptionPane.showMessageDialog(Download.this, "P.s you have to choose a open source file to continue download");
+			}
+		}
+	}
+
+	private void choosePlaceToSavePressed() {
+
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("."));
+		chooser.setDialogTitle("Choose Directory");
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int response = chooser.showOpenDialog(Download.this);
+
+		if (response == JFileChooser.APPROVE_OPTION) {
+
+			// Chose the directory to save to
+			chosenDirectory = chooser.getSelectedFile().getAbsoluteFile();
+
+			// Show the directory chosen
+			showChosenDirectoryLabel.setText("Saved To: " + chosenDirectory.getAbsolutePath());
 		}
 	}
 	

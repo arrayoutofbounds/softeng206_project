@@ -94,80 +94,86 @@ public class Images extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == chooseVideo){
-			JFileChooser fileChooser = new JFileChooser();
-			
-			fileChooser.setCurrentDirectory(new java.io.File("."));
-
-			fileChooser.setDialogTitle("Choose Video File");
-
-			fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-
-			// Allows files to be chosen only. Make sure they are video files in the extract part
-			// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(Images.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-				showVideo.setText("Video chosen: " + selectedFile.getName());
-				InvalidCheck i = new InvalidCheck();
-				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
-				
-				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(Images.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-					makeImages.setEnabled(false);
-					return;
-				}else{
-					makeImages.setEnabled(true);
-				}
-			}
+			chooseVideoPressed();
 		}
 		
 		if(e.getSource() == chooseOutput){
-
-			JFileChooser outputChooser = new JFileChooser();
-			outputChooser.setCurrentDirectory(new java.io.File("."));
-			outputChooser.setDialogTitle("Choose a directory to output to");
-
-			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-			int returnValue = outputChooser.showOpenDialog(Images.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
-				showOutput.setText("Output Destination: " + outputDirectory);
-			}
+			chooseOutputPressed();
 		}
 		
 		if(e.getSource() == makeImages){
-			
-			boolean carryOn = true;
-			
-			if((selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(Images.this, "Sorry you must fill all fields before carrying on!");
-				carryOn = false;
-			}
-			
-			if(carryOn){
-				JOptionPane.showMessageDialog(Images.this,"WARNING! If the video is too big, there will be a LOT if images!");
-				// call the swing worker and make the images
-				
-				worker = new ImagesWorker();
-				makeImages.setEnabled(false);
-				worker.execute();
-				
-				
-			}
-			
+			makeImagesPressed();
 		}
-		
-		
 	}
 	
-	
+	private void makeImagesPressed() {
+		boolean carryOn = true;
+		
+		if((selectedFile == null)||(outputDirectory ==null)){
+			JOptionPane.showMessageDialog(Images.this, "Sorry you must fill all fields before carrying on!");
+			carryOn = false;
+		}
+		
+		if(carryOn){
+			JOptionPane.showMessageDialog(Images.this,"WARNING! If the video is too big, there will be a LOT if images!");
+			// call the swing worker and make the images
+			
+			worker = new ImagesWorker();
+			makeImages.setEnabled(false);
+			worker.execute();
+		}
+	}
+
+	private void chooseOutputPressed() {
+
+		JFileChooser outputChooser = new JFileChooser();
+		outputChooser.setCurrentDirectory(new java.io.File("."));
+		outputChooser.setDialogTitle("Choose a directory to output to");
+
+		outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		int returnValue = outputChooser.showOpenDialog(Images.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
+			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			showOutput.setText("Output Destination: " + outputDirectory);
+		}
+	}
+
+	private void chooseVideoPressed() {
+
+		JFileChooser fileChooser = new JFileChooser();
+		
+		fileChooser.setCurrentDirectory(new java.io.File("."));
+
+		fileChooser.setDialogTitle("Choose Video File");
+
+		fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+
+		// Allows files to be chosen only. Make sure they are video files in the extract part
+		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		int returnValue = fileChooser.showOpenDialog(Images.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			selectedFile = fileChooser.getSelectedFile();
+			showVideo.setText("Video chosen: " + selectedFile.getName());
+			InvalidCheck i = new InvalidCheck();
+			boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+			
+			if (!isValidMedia) {
+				JOptionPane.showMessageDialog(Images.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+				makeImages.setEnabled(false);
+				return;
+			}else{
+				makeImages.setEnabled(true);
+			}
+		}
+	}
+
 	private class ImagesWorker extends SwingWorker<Integer,Void>{
 
 		@Override
@@ -206,10 +212,7 @@ public class Images extends JFrame implements ActionListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
-		
-		
 		
 	}
 }

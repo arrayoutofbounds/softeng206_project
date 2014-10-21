@@ -51,8 +51,6 @@ public class MediaLengthWorker extends SwingWorker<Integer, Void> {
 		} else {
 			return -1;
 		}
-		
-		
 	}
 
 }

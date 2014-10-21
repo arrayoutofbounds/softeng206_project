@@ -19,7 +19,6 @@ import videoFeatures.VideoFilter;
 
 public class GetPlayList extends JFrame implements ActionListener {
 	
-	
 	private JPanel nameOfPlaylist;
 	private JPanel chooseDestination;
 	private JPanel startMakingPlaylist;
@@ -36,7 +35,6 @@ public class GetPlayList extends JFrame implements ActionListener {
 	
 	public GetPlayList(){
 		setLayout(new GridLayout(4,1));
-		
 		
 		nameOfPlaylist = new JPanel(new FlowLayout());
 		nameOfPlaylist.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -63,21 +61,13 @@ public class GetPlayList extends JFrame implements ActionListener {
 		chooseDestination.add(chooseOutput);
 		
 		showOutput.add(outputLabel,BorderLayout.LINE_START);
-		
 		startMakingPlaylist.add(makePlaylist);
 		
 		add(nameOfPlaylist);
 		add(chooseDestination);
 		add(showOutput);
 		add(startMakingPlaylist);
-		
-		
-		
-		
-		
 	}
-
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -90,8 +80,6 @@ public class GetPlayList extends JFrame implements ActionListener {
 			this.dispose();
 			
 		}
-		
-		
 		
 		if(e.getSource() == chooseOutput){
 			JFileChooser outputChooser = new JFileChooser();
@@ -108,8 +96,6 @@ public class GetPlayList extends JFrame implements ActionListener {
 				outputLabel.setText("Output Destination: " + outputDirectory);
 			}
 		}
-		
-		
 		
 	}
 }

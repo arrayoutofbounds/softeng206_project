@@ -16,7 +16,5 @@ public class Play extends JPanel {
 		
 		VideoPlayer videoPlayer = new VideoPlayer();
 		this.add(videoPlayer);
-
 	}
-
 }

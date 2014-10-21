@@ -91,8 +91,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 		forTime  = new JPanel(new FlowLayout());
 		forTime.setBorder(new EmptyBorder(10,10,10,10));
-		
-
+	
 		chooseInputButton = new JButton("Choose Input Video File");
 		showingInput = new JLabel("Input File:");
 		chooseOutputButton = new JButton("Choose Destination of Output");
@@ -114,13 +113,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 		startLabel = new JLabel("Start Time (hh:mm:ss)");
 		length = new JLabel("Length (hh:mm:ss)");
 
-
 		chooseInputButton.addActionListener(this);
 		chooseOutputButton.addActionListener(this);
 		start.addActionListener(this);
-
-
-
 
 		chooseInput.add(chooseInputButton);
 		showInput.add(showingInput,BorderLayout.WEST);
@@ -136,8 +131,6 @@ public class ExtractPart extends JFrame implements ActionListener {
 		forTime.add(length);
 		forTime.add(lengthTime);
 
-
-
 		add(chooseInput);
 		add(showInput);
 		add(chooseOutput);
@@ -146,8 +139,6 @@ public class ExtractPart extends JFrame implements ActionListener {
 		add(forTime);
 		add(startProcess);
 		add(showProgress);
-
-
 
 	}
 
@@ -188,110 +179,123 @@ public class ExtractPart extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == chooseInputButton){
-			JFileChooser fileChooser = new JFileChooser();
-
-			fileChooser.setCurrentDirectory(new java.io.File("."));
-
-			fileChooser.setDialogTitle("Choose Video File");
-
-			fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-
-			// Allows files to be chosen only. Make sure they are video files in the extract part
-			// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(ExtractPart.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-				showingInput.setText("Input File: " + selectedFile.getName());
-				InvalidCheck i = new InvalidCheck();
-				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
-
-				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(ExtractPart.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-					start.setEnabled(false);
-					return;
-				}else{
-					start.setEnabled(true);
-				}
-
-			}
+			chooseInputPressed();
 		}
 
 		if(e.getSource() == chooseOutputButton){
-
-			JFileChooser outputChooser = new JFileChooser();
-			outputChooser.setCurrentDirectory(new java.io.File("."));
-			outputChooser.setDialogTitle("Choose a directory to output to");
-
-			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-			int returnValue = outputChooser.showOpenDialog(ExtractPart.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
-				showingOutput.setText("Output Destination: " + outputDirectory);
-			}
+			chooseOutputPressed();
 		}
 		
 		if(e.getSource() == start){
-
-			carryOn = true;
-
-			if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(ExtractPart.this, "Sorry you must fill all fields before carrying on!");
-				carryOn = false;
-			}
-			
-			checkTime();
-			
-
-			if(carryOn){
-
-				//carry on with the process
-				
-				boolean override = false;
-
-				File propFile = new File(outputDirectory,field.getText() + ".mp4");
-				if(propFile.exists()){
-					toOverride = propFile;
-					// ask the user if they want to overrride or not. If not then they must change the name of their file
-					String[] options = {"Yes,Override!","No! Do not override!"};
-					int code = JOptionPane.showOptionDialog(ExtractPart.this, 
-							"This file already exists! Would you like to override it?", 
-							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
-							null, options, "Yes,Override!");
-					if (code == 0) {
-						// Allow override
-						override = true;
-					} else if(code == 1) {
-						override = false;
-					}
-
-					if(override){
-						toOverride.delete();
-						worker = new FilterWorker();
-						worker.execute();
-						progress.setIndeterminate(true);
-					}else{
-						JOptionPane.showMessageDialog(ExtractPart.this, "Please choose another name to continue!");
-					}
-				}else{
-					worker = new FilterWorker();
-					start.setEnabled(false);
-					worker.execute();
-					progress.setIndeterminate(true);
-				}	
-			}
-
+			startPressed();
 		}
 		
 	}
 	
 	
+	private void startPressed() {
+		carryOn = true;
+
+		if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
+			JOptionPane.showMessageDialog(ExtractPart.this, "Sorry you must fill all fields before carrying on!");
+			carryOn = false;
+		}
+		
+		checkTime();
+		
+
+		if(carryOn){
+
+			//carry on with the process
+			
+			boolean override = false;
+
+			File propFile = new File(outputDirectory,field.getText() + ".mp4");
+			if(propFile.exists()){
+				toOverride = propFile;
+				// ask the user if they want to overrride or not. If not then they must change the name of their file
+				String[] options = {"Yes,Override!","No! Do not override!"};
+				int code = JOptionPane.showOptionDialog(ExtractPart.this, 
+						"This file already exists! Would you like to override it?", 
+						"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
+						null, options, "Yes,Override!");
+				if (code == 0) {
+					// Allow override
+					override = true;
+				} else if(code == 1) {
+					override = false;
+				}
+
+				if(override){
+					toOverride.delete();
+					worker = new FilterWorker();
+					worker.execute();
+					progress.setIndeterminate(true);
+				}else{
+					JOptionPane.showMessageDialog(ExtractPart.this, "Please choose another name to continue!");
+				}
+			}else{
+				worker = new FilterWorker();
+				start.setEnabled(false);
+				worker.execute();
+				progress.setIndeterminate(true);
+			}	
+		}
+	}
+
+
+	private void chooseOutputPressed() {
+		JFileChooser outputChooser = new JFileChooser();
+		outputChooser.setCurrentDirectory(new java.io.File("."));
+		outputChooser.setDialogTitle("Choose a directory to output to");
+
+		outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		int returnValue = outputChooser.showOpenDialog(ExtractPart.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
+			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			showingOutput.setText("Output Destination: " + outputDirectory);
+		}
+	}
+
+
+	private void chooseInputPressed() {
+
+		JFileChooser fileChooser = new JFileChooser();
+
+		fileChooser.setCurrentDirectory(new java.io.File("."));
+
+		fileChooser.setDialogTitle("Choose Video File");
+
+		fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+
+		// Allows files to be chosen only. Make sure they are video files in the extract part
+		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		int returnValue = fileChooser.showOpenDialog(ExtractPart.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			selectedFile = fileChooser.getSelectedFile();
+			showingInput.setText("Input File: " + selectedFile.getName());
+			InvalidCheck i = new InvalidCheck();
+			boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+
+			if (!isValidMedia) {
+				JOptionPane.showMessageDialog(ExtractPart.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+				start.setEnabled(false);
+				return;
+			}else{
+				start.setEnabled(true);
+			}
+		}
+		
+	}
+
+
 	private class FilterWorker extends SwingWorker<Integer,Void>{
 
 		@Override

@@ -50,7 +50,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private File selectedFile;
 	private File outputDirectory;
 	private File toOverride;
-	private FilterWorker worker;
+	private AudioFilterWorker worker;
 
 	public AudioFilter(){
 		super("Add Audio Filter");
@@ -123,148 +123,113 @@ public class AudioFilter extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 
 		if(e.getSource() == chooseInputButton){
-			JFileChooser fileChooser = new JFileChooser();
-
-			fileChooser.setCurrentDirectory(new java.io.File("."));
-
-			fileChooser.setDialogTitle("Choose Video File");
-
-			fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-
-			// Allows files to be chosen only. Make sure they are video files in the extract part
-			// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
-			fileChooser.setAcceptAllFileFilterUsed(false);
-			int returnValue = fileChooser.showOpenDialog(AudioFilter.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-				showingInput.setText("Input File: " + selectedFile.getName());
-				InvalidCheck i = new InvalidCheck();
-				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
-
-				if (!isValidMedia) {
-					JOptionPane.showMessageDialog(AudioFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-					start.setEnabled(false);
-					return;
-				}else{
-					start.setEnabled(true);
-				}
-
-			}
+			InputButtonPressed();
 		}
 
 		if(e.getSource() == chooseOutputButton){
-
-			JFileChooser outputChooser = new JFileChooser();
-			outputChooser.setCurrentDirectory(new java.io.File("."));
-			outputChooser.setDialogTitle("Choose a directory to output to");
-
-			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-			int returnValue = outputChooser.showOpenDialog(AudioFilter.this);
-
-			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
-				showingOutput.setText("Output Destination: " + outputDirectory);
-			}
+			OutputButtonPressed();
 		}
 
 		if(e.getSource() == start){
+			startPressed();
+		}
+	}
 
-			boolean carryOn = true;
-			if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
-				JOptionPane.showMessageDialog(AudioFilter.this, "Sorry you must fill all fields before carrying on!");
-				carryOn = false;
-			}
+	private void startPressed() {
 
-			if(carryOn){
+		boolean carryOn = true;
+		if((field.getText().equals(""))||(selectedFile == null)||(outputDirectory ==null)){
+			JOptionPane.showMessageDialog(AudioFilter.this, "Sorry you must fill all fields before carrying on!");
+			carryOn = false;
+		}
 
-				//carry on with the process
-				JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
+		if(carryOn){
 
-				boolean override = false;
+			//carry on with the process
+			JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
 
-				File propFile = new File(outputDirectory,field.getText() + ".mp4");
-				if(propFile.exists()){
-					toOverride = propFile;
-					// ask the user if they want to overrride or not. If not then they must change the name of their file
-					String[] options = {"Yes,Override!","No! Do not override!"};
-					int code = JOptionPane.showOptionDialog(AudioFilter.this, 
-							"This file already exists! Would you like to override it?", 
-							"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
-							null, options, "Yes,Override!");
-					if (code == 0) {
-						// Allow override
-						override = true;
-					} else if(code == 1) {
-						override = false;
-					}
-					if(override){
-						toOverride.delete();
-						worker = new FilterWorker();
-						worker.execute();
-						progress.setIndeterminate(true);
-					}else{
-						JOptionPane.showMessageDialog(AudioFilter.this, "Please choose another name to continue and add the filter!");
-					}
-				}else{
-					worker = new FilterWorker();
-					start.setEnabled(false);
+			boolean override = false;
+
+			File propFile = new File(outputDirectory,field.getText() + ".mp4");
+			if(propFile.exists()){
+				toOverride = propFile;
+				// ask the user if they want to overrride or not. If not then they must change the name of their file
+				String[] options = {"Yes,Override!","No! Do not override!"};
+				int code = JOptionPane.showOptionDialog(AudioFilter.this, 
+						"This file already exists! Would you like to override it?", 
+						"Option Dialog Box", 0, JOptionPane.QUESTION_MESSAGE, 
+						null, options, "Yes,Override!");
+				if (code == 0) {
+					// Allow override
+					override = true;
+				} else if(code == 1) {
+					override = false;
+				}
+				if(override){
+					toOverride.delete();
+					worker = new AudioFilterWorker(field,start,progress,selectFilter,selectedFile,outputDirectory);
 					worker.execute();
 					progress.setIndeterminate(true);
-				}	
-			}
-		}
-	}
-	
-	private class FilterWorker extends SwingWorker<Integer,Void>{
-		@Override
-		protected Integer doInBackground() throws Exception {
-
-			// based on what item is selected, do the respective adding of filter
-			String name = field.getText();
-			if(!name.contains(".mp4")){
-				name = name + ".mp4";
-			}
-			int exitValue = 1;
-
-			if(selectFilter.getSelectedIndex() == 0){
-				// it is the flip 90 degress so do the avconv related to that
-				String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -an "  + outputDirectory.getAbsolutePath() + File.separator + name;
-
-				ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
-				Process process = builder.start();
-				process.waitFor();
-				exitValue = process.exitValue();
-			}
-			return exitValue;
-		}
-
-		@Override
-		protected void done() {
-			start.setEnabled(true);
-			progress.setIndeterminate(false);
-			try {
-				int i = get();
-
-				if(i == 0){
-					JOptionPane.showMessageDialog(AudioFilter.this, "The filter was added successfully!");
 				}else{
-					JOptionPane.showMessageDialog(AudioFilter.this, "The adding of filter failed!");
+					JOptionPane.showMessageDialog(AudioFilter.this, "Please choose another name to continue and add the filter!");
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			}else{
+				worker = new AudioFilterWorker(field,start,progress,selectFilter,selectedFile,outputDirectory);
+				start.setEnabled(false);
+				worker.execute();
+				progress.setIndeterminate(true);
+			}	
 		}
-
-
-
 	}
-	
+
+	private void OutputButtonPressed() {
+		
+		JFileChooser outputChooser = new JFileChooser();
+		outputChooser.setCurrentDirectory(new java.io.File("."));
+		outputChooser.setDialogTitle("Choose a directory to output to");
+
+		outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		int returnValue = outputChooser.showOpenDialog(AudioFilter.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
+			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			showingOutput.setText("Output Destination: " + outputDirectory);
+		}
+	}
+
+	private void InputButtonPressed() {
+		JFileChooser fileChooser = new JFileChooser();
+
+		fileChooser.setCurrentDirectory(new java.io.File("."));
+
+		fileChooser.setDialogTitle("Choose Video File");
+
+		fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+
+		// Allows files to be chosen only. Make sure they are video files in the extract part
+		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		int returnValue = fileChooser.showOpenDialog(AudioFilter.this);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			selectedFile = fileChooser.getSelectedFile();
+			showingInput.setText("Input File: " + selectedFile.getName());
+			InvalidCheck i = new InvalidCheck();
+			boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
+
+			if (!isValidMedia) {
+				JOptionPane.showMessageDialog(AudioFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+				start.setEnabled(false);
+				return;
+			}else{
+				start.setEnabled(true);
+			}
+
+		}
+	}
 
 }

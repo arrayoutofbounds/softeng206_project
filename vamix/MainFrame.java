@@ -26,7 +26,6 @@ public class MainFrame {
 			@Override
 			public void run() {
 				
-				
 				 try {
 					UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
 				} catch (ClassNotFoundException e1) {
@@ -42,9 +41,7 @@ public class MainFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-			
-				
+
 				try {
 					setupLibVLC();
 				} catch (LibraryNotFoundException e) {
@@ -63,25 +60,16 @@ public class MainFrame {
 				//int height = screenSize.height;
 				//int width = screenSize.width;
 				//frame.setSize(width/2, height/2);
-
 				frame.setLocationRelativeTo(null);
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
-				
-				
-				
-				
-				 
 			}
 		});
 	}
 
-	
 	private static void setupLibVLC() throws LibraryNotFoundException {
-
 	    new NativeDiscovery().discover();
-
 	    // discovery()'s method return value is WRONG on Linux
 	    try {
 	        LibVlcVersion.getVersion();
