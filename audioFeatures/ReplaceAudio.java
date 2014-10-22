@@ -31,8 +31,16 @@ import vamix.MediaLengthWorker;
 
 
 @SuppressWarnings("serial")
+/**
+ * This class has the frame for replacing and overlaying audio.
+ * It does not do the actual tasks, but calls on Overlayworker and ReplaceWorker to do the background tasks.
+ * But, it creates the frame needed and allows the user to select the video and audio file.
+ * @author anmol
+ *
+ */
 public class ReplaceAudio extends JFrame implements ActionListener {
-
+	
+	// decalre the variables
 	private JPanel forInputButtons;
 	private JPanel forInputValues1;
 	private JPanel forInputValues2;
@@ -66,7 +74,7 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 	private OverlayWorker worker2;
 	private File toOverride;
 
-
+	// initalise the variables
 	public ReplaceAudio(){
 
 		super("Replace/Overlay audio of a video");
@@ -153,11 +161,20 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 
 
 	@Override
+	/**
+	 * This method ensures that the correct input files are chosen.
+	 * If not, then user cannot do anything for replacing or overlaying till they enter a 
+	 * valid file.
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 
 		// open jfilechooser for video
 
+		/**
+		 * This method is called when the user wants to enter a video file to manipulate.
+		 * It will allow the user to choose a video FILE ONLY!!!
+		 */
 		if(e.getSource() == inputVideo){
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -168,8 +185,7 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 
 			// Allows files to be chosen only. Make sure they are video files in the extract part
-			// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
+		
 			fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 			fileChooser.setAcceptAllFileFilterUsed(false);
 			int returnValue = fileChooser.showOpenDialog(ReplaceAudio.this);
@@ -180,7 +196,8 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 
 				InvalidCheck i = new InvalidCheck();
 				boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
-
+				
+				// check that the file is a valid media file and allow the process to carry on only if that is true.
 				if (!isValidMedia) {
 					JOptionPane.showMessageDialog(ReplaceAudio.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 					replace.setEnabled(false);
@@ -194,6 +211,10 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 
 		}
 
+		/**
+		 * This method is called when the user wants to enter the audio file that they will
+		 * be using to replace/overlay on the video files. ONLY AUDIO FILES CAN GET CHOSEN!!!
+		 */
 		if(e.getSource() == inputAudio){
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setCurrentDirectory(new java.io.File("."));
@@ -203,7 +224,6 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newAudioFileFilter());
 
 			// Allows files to be chosen only. Make sure they are video files in the extract part
-			// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 			fileChooser.setFileFilter(SwingFileFilterFactory.newAudioFileFilter());
 			fileChooser.setAcceptAllFileFilterUsed(false);
@@ -228,7 +248,10 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			}
 		}
 
-
+		/**
+		 * This method is called when the user wants to choose the output directory, Only 
+		 * directories can be chosen.
+		 */
 		if(e.getSource() == chooseDirectory){
 
 			JFileChooser outputChooser = new JFileChooser();
@@ -238,14 +261,22 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			outputChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 			int returnValue = outputChooser.showOpenDialog(ReplaceAudio.this);
-
+			
+			// show the user the directory chosen
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			
 				showOutputDirectory.setText("Output Directory: " + outputDirectory);
 			}
 		}
-
+		
+		/**
+		 * This method is called when the user presses the replace button.
+		 * This will call the ReplaceWorker and do the manipulation there. It also checks
+		 * to see if there is a file like the one wanted and allows the user to override or rename
+		 * current file. Checks are also done to ensure that all fields are filled before actually
+		 * doing the task. All files are output types MP4.
+		 */
 		if(e.getSource() == replace) {
 			//do the whole swingworker replacement thing
 			boolean carryOn = true;
@@ -258,6 +289,7 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			if(carryOn){
 				String a = outputName.getText();
 				boolean override = false;
+				// set the suffix to mp4 if not there
 				if(!a.contains(".mp4")){
 					a = a + ".mp4";
 				}
@@ -296,6 +328,13 @@ public class ReplaceAudio extends JFrame implements ActionListener {
 			}
 		}
 
+		/**
+		 * This method is called when the user presses the overlay button.
+		 * This will call the OverlayWorker and do the manipulation there. It also checks
+		 * to see if there is a file like the one wanted and allows the user to override or rename
+		 * current file. Checks are also done to ensure that all fields are filled before actually
+		 * doing the task. All files are output types MP4.
+		 */
 		if(e.getSource() == overlay){
 			boolean carryOn = true;
 			// do checks that everything has be entered

@@ -23,9 +23,19 @@ import javax.swing.border.EmptyBorder;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 
-
+/**
+ * This class makes and implements the Audio Filter option. It contains the design for the audio filter frame and a framework
+ * that will allow and future developers to add more filters. It does not do the adding of the filters, instead it calls on the
+ * AudioFilterWorker class to add the filters to the video.
+ * 
+ * @author anmol
+ *
+ */
 public class AudioFilter extends JFrame implements ActionListener{
-
+	
+	// declaration of the variables
+	
+	// all the panels that make up the frame
 	private JPanel chooseInput;
 	private JPanel showInput;
 	private JPanel chooseOutput;
@@ -35,6 +45,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private JPanel showProgress;
 	private JPanel chooseFilters;
 
+	// all the components that make up the frame
 	private JButton chooseInputButton;
 	private JLabel showingInput;
 	private JButton chooseOutputButton;
@@ -51,6 +62,7 @@ public class AudioFilter extends JFrame implements ActionListener{
 	private File outputDirectory;
 	private File toOverride;
 	private AudioFilterWorker worker;
+	
 
 	public AudioFilter(){
 		super("Add Audio Filter");
@@ -97,7 +109,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 		selectFilter = new JComboBox(inComboBox);
 		selectFilter.setEditable(false);
-
+		
+		// add components to panels
 		chooseInput.add(chooseInputButton);
 		showInput.add(showingInput,BorderLayout.WEST);
 		chooseOutput.add(chooseOutputButton);
@@ -108,7 +121,9 @@ public class AudioFilter extends JFrame implements ActionListener{
 		showProgress.add(progress);
 		chooseFilters.add(selectFilterlabel,BorderLayout.WEST);
 		chooseFilters.add(selectFilter,BorderLayout.CENTER);
-
+		
+		
+		// add panels to frame
 		add(chooseInput);
 		add(showInput);
 		add(chooseOutput);
@@ -134,7 +149,11 @@ public class AudioFilter extends JFrame implements ActionListener{
 			startPressed();
 		}
 	}
-
+	
+	/**
+	 * This method is called in when the start button is pressed. It will call the AudioFilterWorker
+	 * and then add the filter to the video provided
+	 */
 	private void startPressed() {
 
 		boolean carryOn = true;
@@ -149,7 +168,10 @@ public class AudioFilter extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(AudioFilter.this,"WARNING! Large files can take a long time!");
 
 			boolean override = false;
-
+			
+			
+			// see if the file needs to be overriden
+			
 			File propFile = new File(outputDirectory,field.getText() + ".mp4");
 			if(propFile.exists()){
 				toOverride = propFile;
@@ -165,6 +187,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 				} else if(code == 1) {
 					override = false;
 				}
+				
+				// start the process of adding filter by calling the audiofilterworker
 				if(override){
 					toOverride.delete();
 					worker = new AudioFilterWorker(field,start,progress,selectFilter,selectedFile,outputDirectory);
@@ -182,8 +206,13 @@ public class AudioFilter extends JFrame implements ActionListener{
 		}
 	}
 
+	/**
+	 * This method is called when the user clicks on the choosing output option. It allows the user
+	 * to choose the directory they want to get the resulting output in.
+	 */
 	private void OutputButtonPressed() {
 		
+		// get a file chooser and allow the user to choose a directory
 		JFileChooser outputChooser = new JFileChooser();
 		outputChooser.setCurrentDirectory(new java.io.File("."));
 		outputChooser.setDialogTitle("Choose a directory to output to");
@@ -194,11 +223,17 @@ public class AudioFilter extends JFrame implements ActionListener{
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			
 			showingOutput.setText("Output Destination: " + outputDirectory);
 		}
 	}
-
+	
+	/**
+	 * This method is called when the user presses the input button. It allows the user to 
+	 * add a video file that they want to add a filter to. It ensures that only a
+	 * video file can be chosen and will not allow the filter to be added UNTIL the user enters
+	 * a video file.
+	 */
 	private void InputButtonPressed() {
 		JFileChooser fileChooser = new JFileChooser();
 
@@ -209,7 +244,6 @@ public class AudioFilter extends JFrame implements ActionListener{
 		fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 
 		// Allows files to be chosen only. Make sure they are video files in the extract part
-		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 		fileChooser.setAcceptAllFileFilterUsed(false);
@@ -222,6 +256,8 @@ public class AudioFilter extends JFrame implements ActionListener{
 			boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
 
 			if (!isValidMedia) {
+				// warns user and then disables the adding filter button till the user specifies a valid input 
+				
 				JOptionPane.showMessageDialog(AudioFilter.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 				start.setEnabled(false);
 				return;

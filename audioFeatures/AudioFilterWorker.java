@@ -10,7 +10,15 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
+/**
+ * This class does the adding of the filter to the video provided by user in AudioFilter.
+ * It runs on a background thread and does not interrupt any GUI events.
+ * @author anmol
+ *
+ */
 public class AudioFilterWorker extends SwingWorker<Integer,Void>{
+	
+	// create fields passed in
 	
 	private JTextField field;
 	private JButton start;
@@ -19,7 +27,7 @@ public class AudioFilterWorker extends SwingWorker<Integer,Void>{
 	private File selectedFile;
 	private File outputDirectory;
 	
-	
+	// initialise
 	public AudioFilterWorker(JTextField field, JButton start, JProgressBar progress,JComboBox selectFilter, File selectedFile, File outputDirectory ){
 		this.field = field;
 		this.start = start;
@@ -48,16 +56,19 @@ public class AudioFilterWorker extends SwingWorker<Integer,Void>{
 			process.waitFor();
 			exitValue = process.exitValue();
 		}
+		// get the exit value of the process
 		return exitValue;
 	}
 
 	@Override
 	protected void done() {
+		// set the start to true so more filters can be added to other videos.
 		start.setEnabled(true);
 		progress.setIndeterminate(false);
 		try {
 			int i = get();
-
+			
+			// show message as per the sucess of the filter addition to the video.
 			if(i == 0){
 				JOptionPane.showMessageDialog(null, "The filter was added successfully!");
 			}else{

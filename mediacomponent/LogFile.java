@@ -20,7 +20,7 @@ import javax.swing.text.BadLocationException;
 /**
  * This class maintains a single instance of the log file for the VAMIX
  * It provides the ability to write to both the log file and log panel
- * @author nick
+ * @author Nick Molloy and Anmol Desai
  */
 public class LogFile{
 
@@ -90,7 +90,9 @@ public class LogFile{
 		}
 	}
 
-
+	/**
+	 * Deletes the file and sets the text area shown as "history" to become empty.
+	 */
 	public static void delete(){
 		if(logFileObject != null){
 			logFileObject.delete();
@@ -100,13 +102,19 @@ public class LogFile{
 		logArea.setText(emptyMessage);
 
 	}
-
+	
+	/**
+	 * Hides the history from the "history" text area in the main player. 
+	 * Also shows the history back up if history was hidden.
+	 */
 	public static void hide() {
 
 		if (logFileObject == null) {
 			logFileObject = getLogFile();
 		}
-
+		
+		// load the history
+		
 		if(logArea.getText().equals("")){
 			try {
 				File f = new File(FullFilePath);

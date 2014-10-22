@@ -17,7 +17,17 @@ import javax.swing.SwingWorker;
 
 import vamix.MediaLengthWorker;
 
+/**
+ * This class does the work for the replacing of audio in a video file.
+ * It is taking in a video and audio files and overlaying the audio onto the given video file.
+ * It does checks to ensure that everything is valid and makes sure that the task do not
+ * interfere with the GUI.
+ * @author anmol
+ *
+ */
 public class ReplaceWorker extends SwingWorker<Integer, Integer> {
+	
+	// initialise and declare fields needed.
 	
 	private JButton replace;
 	private File selectedFile = null;
@@ -38,10 +48,15 @@ public class ReplaceWorker extends SwingWorker<Integer, Integer> {
 	}
 	
 	@Override
+	/**
+	 * All output files are MADE TO MP4. Beware, even .avi or any other video format is made to become mp4.
+	 * This method does the work on actual replacing.
+	 */
 	protected Integer doInBackground() throws Exception {
 
 		String name = outputName.getText();
 		
+		// ensure the the suffix is a mp4
 		if(!name.contains(".mp4")){
 			name = name + ".mp4";
 		}
@@ -69,7 +84,7 @@ public class ReplaceWorker extends SwingWorker<Integer, Integer> {
 			minLength = length2;
 		}
 		
-		
+		// DO THE COMMAND
 		int exitValue = 1;
 		String cmd = "/usr/bin/avconv -i " + "" +selectedFile2.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -i " + "" + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -map 0:0 -map 1:0 -acodec copy -vcodec copy -shortest " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 		ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd).redirectErrorStream(true);
@@ -94,18 +109,21 @@ public class ReplaceWorker extends SwingWorker<Integer, Integer> {
 		
 		process.waitFor();
 		exitValue = process.exitValue();
-
+		
+		// get the exit value of the process
 		return exitValue;
 	}
 
 	@Override
 	protected void done() {
+		// allow the process to be started again
 		progressBar.setIndeterminate(false);
 		replace.setEnabled(true);
 		overlay.setEnabled(true);
 		try {
 			int i = get();
 			
+			// notify the user on what the result was.
 			if(i == 0){
 				progressBar.setValue(100);
 				JOptionPane.showMessageDialog(null,"The replacement was successful!");
@@ -122,6 +140,9 @@ public class ReplaceWorker extends SwingWorker<Integer, Integer> {
 	}
 	
 	@Override
+	/**
+	 * update the progress bar
+	 */
 	protected void process(List<Integer> list) {
 		for (Integer i : list) {
 			progressBar.setValue(i);

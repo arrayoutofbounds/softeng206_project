@@ -27,10 +27,16 @@ import javax.swing.border.EmptyBorder;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 
-
+/**
+ * This class does the extraction of the audio from a video.
+ * It takes in a valid media video file and then outputs a mp3.
+ * @author anmol
+ *
+ */
 @SuppressWarnings("serial")
 public class ExtractFrame extends JFrame implements ActionListener {
 
+	// all the fields that are needed for the extract frame.
 	private JPanel fileSelectionPanel;
 	private JButton chooseInputFileButton;
 	private JPanel DisplayChosenFilePanel;
@@ -53,6 +59,8 @@ public class ExtractFrame extends JFrame implements ActionListener {
 	private JLabel showing;
 
 	public ExtractFrame(){
+		// start initalising the fields 
+		
 		super("Extract Audio From Video");
 
 		setLayout(new GridLayout(7,1));
@@ -96,7 +104,8 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		showOutputDirectoryButton.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		showDestination.setBorder(new EmptyBorder(10, 10, 10, 10));
-
+		
+		// add components to the panels
 		fileSelectionPanel.add(chooseInputFileButton);
 		DisplayChosenFilePanel.add(showInputFileLabel,BorderLayout.WEST);
 		getOutputNamePanel.add(outputFilenameLabel);
@@ -105,7 +114,9 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		showprogressbar.add(extractProgressBar);
 		showOutputDirectoryButton.add(chooseOutputDirectoryButton);
 		showDestination.add(showing,BorderLayout.WEST);
-
+		
+		
+		// add panels to the frame
 		add(fileSelectionPanel);
 		add(DisplayChosenFilePanel);
 		add(getOutputNamePanel);
@@ -138,7 +149,11 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * This method is called when the extract button is pressed. It ensures that fields needed are filled and then calls a 
+	 * swingworker that it has in it and gets the audio from the video. It outputs a mp3 file with the audio where the
+	 * user wants it to be.
+	 */
 	private void extractButtonPressed() {
 
 		// Get the file and pass it through bash and make sure it is a video file
@@ -247,6 +262,9 @@ public class ExtractFrame extends JFrame implements ActionListener {
 					extractButton.setEnabled(true);
 					try {
 						int i = get();
+						
+						// show the result of the process to the worker
+						
 						if (i == 0) {
 							extractProgressBar.setValue(100);
 							JOptionPane.showMessageDialog(ExtractFrame.this,"Extraction complete!");
@@ -255,15 +273,16 @@ public class ExtractFrame extends JFrame implements ActionListener {
 							JOptionPane.showMessageDialog(ExtractFrame.this,"Extraction failed!", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
-
+				
 				@Override
+				/**
+				 * get the values and update the progress bar
+				 */
 				protected void process(List<Integer> list) {
 					for (Integer i : list) {
 						extractProgressBar.setValue(i);
@@ -309,7 +328,10 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * This method allows the user to choose the output directory that they want the output file
+	 * to go to. 
+	 */
 	private void outputButtonPressed() {
 
 		JFileChooser outputChooser = new JFileChooser();
@@ -327,7 +349,10 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/*
+	 *This method allows the user to choose a VIDEO FILE ONLY, that they want
+	 *to get the audio of. It will NOT allow the user to extract if they enter a invalid video file.
+	 */
 	private void inputButtonPressed() {
 
 		// Open a file chooser and only allow a video file to be chosen
@@ -336,7 +361,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 		fileChooser.setDialogTitle("Choose Video File");
 		fileChooser.addChoosableFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 		// Allows files to be chosen only. Make sure they are video files in the extract part
-		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
 		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		int returnValue = fileChooser.showOpenDialog(ExtractFrame.this);
@@ -346,7 +371,9 @@ public class ExtractFrame extends JFrame implements ActionListener {
 			showInputFileLabel.setText("Input file: " + selectedFile.getName());
 			InvalidCheck i = new InvalidCheck();
 			boolean isValidMedia = i.invalidCheck(selectedFile.getAbsolutePath());
-
+			
+			
+			// only allow the user to get the audio file if the video file is valid
 			if (!isValidMedia) {
 				JOptionPane.showMessageDialog(ExtractFrame.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 				extractButton.setEnabled(false);

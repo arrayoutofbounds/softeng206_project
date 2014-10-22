@@ -6,6 +6,13 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+/**
+ * This class extends swingoworker an does the background tasks that allow the user to get the part of a video file by 
+ * just DOUBLE CLICKING ON THE SCREEN the media is being played on.
+ * 
+ * @author anmol
+ *
+ */
 public class VideoExtracter extends SwingWorker<Integer,Void>{
 
 	String startTime;
@@ -25,8 +32,6 @@ public class VideoExtracter extends SwingWorker<Integer,Void>{
 		int exitValue = 1;
 
 		String cmd = "/usr/bin/avconv -i " + VideoPlayer.filePath + " -ss " + startTime + " -t " + lengthTime + " -c:a copy -c:v copy "  + System.getProperty("user.home") + File.separator + name; 
-
-		//ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 		ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c",cmd);
 
 		Process process = builder.start();

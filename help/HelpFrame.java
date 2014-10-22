@@ -18,17 +18,21 @@ import javax.swing.JViewport;
 
 import mediacomponent.LogFile;
 
-
+/**
+ * This class is there to ensure that the help button shows up the help frame.
+ * Even if it is a jar file, this frame has to show up. It reads from the README.MD and then puts 
+ * it onto the help frame.
+ * @author anmol
+ *
+ */
 public class HelpFrame extends JFrame{
 	
 	private JPanel p;
 	private JTextArea area; 
 	private JScrollPane scroll;
-	
-	
 	File readme;
 	
-	
+	// make the frame
 	public HelpFrame(){
 		super("Help");
 		setLayout(new BorderLayout());
@@ -48,31 +52,11 @@ public class HelpFrame extends JFrame{
 		 
 	}
 	
-	
+	/**
+	 * add the text from the readme file to the frame. Ensures that the 
+	 * readme file is FOUND even if it a jar file.
+	 */
 	public void appendReadmeFile(){
-		
-		/**
-		try{
-			 InputStream is = getClass().getResourceAsStream(readme.getName());
-			  InputStreamReader isr = new InputStreamReader(is);
-			  BufferedReader br = new BufferedReader(isr);
-			  StringBuffer sb = new StringBuffer();
-			  String line;
-			  while ((line = br.readLine()) != null) 
-			  {
-			    sb.append(line);
-			    sb.append(System.lineSeparator());
-			  }
-			  br.close();
-			  isr.close();
-			  is.close();
-			  area.setText(sb.toString());
-			
-		}catch(Exception e){
-			
-		}
-		**/
-		
 		
 		try {
 			InputStream in = getClass().getResourceAsStream("README.md");
@@ -90,7 +74,7 @@ public class HelpFrame extends JFrame{
  			JOptionPane.showMessageDialog(null, "Could not open log file: No log available", "ERROR", JOptionPane.ERROR_MESSAGE);
  		}
  		
-		
+		// makes sure that the scroll is on top when the frame is opened again.
 		area.setCaretPosition(0);
 	}
 	
