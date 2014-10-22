@@ -573,6 +573,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			muteButtonPress();
 		}		
 		if (e.getSource() == forwardButton) {
+			
 			if (mediaPlayer.getTime() + 10000 <= mediaPlayer.getLength()) { // Prevent skipping past end of file
 				mediaPlayer.skip(10000);
 			}
@@ -674,10 +675,15 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if(e.getSource() == fastForwardButton){
-			fastForwardPressed();
+			boolean isr = isRewinding;
+			
+			fastForwardPressed(isr);
 		}
 		if (e.getSource() == rewindBack) {
-			rewindPressed();
+			
+			boolean isf = isFastForwarding;
+			
+			rewindPressed(isf);
 		}
 		
 		if(e.getSource() == slow){
@@ -711,31 +717,47 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 	
-	private void fastForwardPressed(){
-
+	private void fastForwardPressed(boolean isr){
+		
+		if(isr){
+			worker.cancel(true);
+			rewindBack.setBackground(null);
+			isRewinding = false;
+		}
+		
 		if (isFastForwarding) {
 			mediaPlayer.setRate(1.0f);
 			fastForwardButton.setBackground(null);
 			isFastForwarding = false;
 		} else {
 			mediaPlayer.setRate(3.0f);
-			fastForwardButton.setBackground(Color.gray);
+			fastForwardButton.setBackground(Color.darkGray);
 			isFastForwarding = true;
 		}
+		
 	}
 	
-	private void rewindPressed(){
-
+	private void rewindPressed(boolean isf){
+		
+		if(isf){
+			mediaPlayer.setRate(1.0f);
+			fastForwardButton.setBackground(null);
+			isFastForwarding = false;
+		}
+		
 		if (isRewinding) {
 			worker.cancel(true);
 			rewindBack.setBackground(null);
 			isRewinding = false;
 		} else {
+			
 			worker = new rewindWorker();
-			rewindBack.setBackground(Color.gray);
+			rewindBack.setBackground(Color.darkGray);
 			worker.execute();
 			isRewinding = true;
 		}
+		
+		
 	}
 
 	private void togglePanelPressed() {
