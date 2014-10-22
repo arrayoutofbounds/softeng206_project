@@ -583,7 +583,84 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if (e.getSource() == chooseFileToPlay) {
-			chooseFilePressed();
+			//check if a file is already playing
+			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
+			
+			SwingWorker worker = new SwingWorker<Void,Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					
+					JFileChooser fc = new JFileChooser();
+					fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
+					int returnVal = fc.showOpenDialog(VideoPlayer.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						
+						String newFile = fc.getSelectedFile().getAbsolutePath();
+						// Check that file is a video or audio file.
+						InvalidCheck i = new InvalidCheck();
+						boolean isValidMedia = i.invalidCheck(newFile);
+						/**
+						String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
+						ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
+						boolean isValidMedia = false;
+
+						try {
+							Process process = builder.start();
+							process.waitFor();
+							if (process.exitValue() == 0) {
+								isValidMedia = true;
+							}
+
+						} catch (IOException | InterruptedException e1) {
+							// Couldn't determine file type. Warn user
+							JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						 **/
+
+						if (!isValidMedia) {
+							JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
+							return null;
+						} else if (!newFile.equals(filePath)) {
+							
+							
+							VideoPlayer.this.filePath = newFile;
+
+
+							// before starting the video add it to the log
+
+							LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
+							VideoPlayer.this.hasPlayed = false;
+
+
+							mediaPlayer.startMedia(filePath);
+
+						}
+					}
+					return null;
+				}
+
+				@Override
+				protected void done() {
+					playButton.setIcon(pause);
+					VideoPlayer.this.hasPlayed = true;
+					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
+						mediaPlayer.setVolume(volumeSlider.getValue());
+						timeSlider.setMaximum((int)mediaPlayer.getLength());
+					}
+				}
+				
+				
+			};
+			
+			worker.execute();
+			
+			
+			// Get selection from user
+			
+			
 		}
 
 		if(e.getSource() == stopVideo){
@@ -926,65 +1003,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	}
 
 	private void chooseFilePressed() {
-		//check if a file is already playing
-		boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
-
-		// Get selection from user
-		JFileChooser fc = new JFileChooser();
-		fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
-		int returnVal = fc.showOpenDialog(VideoPlayer.this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-			String newFile = fc.getSelectedFile().getAbsolutePath();
-			// Check that file is a video or audio file.
-			InvalidCheck i = new InvalidCheck();
-			boolean isValidMedia = i.invalidCheck(newFile);
-			/**
-			String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
-			ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
-			boolean isValidMedia = false;
-
-			try {
-				Process process = builder.start();
-				process.waitFor();
-				if (process.exitValue() == 0) {
-					isValidMedia = true;
-				}
-
-			} catch (IOException | InterruptedException e1) {
-				// Couldn't determine file type. Warn user
-				JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			 **/
-
-			if (!isValidMedia) {
-				JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			} else if (!newFile.equals(filePath)) {
-				
-				
-				VideoPlayer.this.filePath = newFile;
-
-
-				// before starting the video add it to the log
-
-				LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
-				VideoPlayer.this.hasPlayed = false;
-
-
-				mediaPlayer.startMedia(filePath);
-				playButton.setIcon(pause);
-				this.hasPlayed = true;
-				while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
-					mediaPlayer.setVolume(volumeSlider.getValue());
-					timeSlider.setMaximum((int)mediaPlayer.getLength());
-				}
-
-
-			}
-		}
 		
 	}
 
