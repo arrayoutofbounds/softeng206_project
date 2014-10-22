@@ -30,6 +30,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
@@ -45,8 +46,9 @@ import videoFeatures.ExtractPart;
 
 public class Library extends JPanel implements ActionListener, ListSelectionListener, MouseListener{
 
-
-
+	
+	private JSplitPane splitPane;
+	
 	private JList allMedia;
 	private DefaultListModel<Object> l;
 
@@ -74,11 +76,12 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 	public Library(){
 
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 
 		l = new DefaultListModel<>();
 
 		container = new JPanel(new FlowLayout());
+		/**
 		GridBagConstraints a = new GridBagConstraints();
 		a.gridx = 0;
 		a.gridy = 1;
@@ -89,12 +92,13 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		a.weighty = 0.4;
 
 		add(container,a);
-
+		**/
 
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scroll = new JScrollPane(allMedia);
-
+		
+		/**
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -106,9 +110,12 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		gbc.fill = GridBagConstraints.BOTH;
 
 		add(scroll,gbc);
-
+		**/
 
 		info = new JTextArea();
+		
+		
+		/**
 		GridBagConstraints gbc1 = new GridBagConstraints();
 		gbc1.gridx = 1;
 		gbc1.gridy = 0;
@@ -118,7 +125,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		gbc1.gridwidth = 1;
 		gbc1.gridheight = 1;
 		add(info,gbc1);
-
+		**/
 
 		button1 = new JButton("Add Video/Audio");
 		container.add(button1);
@@ -174,7 +181,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		info.append("\n\n\n\n\n\n\nFile Size:");
 		allMedia.addListSelectionListener(this);
 		allMedia.addMouseListener(this);
-
+		
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,allMedia,info);
+		add(splitPane,BorderLayout.CENTER);
+		add(container,BorderLayout.SOUTH);
+		splitPane.setResizeWeight(0.5d);
 	}
 
 
