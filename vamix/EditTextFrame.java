@@ -109,7 +109,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		leftEditPane = new TextEditPanel("Text to show at start", fontNames, fontFiles);	
 		getContentPane().add(leftEditPane, BorderLayout.WEST);
 		rightEditPane = new TextEditPanel("Text to show at end", fontNames, fontFiles);
-		getContentPane().add(rightEditPane, BorderLayout.EAST);
+		getContentPane().add(rightEditPane, BorderLayout.CENTER);
 		
 		selectOutputDirectoryButton = new JButton("Select output directory");
 		selectOutputDirectoryButton.addActionListener(this);
