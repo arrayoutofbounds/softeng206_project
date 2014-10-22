@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,12 +42,19 @@ import javax.swing.event.ListSelectionListener;
 
 import mediacomponent.LogFile;
 import mediacomponent.VideoPlayer;
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
+import uk.co.caprica.vlcj.medialist.MediaList;
+import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.list.MediaListPlayerMode;
 import videoFeatures.ExtractPart;
 
 public class Library extends JPanel implements ActionListener, ListSelectionListener, MouseListener{
 
-	
+	private JButton cancelPlayingList;
 	private JSplitPane splitPane;
 	
 	private JList allMedia;
@@ -73,99 +81,55 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	private JButton loadPlaylist;
 	private File playlistDirectory;
 	private JButton playTheList;
-
+	private JButton loadFolder;
+	private JPanel arrangeButtons1;
+	private JPanel arrangeButtons2;
+	private List<File> listFolder = new ArrayList<>();
+	
 	public Library(){
 
 		setLayout(new BorderLayout());
 
 		l = new DefaultListModel<>();
-
-		container = new JPanel(new FlowLayout());
-		/**
-		GridBagConstraints a = new GridBagConstraints();
-		a.gridx = 0;
-		a.gridy = 1;
-		a.gridheight = 1;
-		a.gridwidth = 2;
-		a.fill = GridBagConstraints.BOTH;
-		a.weightx = 0.4;
-		a.weighty = 0.4;
-
-		add(container,a);
-		**/
-
+		container = new JPanel(new BorderLayout());
+		
+		arrangeButtons1 = new JPanel(new FlowLayout());
+		arrangeButtons2 = new JPanel(new FlowLayout());
+		
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scroll = new JScrollPane(allMedia);
-		
-		/**
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx=1;
-		gbc.weighty=1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-
-		gbc.fill = GridBagConstraints.BOTH;
-
-		add(scroll,gbc);
-		**/
-
 		info = new JTextArea();
-		
-		
-		/**
-		GridBagConstraints gbc1 = new GridBagConstraints();
-		gbc1.gridx = 1;
-		gbc1.gridy = 0;
-		gbc1.weighty=1;
-		gbc1.weightx = 1;
-		gbc1.fill = GridBagConstraints.BOTH;
-		gbc1.gridwidth = 1;
-		gbc1.gridheight = 1;
-		add(info,gbc1);
-		**/
-
 		button1 = new JButton("Add Video/Audio");
-		container.add(button1);
-		/**
-		GridBagConstraints g = new GridBagConstraints();
-		g.gridx=0;
-		g.gridy=1;
-		g.weighty=1;
-		g.weightx=1;
-		g.gridheight = 1;
-		g.gridwidth =1;
-		add(button1,g);
-		 **/
-
+		arrangeButtons1.add(button1);
+	
 		button2 = new JButton("Remove Video/Audio");
-		container.add(button2);
+		arrangeButtons1.add(button2);
 
 		makePlayList = new JButton("Make a playlist");
-		container.add(makePlayList);
+		arrangeButtons1.add(makePlayList);
 		makePlayList.addActionListener(this);
 
 
 		loadPlaylist = new JButton("Load a playlist");
-		container.add(loadPlaylist);
+		arrangeButtons2.add(loadPlaylist);
 		loadPlaylist.addActionListener(this);
 
 		playTheList = new JButton("Play the list");
-		container.add(playTheList);
+		arrangeButtons2.add(playTheList);
 		playTheList.addActionListener(this);
-		/**
-		GridBagConstraints g1 = new GridBagConstraints();
-		g1.gridx = 1;
-		g1.gridy = 1;
-		g1.weightx = 1;
-		g1.weighty = 1;
-		g1.gridheight = 1;
-		g1.gridwidth = 1;
-		add(button2,g1);
-		 **/
-
+		
+		loadFolder = new JButton("Load a folder");
+		arrangeButtons2.add(loadFolder);
+		loadFolder.addActionListener(this);
+		
+		cancelPlayingList = new JButton("Cancel playing the list");
+		arrangeButtons2.add(cancelPlayingList);
+		cancelPlayingList.addActionListener(this);
+		cancelPlayingList.setEnabled(false);
+		
+		container.add(arrangeButtons1,BorderLayout.NORTH);
+		container.add(arrangeButtons2,BorderLayout.CENTER);
 
 		playlistName = new GetPlayList();
 		playlistName.setResizable(false);
@@ -215,26 +179,96 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		if(e.getSource() == playTheList){
 			playTheListPressed();
 		}
+		if(e.getSource()== loadFolder){
+			loadFolderPressed();
+		}
+		if(e.getSource()==cancelPlayingList){
+			cancelPressed();
+		}
 	}
 
-	private void playTheListPressed() {
+	private void cancelPressed() {
+		VideoPlayer.mediaPlayer.stop();
+		l.clear();
+		paths.clear();
+		sizes.clear();
+		cancelPlayingList.setEnabled(false);
+		playTheList.setEnabled(true);
+	}
 
+
+	private void loadFolderPressed() {
+		
+		// open a jfile chooser and then go through the directory chosen
+		// then load all the video and audio files in that directory
+		
+		File chosenDirectory =null;
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("."));
+		chooser.setDialogTitle("Choose Directory");
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int response = chooser.showOpenDialog(Library.this);
+
+		if (response == JFileChooser.APPROVE_OPTION) {
+			// Chose the directory to save to
+			chosenDirectory = chooser.getSelectedFile().getAbsoluteFile();
+		}
+		
+		if(chosenDirectory != null){
+			// go through the chosen directory
+			  l.clear();
+			  File[] directoryListing = chosenDirectory.listFiles();
+			  if (directoryListing != null) {
+				  InvalidCheck ic = new InvalidCheck();
+					
+					for(File f : directoryListing){
+						boolean isValid = ic.invalidCheck(f.getAbsolutePath());
+						
+						if(isValid){
+							listFolder.add(f);
+						}
+					}
+					
+					for(File f2 : listFolder){
+						System.out.println(f2.getName());
+					}
+
+			    for(File f : listFolder){
+			    	l.addElement(f.getName());
+			    	paths.put(f.getName(),f.getAbsoluteFile());
+			    	sizes.put(f.getName(), f.length());
+			    }
+			  }
+			
+		}
+	}
+
+
+	private void playTheListPressed() {
+		
 		if(l.size() != 0){
+			cancelPlayingList.setEnabled(true);
+			ExtendedFrame.tabsPane.setSelectedIndex(0);
+			JOptionPane.showMessageDialog(null,"Once the current item has finished playing, click the play button to play the next item. Repeat it.");
 			@SuppressWarnings("unchecked")
 			SwingWorker<Void,Void> w = new SwingWorker(){
-
+				
 				@Override
 				protected Void doInBackground() throws Exception {
-					// TODO Auto-generated method stub
+					
 					for(int index = 0;index<l.size();index++){
 						String apath = "" + paths.get(l.get(index));
 						System.out.println(apath);
 						VideoPlayer.filePath = apath;
 						VideoPlayer.startPlaying();
-						while(VideoPlayer.mediaPlayer.isPlaying()){
+						while((VideoPlayer.mediaPlayer.isPlaying())||(VideoPlayer.timeSlider.getValue() != VideoPlayer.mediaPlayer.getLength())){
 							// do nothing
 							// once it stops loop again
 						}
+						//if(VideoPlayer.mediaPlayer.getTime() == VideoPlayer.timeSlider.getValue()){
+							VideoPlayer.mediaPlayer.stop();
+						//}
 					}
 					return null;
 				}
@@ -273,7 +307,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			boolean textFileExists = false;
 			File a = null;
 			for(File f : files ){
-				if(f.getName().toLowerCase().endsWith(".txt")){
+				if((f.getName().toLowerCase().endsWith(".txt"))){
 					textFileExists = true;
 					a = f;
 				}
@@ -345,8 +379,6 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 
 	private void button2Pressed() {
-
-		//System.out.println(allMedia.getSelectedValue());
 
 		s = allMedia.getSelectedValuesList();
 
@@ -494,4 +526,64 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	public void mouseReleased(MouseEvent arg0) {
 	}
 }
+
+
+/**
+GridBagConstraints a = new GridBagConstraints();
+a.gridx = 0;
+a.gridy = 1;
+a.gridheight = 1;
+a.gridwidth = 2;
+a.fill = GridBagConstraints.BOTH;
+a.weightx = 0.4;
+a.weighty = 0.4;
+
+add(container,a);
+**/
+
+/**
+GridBagConstraints gbc = new GridBagConstraints();
+gbc.gridx = 0;
+gbc.gridy = 0;
+gbc.weightx=1;
+gbc.weighty=1;
+gbc.gridwidth = 1;
+gbc.gridheight = 1;
+
+gbc.fill = GridBagConstraints.BOTH;
+
+add(scroll,gbc);
+**/
+/**
+GridBagConstraints gbc1 = new GridBagConstraints();
+gbc1.gridx = 1;
+gbc1.gridy = 0;
+gbc1.weighty=1;
+gbc1.weightx = 1;
+gbc1.fill = GridBagConstraints.BOTH;
+gbc1.gridwidth = 1;
+gbc1.gridheight = 1;
+add(info,gbc1);
+**/
+/**
+GridBagConstraints g = new GridBagConstraints();
+g.gridx=0;
+g.gridy=1;
+g.weighty=1;
+g.weightx=1;
+g.gridheight = 1;
+g.gridwidth =1;
+add(button1,g);
+ **/
+
+/**
+GridBagConstraints g1 = new GridBagConstraints();
+g1.gridx = 1;
+g1.gridy = 1;
+g1.weightx = 1;
+g1.weighty = 1;
+g1.gridheight = 1;
+g1.gridwidth = 1;
+add(button2,g1);
+ **/
 

@@ -351,9 +351,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if (loadedPlayIcon) {
-			playButton = new JButton(play);
+			setPlayButton(new JButton(play));
 		} else {
-			playButton = new JButton("Play");
+			setPlayButton(new JButton("Play"));
 		}
 		GridBagConstraints gb3 = new GridBagConstraints();
 		gb3.gridx = 4;
@@ -363,8 +363,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		gb3.weightx = 0;
 		gb3.weighty = 0;
 		gb3.insets = new Insets(0,5,0,5);
-		playButton.setToolTipText("Play");
-		everythingElse.add(playButton,gb3);
+		getPlayButton().setToolTipText("Play");
+		everythingElse.add(getPlayButton(),gb3);
 
 		// Add forward button
 		try {
@@ -528,7 +528,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 	private void setupListeners() {
 
-		playButton.addActionListener(this);
+		getPlayButton().addActionListener(this);
 		muteButton.addActionListener(this);
 		forwardButton.addActionListener(this);
 		backButton.addActionListener(this);
@@ -565,7 +565,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			togglePanelPressed();
 		}
 
-		if (e.getSource() == playButton) {
+		if (e.getSource() == getPlayButton()) {
 			playButtonPress();
 		} 
 
@@ -587,16 +587,18 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			//check if a file is already playing
 			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
 			
-			SwingWorker worker = new SwingWorker<Void,Void>(){
 
-				@Override
-				protected Void doInBackground() throws Exception {
 					
-					JFileChooser fc = new JFileChooser();
+					final JFileChooser fc = new JFileChooser();
 					fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 					int returnVal = fc.showOpenDialog(VideoPlayer.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						
+
+						SwingWorker worker = new SwingWorker<Void,Void>(){
+
+						@Override
+						protected Void doInBackground() throws Exception {
+							
 						String newFile = fc.getSelectedFile().getAbsolutePath();
 						// Check that file is a video or audio file.
 						InvalidCheck i = new InvalidCheck();
@@ -635,17 +637,16 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 							LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
 							VideoPlayer.this.hasPlayed = false;
 
-
 							mediaPlayer.startMedia(filePath);
 
 						}
-					}
+					
 					return null;
 				}
 
 				@Override
 				protected void done() {
-					playButton.setIcon(pause);
+					getPlayButton().setIcon(pause);
 					VideoPlayer.this.hasPlayed = true;
 					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
 						mediaPlayer.setVolume(volumeSlider.getValue());
@@ -653,12 +654,12 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 					}
 				}
 				
-				
 			};
+				worker.execute();
 			
-			worker.execute();
-			
-			
+			}else{
+				
+			}
 			// Get selection from user
 			
 			
@@ -667,7 +668,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		if(e.getSource() == stopVideo){
 			mediaPlayer.stop();
 			mediaPlayer.setRate(1.0f);
-			playButton.setIcon(play);
+			getPlayButton().setIcon(play);
 		}
 
 		if(e.getSource() == snapShotButton){
@@ -823,13 +824,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 			// If the slider has reached the end then make it go back to start and then make the icon  switch to play
 			if(timeSlider.getValue() == mediaPlayer.getLength()){
-				playButton.setIcon(play);
+				getPlayButton().setIcon(play);
 				timeSlider.setValue(0);
 				mediaPlayer.stop();
 				
 				if(ExtendedFrame.getReplay()){
 					//mediaPlayer.start();
-					playButton.doClick();
+					getPlayButton().doClick();
 				}
 			
 			}
@@ -935,9 +936,15 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	
 	public static void startPlaying() {
 		mediaPlayer.stop();
+		//getPlayButton().doClick();
+		//mediaPlayer.startMedia();
 		playButton.doClick();
+		//if(!VideoPlayer.mediaPlayer.isPlaying()){
+		//	VideoPlayer.getPlayButton().doClick();
+		
 		AddToFile a = new AddToFile();
 		a.add();
+
 	}
 	
 	private void playButtonPress(){
@@ -955,15 +962,15 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		if (mediaPlayer.isPlaying()) {
 
 			if (loadedPlayIcon) {
-				playButton.setIcon(play);
+				getPlayButton().setIcon(play);
 			} else {
-				playButton.setText("Play");
+				getPlayButton().setText("Play");
 			}
 		} else if (filePath != null) {
 			if (loadedPauseIcon) {
-				playButton.setIcon(pause);
+				getPlayButton().setIcon(pause);
 			} else {
-				playButton.setText("Pause");
+				getPlayButton().setText("Pause");
 			}
 		}
 		mediaPlayer.pause();
@@ -1024,8 +1031,17 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		volumeSlider.setToolTipText("" + volumeSlider.getValue());
 	}
 
-	private void chooseFilePressed() {
-		
+
+
+	public static JButton getPlayButton() {
+		return playButton;
 	}
+
+
+
+	public static void setPlayButton(JButton playButton) {
+		VideoPlayer.playButton = playButton;
+	}
+
 
 }
