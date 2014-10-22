@@ -75,8 +75,9 @@ public class HelpFrame extends JFrame{
 		
 		
 		try {
- 			
- 			BufferedReader br = new BufferedReader(new FileReader(readme));
+			InputStream in = getClass().getResourceAsStream("README.md");
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+ 			//BufferedReader br = new BufferedReader(new FileReader(readme));
  			String line = br.readLine();
  	        while (line != null) {
  	            area.append(line);
