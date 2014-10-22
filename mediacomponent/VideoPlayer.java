@@ -789,8 +789,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				length = end-start;
 				lengthTime = convertTime(length);
 
-				if(length<5000){
-					JOptionPane.showMessageDialog(VideoPlayer.this, "WARNING! Extraction less than 5 seconds may give orthodox results!");
+				if(length<8000){
+					JOptionPane.showMessageDialog(VideoPlayer.this, "WARNING! Extraction less than 8 seconds may give orthodox results!");
 				}
 
 				vx = new VideoExtracter(startTime,lengthTime);

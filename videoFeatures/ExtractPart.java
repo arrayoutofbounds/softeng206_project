@@ -310,7 +310,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 			int exitValue;
 			
-			String cmd = "/usr/bin/avconv -i " + selectedFile.getAbsolutePath() + " -ss " + startTime.getText() + " -t " + lengthTime.getText() + " -c:a copy -c:v copy "  + outputDirectory.getAbsolutePath() + File.separator + name; 
+			String cmd = "/usr/bin/avconv -i " + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -ss " + startTime.getText() + " -t " + lengthTime.getText() + " -c:a copy -c:v copy "  + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name; 
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash","-c",cmd);
 			

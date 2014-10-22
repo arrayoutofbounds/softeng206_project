@@ -163,9 +163,9 @@ public class Download extends JPanel implements ActionListener {
 
 				if (override) {
 					toOverride.delete();
-					builder = new ProcessBuilder("/usr/bin/wget","-P" + chosenDirectory,Url.getText());
+					builder = new ProcessBuilder("/usr/bin/wget","-P" + chosenDirectory.getAbsolutePath().replaceAll(" ", "\\\\ "),Url.getText());
 				} else {
-					builder = new ProcessBuilder("/usr/bin/wget","-c","-P" + chosenDirectory,Url.getText());
+					builder = new ProcessBuilder("/usr/bin/wget","-c","-P" + chosenDirectory.getAbsolutePath().replaceAll(" ", "\\\\ "),Url.getText());
 				}
 
 				builder.redirectErrorStream(true);

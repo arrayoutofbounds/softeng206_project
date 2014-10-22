@@ -178,7 +178,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 					try {
 
 						// Process to get length of input file
-						ProcessBuilder timeBuilder = new ProcessBuilder("/usr/bin/avconv", "-i", "" + selectedFile + "", "| grep Duration").redirectErrorStream(true);
+						ProcessBuilder timeBuilder = new ProcessBuilder("/usr/bin/avconv", "-i", "" + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + "", "| grep Duration").redirectErrorStream(true);
 						Process timeProcess = timeBuilder.start();
 						InputStream out = timeProcess.getInputStream();
 						BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
@@ -212,7 +212,7 @@ public class ExtractFrame extends JFrame implements ActionListener {
 
 
 						// Process to extract audio
-						ProcessBuilder builder = new ProcessBuilder("/usr/bin/avconv", "-i","" + selectedFile, "-vn", "" + selectOutputNameField.getText()).redirectErrorStream(true);
+						ProcessBuilder builder = new ProcessBuilder("/usr/bin/avconv", "-i","" + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ "), "-vn", "" + selectOutputNameField.getText()).redirectErrorStream(true);
 						builder.directory(outputDirectory);
 
 

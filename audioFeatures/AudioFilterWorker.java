@@ -41,7 +41,7 @@ public class AudioFilterWorker extends SwingWorker<Integer,Void>{
 
 		if(selectFilter.getSelectedIndex() == 0){
 			// it is the flip 90 degress so do the avconv related to that
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -an "  + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -an "  + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();

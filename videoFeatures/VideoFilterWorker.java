@@ -43,7 +43,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 
 		if(selectFilter.getSelectedIndex() == 0){
 			// it is the flip 90 degress so do the avconv related to that
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=1 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -53,7 +53,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 1){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=0 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "transpose=0 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -62,7 +62,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 			exitValue = process.exitValue();
 		}
 		if(selectFilter.getSelectedIndex() == 2){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate,vflip " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate,vflip " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -73,7 +73,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 
 
 		if(selectFilter.getSelectedIndex() == 3){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "negate " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -83,7 +83,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 4){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "vflip " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "vflip " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -93,7 +93,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 5){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=2:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=2:1 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -103,7 +103,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 6){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=5:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=5:1 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -113,7 +113,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 7){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=10:1 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "boxblur=10:1 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -123,7 +123,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 8){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=320:240 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=320:240 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -133,7 +133,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 9){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=480:360 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=480:360 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -143,7 +143,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 10){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=640:480 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=640:480 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -154,7 +154,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 
 
 		if(selectFilter.getSelectedIndex() == 11){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1280:720 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1280:720 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
@@ -164,7 +164,7 @@ public class VideoFilterWorker extends SwingWorker<Integer,Void>{
 		}
 
 		if(selectFilter.getSelectedIndex() == 12){
-			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1920:1080 " + "-strict experimental " + outputDirectory.getAbsolutePath() + File.separator + name;
+			String cmd = "/usr/bin/avconv -i " + "" +selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -vf " + "scale=1920:1080 " + "-strict experimental " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator + name;
 
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			Process process = builder.start();
