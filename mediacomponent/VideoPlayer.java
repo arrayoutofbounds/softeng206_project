@@ -351,10 +351,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		if (loadedPlayIcon) {
-			setPlayButton(new JButton(play));
-		} else {
-			setPlayButton(new JButton("Play"));
-		}
+        	playButton = new JButton(play);
+        } else {
+        	playButton = new JButton("Play");
+        }
 		GridBagConstraints gb3 = new GridBagConstraints();
 		gb3.gridx = 4;
 		gb3.gridy = 1;
@@ -363,8 +363,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		gb3.weightx = 0;
 		gb3.weighty = 0;
 		gb3.insets = new Insets(0,5,0,5);
-		getPlayButton().setToolTipText("Play");
-		everythingElse.add(getPlayButton(),gb3);
+        playButton.setToolTipText("Play");
+		everythingElse.add(playButton,gb3);
 
 		// Add forward button
 		try {
@@ -528,7 +528,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 	private void setupListeners() {
 
-		getPlayButton().addActionListener(this);
+		playButton.addActionListener(this);
 		muteButton.addActionListener(this);
 		forwardButton.addActionListener(this);
 		backButton.addActionListener(this);
@@ -565,7 +565,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			togglePanelPressed();
 		}
 
-		if (e.getSource() == getPlayButton()) {
+		if (e.getSource() == playButton) {
 			playButtonPress();
 		} 
 
@@ -646,7 +646,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 				@Override
 				protected void done() {
-					getPlayButton().setIcon(pause);
+					playButton.setIcon(pause);
 					VideoPlayer.this.hasPlayed = true;
 					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
 						mediaPlayer.setVolume(volumeSlider.getValue());
@@ -668,7 +668,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		if(e.getSource() == stopVideo){
 			mediaPlayer.stop();
 			mediaPlayer.setRate(1.0f);
-			getPlayButton().setIcon(play);
+			playButton.setIcon(play);
 		}
 
 		if(e.getSource() == snapShotButton){
@@ -824,13 +824,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 			// If the slider has reached the end then make it go back to start and then make the icon  switch to play
 			if(timeSlider.getValue() == mediaPlayer.getLength()){
-				getPlayButton().setIcon(play);
+				playButton.setIcon(play);
 				timeSlider.setValue(0);
 				mediaPlayer.stop();
 				
 				if(ExtendedFrame.getReplay()){
 					//mediaPlayer.start();
-					getPlayButton().doClick();
+					playButton.doClick();
 				}
 			
 			}
@@ -962,15 +962,15 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		if (mediaPlayer.isPlaying()) {
 
 			if (loadedPlayIcon) {
-				getPlayButton().setIcon(play);
+				playButton.setIcon(play);
 			} else {
-				getPlayButton().setText("Play");
+				playButton.setText("Play");
 			}
 		} else if (filePath != null) {
 			if (loadedPauseIcon) {
-				getPlayButton().setIcon(pause);
+				playButton.setIcon(pause);
 			} else {
-				getPlayButton().setText("Pause");
+				playButton.setText("Pause");
 			}
 		}
 		mediaPlayer.pause();
@@ -1029,18 +1029,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 		mediaPlayer.mute();
 		volumeSlider.setToolTipText("" + volumeSlider.getValue());
-	}
-
-
-
-	public static JButton getPlayButton() {
-		return playButton;
-	}
-
-
-
-	public static void setPlayButton(JButton playButton) {
-		VideoPlayer.playButton = playButton;
 	}
 
 
