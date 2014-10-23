@@ -388,6 +388,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		// get all the paths of the selected items and put them in a list and make sure that they are not zero
 		if(playlist.size() != 0){
 
+			JOptionPane.showMessageDialog(null,"The making og the playlist takes couple of minutes! Please let it run in the back!");
 			// now open up a jfile chooser and make the user pick a directory and make a folder
 			// with the name of the playlist.. The name of the text file is the location chosen and 
 			// the name of the playlist
@@ -472,7 +473,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			// loop through the list of playlist and their paths and add to file
 			for(int i = 0;i<playlist.size();i++){

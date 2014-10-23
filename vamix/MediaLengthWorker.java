@@ -7,7 +7,13 @@ import java.util.regex.Pattern;
 
 import javax.swing.SwingWorker;
 
-
+/**
+ * This Class gets the length of the video that is passed in the input.
+ * It calls the process builder and gets the duration of the media file and 
+ * then returns it.
+ * @author anmol
+ *
+ */
 public class MediaLengthWorker extends SwingWorker<Integer, Void> {
 
 	private String pathToFile;

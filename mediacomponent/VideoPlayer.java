@@ -950,10 +950,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	public void mouseClicked(MouseEvent arg0) {
 
 
-		if(arg0.getModifiers() == MouseEvent.BUTTON3_MASK){
+		if((mediaPlayer.isPlaying())&&(arg0.getModifiers() == MouseEvent.BUTTON3_MASK)){
 			popup.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 			
-		}else if(arg0.getModifiers() == MouseEvent.BUTTON1_MASK){
+		}else if((mediaPlayer.isPlaying())&&(arg0.getModifiers() == MouseEvent.BUTTON1_MASK)){
 			clicked++;
 			
 			// start the recording

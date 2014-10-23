@@ -28,6 +28,14 @@ import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 
+/**
+ * This class allows the user to extract part of the video.
+ * It output a mp4 file.
+ * The GUI is designed for the frame and the logic is inside a swingoworkr
+ * in the class. It does the SAME THING that the double clicking the media player when the media player is playing.
+ * @author anmol
+ *
+ */
 public class ExtractPart extends JFrame implements ActionListener {
 	
 	private JPanel chooseInput;

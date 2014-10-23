@@ -17,7 +17,13 @@ import uk.co.caprica.vlcj.version.LibVlcVersion;
 
 import com.sun.jna.Native;
 
-
+/**
+ * This is the main class. It runs the whole program. It gets
+ * the vlcj libraries and also sets the size of the frame. An exception is thrown if
+ * the user does not have a vlc player installed.
+ * @author anmol
+ *
+ */
 public class MainFrame {
 
 	public static void main(String[] args) {
@@ -26,26 +32,22 @@ public class MainFrame {
 			@Override
 			public void run() {
 				
+				// add the seaglass look and feel
 				 try {
 					UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
 				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (InstantiationException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (IllegalAccessException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (UnsupportedLookAndFeelException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
 				try {
 					setupLibVLC();
 				} catch (LibraryNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -54,20 +56,19 @@ public class MainFrame {
 				ExtendedFrame frame = new ExtendedFrame();
 				frame.setResizable(true);
 				frame.setSize(800, 600);
-				//frame.setSize(600, 600);
 				frame.setMinimumSize(new Dimension(500, 400));
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				//int height = screenSize.height;
-				//int width = screenSize.width;
-				//frame.setSize(width/2, height/2);
 				frame.setLocationRelativeTo(null);
-
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
 			}
 		});
 	}
-
+	
+	/**
+	 * Method that throws exception if the libvlc is not found.
+	 * @throws LibraryNotFoundException
+	 */
 	private static void setupLibVLC() throws LibraryNotFoundException {
 	    new NativeDiscovery().discover();
 	    // discovery()'s method return value is WRONG on Linux

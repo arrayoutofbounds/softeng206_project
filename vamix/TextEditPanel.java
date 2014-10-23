@@ -21,7 +21,13 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-
+/**
+ * This class makes the text edit panel. It designs
+ * the GUI and makes the logic for editing text panel. This is the component put underneath
+ * the text area where the text added is made input.
+ * @author anmol
+ *
+ */
 @SuppressWarnings("serial")
 public class TextEditPanel extends JPanel {
 	

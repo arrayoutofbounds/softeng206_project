@@ -456,6 +456,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 					fileName = fileName + ".mp4";
 				}
 				
+				
 				String output = outputDirectory.getAbsolutePath() + System.getProperty("file.separator") + fileName;
 				String cmd = "avconv -y -i " + selectedFile.getAbsolutePath() + " -strict experimental -vf \"drawtext=fontfile='" + startFontPath + "':text='" + startText + "':x=main_w/2:y=main_h/2:draw='lt(t\\," + startDuration + "):fontsize=" + startFontSize + ":fontcolor=" + startFontColor + "\" -crf 16 " + "\"" + output + "\"";
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
@@ -499,6 +500,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				mediaWorker.execute();
 				int length = mediaWorker.get();
 				endDuration = length - endDuration;
+				
 				
 				String cmd = "avconv -y -i " + inputFilePath + " -strict experimental -vf \"drawtext=fontfile='" + endFontPath + "':text='" + endText + "':x=main_w/2:y=main_h/2:draw='gt(t," + endDuration + ")':fontsize=" + endFontSize + ":fontcolor=" + endFontColor + "\" -crf 16 " + "\"" + output + "\"";
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
