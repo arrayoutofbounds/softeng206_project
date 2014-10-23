@@ -45,7 +45,9 @@ public class TextEditPanel extends JPanel {
 	private JCheckBox enableCheckBox;
 	private boolean isEnabled = false;
 	
+	
 	TextEditPanel (String title, Vector<String> fontNames, final ArrayList<Font> fontList) {
+		
 		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		textArea = new JTextArea(10, 26);
@@ -70,6 +72,7 @@ public class TextEditPanel extends JPanel {
 		
 		fontSelectionComboBox = new JComboBox<String>(fontNames);
 		
+		// add a listner to the font selection box to show the dynamic changes
 		fontSelectionComboBox.addItemListener(new ItemListener() {
 			int index = 0;
 			@Override
@@ -91,7 +94,7 @@ public class TextEditPanel extends JPanel {
 		});
 		
 		fontSelectionComboBox.setPreferredSize(new Dimension(170, 20));
-		
+		// add a listener to the font size so that the dynamic change is shown
 		fontSizeField.addActionListener(new ActionListener() {
 			
 			@Override
@@ -105,6 +108,7 @@ public class TextEditPanel extends JPanel {
 				
 			}
 		});
+		
 		
 		JPanel p1 = new JPanel();
 		enableCheckBox = new JCheckBox("Enable");
@@ -128,7 +132,8 @@ public class TextEditPanel extends JPanel {
 		
 		this.add(subPanel);
 		this.setBorder(blackline);
-		
+	
+		// add a listener to the cpmbobox so that the change to colour will be shown dynamically.
 		colorComboBox.addActionListener(new ActionListener() {
 			
 			@Override
@@ -139,6 +144,7 @@ public class TextEditPanel extends JPanel {
 			}
 		});
 		
+		// add a listener to the enable checkbox to get the result when it is clicked
 		enableCheckBox.addActionListener(new ActionListener() {
 			
 			@Override
@@ -150,9 +156,14 @@ public class TextEditPanel extends JPanel {
 				}
 			}
 		});
+		
 
 	}
 	
+	/**
+	 * returns true of there is text in the textarea, else it returns false
+	 * @return
+	 */
 	public boolean hasText() {
 		if (textArea.getText().isEmpty()) {
 			return false;
@@ -161,14 +172,26 @@ public class TextEditPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * sets the text in text area
+	 * @return
+	 */
 	public String getText() {
 		return textArea.getText();
 	}
 	
+	/**
+	 * gets the font index and returns it.
+	 * @return
+	 */
 	public int getFontIndex() {
 		return fontSelectionComboBox.getSelectedIndex();
 	}
 	
+	/**
+	 * Gets the time value and returns it. Default value is 10 seconds.
+	 * @return
+	 */
 	public int getTimeValue() {
 		try {
 			return Integer.parseInt(timeField.getText());
@@ -177,10 +200,18 @@ public class TextEditPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Gets the colour chosen and then returns it.
+	 * @return
+	 */
 	public String getColor() {
 		return (String)colorComboBox.getSelectedItem();
 	}
 	
+	/**
+	 * Gets the font size chosen and then returns it.
+	 * @return
+	 */
 	public int getFontSize() {
 		try {
 			return Integer.parseInt(fontSizeField.getText());
@@ -189,10 +220,19 @@ public class TextEditPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * This method returns the boolean true if text is to be added and false
+	 * if not to be added.
+	 * @return
+	 */
 	public boolean shouldProcess() {
 		return isEnabled;
 	}
 	
+	/**
+	 * This gets the settings in an arrau and then return a string array.
+	 * @return
+	 */
 	public String[] getSettingsArray() {
 		String enabled;
 		if (isEnabled) {
@@ -200,11 +240,16 @@ public class TextEditPanel extends JPanel {
 		} else {
 			enabled = "0";
 		}
+		
 		String[] settings = {enabled, timeField.getText(), fontSizeField.getText(), colorComboBox.getSelectedIndex() + "", fontSelectionComboBox.getSelectedIndex() + "", "{", textArea.getText(), "}"};
 		
 		return settings;
 	}
 	
+	/**
+	 * This sets the settings all at once when everything has been put in.
+	 * @param settings
+	 */
 	public void setSettings(String[] settings) {
 		
 		if (settings[0].equals("0")) {
@@ -212,7 +257,7 @@ public class TextEditPanel extends JPanel {
 		} else if (settings[0].equals("1")) {
 			enableCheckBox.setSelected(true);
 		} else {
-			// something went wrong warn user and move on to next setting
+			// TODO something went wrong warn user and move on to next setting
 		}
 		
 		timeField.setText(settings[1]);
@@ -220,12 +265,12 @@ public class TextEditPanel extends JPanel {
 		try {
 			colorComboBox.setSelectedIndex(Integer.parseInt(settings[3]));
 		} catch (IllegalArgumentException e) {
-			// warn user and move on
+			// TODO warn user and move on
 		}
 		try {
 			fontSelectionComboBox.setSelectedIndex(Integer.parseInt(settings[4]));
 		} catch (IllegalArgumentException e) {
-			// warn user and move on
+			// TODO warn user and move on
 		}
 		
 		textArea.setText(settings[5]);

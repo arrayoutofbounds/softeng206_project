@@ -37,10 +37,12 @@ import javax.swing.border.Border;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 
+
 /**
  * This class has the edit text frame. It makes the text and puts it onto the video.
  * It is a seperate frame that shows up in the menu bar.
  * 
+ * input : any valid media file
  * OUTPUt : mp4 file
  * @author anmol
  *
@@ -76,7 +78,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		FontDetectorWorker fontWorker = new FontDetectorWorker(fontPaths, fontNames, fontFiles);
 		fontWorker.execute();
 		
-		getContentPane().setLayout(new BorderLayout(2, 2));
+		this.setLayout(new BorderLayout(2, 2));
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		
 		selectInputFileButton = new JButton("Select input file");
@@ -110,12 +112,12 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		subTopPanel2.setBorder(blackline);
 		topPanel.add(subTopPanel1, BorderLayout.NORTH);
 		topPanel.add(subTopPanel2, BorderLayout.SOUTH);
-		getContentPane().add(topPanel, BorderLayout.NORTH);
+		this.add(topPanel, BorderLayout.NORTH);
 		
 		leftEditPane = new TextEditPanel("Text to show at start", fontNames, fontFiles);	
-		getContentPane().add(leftEditPane, BorderLayout.WEST);
+		this.add(leftEditPane, BorderLayout.WEST);
 		rightEditPane = new TextEditPanel("Text to show at end", fontNames, fontFiles);
-		getContentPane().add(rightEditPane, BorderLayout.CENTER);
+		this.add(rightEditPane, BorderLayout.CENTER);
 		
 		selectOutputDirectoryButton = new JButton("Select output directory");
 		selectOutputDirectoryButton.addActionListener(this);
@@ -135,10 +137,9 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		bottomPanel.add(panel, BorderLayout.SOUTH);
 		
 		bottomPanel.setBorder(blackline);
-		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		this.add(bottomPanel, BorderLayout.SOUTH);
 		
 	}
-	
 	
 	/**
 	 * This method saves the project settings made in the text.
@@ -213,11 +214,11 @@ public class EditTextFrame extends JFrame implements ActionListener {
 	}
 	
 	/**
-	 * This loads a project that has been saved before 
+	 * This method saves the project settings made in the text.
+	 * It can be loaded again for future use.
 	 */
 	private void loadProject() {
 		
-		// select a file
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("Select project file to load");
@@ -227,6 +228,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		if (response == JFileChooser.APPROVE_OPTION) {
 			chosenFile = chooser.getSelectedFile().getAbsoluteFile();
 		} else {
+			// something went wrong
 			return;
 		}
 		
@@ -276,12 +278,13 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				
 			}
 		} catch (IOException e) {
+			
 			e.printStackTrace();
 		} finally {
 			try {
 				reader.close();
 			} catch (IOException e) {
-				// Something went wrong
+				
 			}
 		}
 		
@@ -298,8 +301,11 @@ public class EditTextFrame extends JFrame implements ActionListener {
 	}
 
 	@Override
+	/**
+	 * This method is for when any of the buttons are clicked.It checks that the correct input is there and that
+	 * the valid fields are filled and allows the user to process if everything is valid.
+	 */
 	public void actionPerformed(ActionEvent e) {
-		
 		if (e.getSource() == selectInputFileButton) {
 			
 			// Open a file chooser and only allow a video file to be chosen
@@ -407,6 +413,17 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		}
 	}
 	
+	/**
+	 * 
+	 *This is the class that does the adding of the text. It ensures that 
+	 *the text is received from the text areas and that the text is added to the start and the
+	 *end only if the user has selected it to be added to them. Input is a video file
+	 *and output is a output MP4.
+	 * 
+	 * output: mp4 file
+	 * @author anmol
+	 *
+	 */
 	class TextWorker extends SwingWorker<Integer, Void> {
 		
 		private int startFontSize;
@@ -444,8 +461,8 @@ public class EditTextFrame extends JFrame implements ActionListener {
 
 		@Override
 		protected Integer doInBackground() throws Exception {
-			// make sure that output directory is specified for default no selection 	
-			// incorrect font is used
+			// TODO make sure that output directory is specified for default no selection 	
+			// TODO incorrect font is used
 			
 			
 			// Check if text overlay for start is enabled
@@ -455,7 +472,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				if (!fileName.contains(".mp4")) { // This should be more sophisticated
 					fileName = fileName + ".mp4";
 				}
-				
 				
 				String output = outputDirectory.getAbsolutePath() + System.getProperty("file.separator") + fileName;
 				String cmd = "avconv -y -i " + selectedFile.getAbsolutePath() + " -strict experimental -vf \"drawtext=fontfile='" + startFontPath + "':text='" + startText + "':x=main_w/2:y=main_h/2:draw='lt(t\\," + startDuration + "):fontsize=" + startFontSize + ":fontcolor=" + startFontColor + "\" -crf 16 " + "\"" + output + "\"";
@@ -501,11 +517,11 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				int length = mediaWorker.get();
 				endDuration = length - endDuration;
 				
-				
 				String cmd = "avconv -y -i " + inputFilePath + " -strict experimental -vf \"drawtext=fontfile='" + endFontPath + "':text='" + endText + "':x=main_w/2:y=main_h/2:draw='gt(t," + endDuration + ")':fontsize=" + endFontSize + ":fontcolor=" + endFontColor + "\" -crf 16 " + "\"" + output + "\"";
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				textProcessBuilder.redirectErrorStream(true);
 				Process textProcess = textProcessBuilder.start();
+
 				textProcess.waitFor();
 				
 				if (startEnabled) {
@@ -523,8 +539,12 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		}
 		
 		@Override
+		/**
+		 * Shows the user what the result of the process was in a nice way.
+		 */
 		protected void done() {
 			progressBar.setIndeterminate(false);
+
 			// Check if process was successful
 			startButton.setEnabled(true);
 			int exitValue = 0;
@@ -533,6 +553,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(EditTextFrame.this, "Adding text was cancelled");
 			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -547,8 +568,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 	}
 	
 }
-
-
 
 /**
  * 

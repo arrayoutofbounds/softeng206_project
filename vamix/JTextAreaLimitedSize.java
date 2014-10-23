@@ -21,7 +21,6 @@ public class JTextAreaLimitedSize extends PlainDocument {
 				try {
 					super.insertString(offset, str, a);
 				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -328,11 +328,21 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		helpFrame.setVisible(true);
 		helpFrame.appendReadmeFile();
 	}
-
+	
+	/**
+	 * This method sets the radio button in the menu bar. It is visible 
+	 * to VideoPlayer.java as well because the playback speed can be set from there as well.
+	 * @param j
+	 */
 	public static void setRadioButton(int j) {
 		playingSpeed[j].setSelected(true);
 	}
 
+	/**
+	 * This method returns the value of the replay button. It is public as it 
+	 * is used in VideoPlayer.java class when the media file finished playing.
+	 * @return
+	 */
 	public static boolean getReplay() {
 		return replay.isSelected();
 	}
