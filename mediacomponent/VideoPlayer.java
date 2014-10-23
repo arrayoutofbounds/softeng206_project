@@ -117,6 +117,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	private boolean hasPlayed;
 
 	//references to the images for the icons
+	// Rest of the images are all from the same site (iconfinder.com)
 	//https://www.iconfinder.com/icons/216309/media_pause_icon#size=16
 	//https://www.iconfinder.com/icons/211876/play_icon#size=16
 	private ImageIcon play = null;
@@ -614,7 +615,14 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 					fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 					int returnVal = fc.showOpenDialog(VideoPlayer.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-
+						
+						
+						/**
+						 * This swingworker is gets the file from the file chooser in the background while the current
+						 * file is still playing. If the file is chosen then it starts it in the background.
+						 * This is reallt crucial as wihtout the swing worker the method would hang any time a file was not chosen.
+						 * Now, everything works on the background thread and runs perfectly and does not hang the GUI.
+						 */
 						SwingWorker worker = new SwingWorker<Void,Void>(){
 
 						@Override
@@ -624,26 +632,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 						// Check that file is a video or audio file.
 						InvalidCheck i = new InvalidCheck();
 						boolean isValidMedia = i.invalidCheck(newFile);
-						/**
-						String command = "file " + "-ib " + "\"" + newFile + "\"" + " | grep \"video\\|audio\"";
-						ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
-						boolean isValidMedia = false;
-
-						try {
-							Process process = builder.start();
-							process.waitFor();
-							if (process.exitValue() == 0) {
-								isValidMedia = true;
-							}
-
-						} catch (IOException | InterruptedException e1) {
-							// Couldn't determine file type. Warn user
-							JOptionPane.showMessageDialog(VideoPlayer.this, "Unable to determine file type. Cannot load file.", "Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-
-						 **/
-						
 						// only allows the user to choose a valid file. If not, then a warning is shown!
 						if (!isValidMedia) {
 							JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -779,7 +767,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	
 	/**
 	 * Rewind buttons rewinds till it is disabled. It also ensures that the fast forward is not enabled at
-	 * the same time.
+	 * the same time. Also starts the rewind worker when needed.
 	 * @param isf
 	 */
 	private void rewindPressed(boolean isf){
@@ -789,7 +777,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			fastForwardButton.setBackground(null);
 			isFastForwarding = false;
 		}
-		
+		// start the worker
 		if (isRewinding) {
 			worker.cancel(true);
 			rewindBack.setBackground(null);
