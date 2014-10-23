@@ -30,6 +30,8 @@ import vamix.InvalidCheck;
 /**
  * This class does the extraction of the audio from a video.
  * It takes in a valid media video file and then outputs a mp3.
+ * 
+ * OUTPUT : mp3
  * @author anmol
  *
  */

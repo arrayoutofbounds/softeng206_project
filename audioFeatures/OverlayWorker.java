@@ -21,6 +21,8 @@ import vamix.MediaLengthWorker;
  * This class has the swingworker that will allow the user to  overlay one audio on another.
  * It takes in a video file and then allows the user to select a audio file to overlay on that file.
  * It is called by the ReplaceAudio class.
+ * 
+ * OUTPUT: mp4
  * @author anmol
  *
  */

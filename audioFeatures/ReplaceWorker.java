@@ -22,6 +22,9 @@ import vamix.MediaLengthWorker;
  * It is taking in a video and audio files and overlaying the audio onto the given video file.
  * It does checks to ensure that everything is valid and makes sure that the task do not
  * interfere with the GUI.
+ * 
+ * OUTPUT : mp4
+ * 
  * @author anmol
  *
  */

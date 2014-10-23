@@ -25,10 +25,19 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
-
+/**
+ * This class has the download function. It is a seperate frame.
+ * It creates the GUI for the download frame.
+ * 
+ * Output : format of what the URL gives.
+ * @author anmol
+ *
+ */
 @SuppressWarnings("serial")
 public class Download extends JPanel implements ActionListener {
-
+	
+	
+	// initialise the variables
 	private JLabel forUrl;
 	private JTextField Url;
 	private JButton choosePlaceToSaveToButton;
@@ -49,8 +58,7 @@ public class Download extends JPanel implements ActionListener {
 		setLayout(new GridBagLayout());
 
 		// Create all the components and create a new gridLayout for each component,
-		// adding the label that shows user where to enter the URL.
-
+		// adding the label that shows user where to enter the URL. 
 		forUrl = new JLabel("Please enter URL:");
 		GridBagConstraints gb = new GridBagConstraints();
 		gb.gridx = 0;
@@ -85,7 +93,8 @@ public class Download extends JPanel implements ActionListener {
 		gb2.gridwidth = 4;
 		gb2.weighty =1;
 		this.add(choosePlaceToSaveToButton, gb2);
-
+		
+		// adding the label that shows the directory
 		showChosenDirectoryLabel = new JLabel("Saved To: ");
 		GridBagConstraints gb3 = new GridBagConstraints();
 		gb3.gridx = 0;
@@ -110,7 +119,8 @@ public class Download extends JPanel implements ActionListener {
 		gb4.weightx = 0.4;
 		gb4.weighty = 1;
 		this.add(downloadButton, gb4);
-
+		
+		// adding the cancel button
 		cancelButton = new JButton("Cancel");
 		cancelButton.setEnabled(false);
 		cancelButton.setPreferredSize(new Dimension(100,20));
@@ -145,10 +155,20 @@ public class Download extends JPanel implements ActionListener {
 		cancelButton.addActionListener(this);
 
 	}
-
+	
+	/**
+	 * This class does the download process calls in the background
+	 * and ensures that the user knows what the result of the process is
+	 * and also makes sure that the GUI is not disturbed.
+	 * @author anmol
+	 *
+	 */
 	private class ButtonHandler extends SwingWorker<Integer,Integer> {
 
-
+		/**
+		 * This method return the exit value in the end. It updates the
+		 * progess bar by returning numbers in the middle by calling publish()
+		 */
 		@Override
 		protected Integer doInBackground() throws Exception {
 		// Ask if the file is open source or not
@@ -157,7 +177,8 @@ public class Download extends JPanel implements ActionListener {
 			int exitValue = 1;
 			InputStream stdout;
 			BufferedReader stdoutBuffered;
-
+			
+			// do the wget depending on whether the user wants to override or resume
 			try {
 				ProcessBuilder builder = null;
 
@@ -167,14 +188,14 @@ public class Download extends JPanel implements ActionListener {
 				} else {
 					builder = new ProcessBuilder("/usr/bin/wget","-c","-P" + chosenDirectory.getAbsolutePath().replaceAll(" ", "\\\\ "),Url.getText());
 				}
-
+				
+				// print the error stream because it has the numbers needed for the percentage for the progress bar
 				builder.redirectErrorStream(true);
-
 				Process process = builder.start();
-
 				stdout = process.getInputStream();
 				stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
-
+				
+				// read the error lines so that the progress bar can be updated
 				String line2= null;
 				while ((line2 = stdoutBuffered.readLine()) != null) {
 
@@ -183,33 +204,38 @@ public class Download extends JPanel implements ActionListener {
 					} else {
 						Matcher m =Pattern.compile("(\\d+)%").matcher(line2);
 						if (m.find()) {
+							// send the numbers to the process method
 							publish(Integer.parseInt(m.group(1)));
 						}
 					}
 				}
 				process.waitFor();
-
+				// get the exit value
 				exitValue = process.exitValue();
-				
 				//Close the buffered reader
 				stdoutBuffered.close();
-
-
+				
 			} catch (IOException io) {
+				// DO NOT THROW EXCEPTION OR STACK TRACE HERE!
 				// Check for IOexception
-
 				//JOptionPane.showMessageDialog(Download.this,"io exception");
 				// the bufferedreader throws an exception i think
 			} catch(Exception e4) {
-				//any other excpetion...just show me the stack trace
+				//any other exception...just show me the stack trace
 				e4.printStackTrace();
 			}
-
+			
+			
+			// return the exit value
 			return exitValue;
 
 		}
 
 		@Override
+		/**
+		 * This method runs on the ED thread and thus it updates
+		 * the progress bar
+		 */
 		protected void process(List<Integer> chunks) {
 			for (int i : chunks) {
 				progressBar.setValue(i);
@@ -217,11 +243,16 @@ public class Download extends JPanel implements ActionListener {
 		}
 
 		@Override
+		/**
+		 * This method gets the result of the download function and tells the
+		 * user in a nice GUI way what happened.
+		 */
 		protected void done() {
 			downloadButton.setEnabled(true);
 			try {
 				int value = get();
-
+				
+				// tell the user what the result is and its different meanings.
 				if(value == 0){
 					JOptionPane.showMessageDialog(Download.this,"Download Complete!");
 					downloadButton.setEnabled(true);
@@ -260,7 +291,6 @@ public class Download extends JPanel implements ActionListener {
 					JOptionPane.showMessageDialog(Download.this, "Download failed due to Server issuing an error response!");
 				}
 			} catch (InterruptedException | ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (CancellationException c) {
 				JOptionPane.showMessageDialog(Download.this,"The download was cancelled!");
@@ -269,6 +299,11 @@ public class Download extends JPanel implements ActionListener {
 	}
 
 	@Override
+	/**
+	 * 
+	 * This method is for when either the choose place to save, download or cancel button is pressed.
+	 * 
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 		// If the button to select the directory to save to is chosen
@@ -285,7 +320,6 @@ public class Download extends JPanel implements ActionListener {
 		// if it does then dialog box the override or resume.
 		// if it does not then just carry on with the download as usual
 
-
 		if (e.getSource() == downloadButton) {
 			downloadPressed();
 		}
@@ -296,7 +330,11 @@ public class Download extends JPanel implements ActionListener {
 			worker.cancel(true);
 		}
 	}
-
+	
+	/**
+	 * This method is for when the download button is pressed. It gets the name
+	 * It gets the base name and this allows it to check if the file aready exits somewhere.
+	 */
 	private void downloadPressed() {
 
 		String text = Url.getText();
@@ -324,7 +362,7 @@ public class Download extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(Download.this,"Error 404. URL not found!");
 		}
 
-		
+		// ensure that no fields are empty before the processs is started.
 		if ((text.equals("") || text.equals(null)) && (chosenDirectory == null)) {
 			JOptionPane.showMessageDialog(Download.this,"Please give URL of mp3 and choose a destination to save the file");
 		} else if(text.equals("") || text.equals(null)) {
@@ -372,6 +410,9 @@ public class Download extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * This method allows the user to choose a place to save the downloaded file to.
+	 */
 	private void choosePlaceToSavePressed() {
 
 		JFileChooser chooser = new JFileChooser();

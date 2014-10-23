@@ -26,8 +26,9 @@ import vamix.InvalidCheck;
 /**
  * This class makes and implements the Audio Filter option. It contains the design for the audio filter frame and a framework
  * that will allow and future developers to add more filters. It does not do the adding of the filters, instead it calls on the
- * AudioFilterWorker class to add the filters to the video.
+ * AudioFilterWorker class to add the filters to the video. 
  * 
+ * Output: mp4 file
  * @author anmol
  *
  */
