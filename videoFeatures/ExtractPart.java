@@ -71,7 +71,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 	private boolean carryOn;
 	private FilterWorker worker;
 
-
+	// MAKE THE GUI
 	public ExtractPart(){
 		super("Extract part of a video");
 		setLayout(new GridLayout(8,1));
@@ -124,7 +124,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 		chooseInputButton.addActionListener(this);
 		chooseOutputButton.addActionListener(this);
 		start.addActionListener(this);
-
+		
+		
+		// add components
 		chooseInput.add(chooseInputButton);
 		showInput.add(showingInput,BorderLayout.WEST);
 		chooseOutput.add(chooseOutputButton);
@@ -139,6 +141,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 		forTime.add(length);
 		forTime.add(lengthTime);
 
+		// add everything to frame
 		add(chooseInput);
 		add(showInput);
 		add(chooseOutput);
@@ -150,7 +153,11 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 	}
 
-
+	/**
+	 * This method checks the time that the user entered and then 
+	 * ensures that it is valid so that they process can carry on. If not valid
+	 * then user is asked to enter a time again.
+	 */
 	private void checkTime(){
 		String inputStartTime = startTime.getText();
 		String inputLengthTime = lengthTime.getText();
@@ -184,6 +191,9 @@ public class ExtractPart extends JFrame implements ActionListener {
 	}
 
 	@Override
+	/**
+	 * Has the methods for all the button presses
+	 */
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == chooseInputButton){
@@ -200,7 +210,12 @@ public class ExtractPart extends JFrame implements ActionListener {
 		
 	}
 	
-	
+	/**
+	 * This method checks that all the fields are filled out. Then
+	 * it ensures that there is no file overlap due to name and asks the user
+	 * to rename or overrride the file if there is a name clash.
+	 * Then it starts to extract part of a video.
+	 */
 	private void startPressed() {
 		carryOn = true;
 
@@ -251,7 +266,10 @@ public class ExtractPart extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * This method allows the user to select the output directory of the process.
+	 * It ensures that a directory is picked only.
+	 */
 	private void chooseOutputPressed() {
 		JFileChooser outputChooser = new JFileChooser();
 		outputChooser.setCurrentDirectory(new java.io.File("."));
@@ -268,7 +286,12 @@ public class ExtractPart extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * This method allows the user to pick a video file. It does not
+	 * allow the user to choose a non video file. It also checks that 
+	 * the file input in valid. SO no fake media file with just a suffix of .mp4 
+	 * can get accepted.
+	 */
 	private void chooseInputPressed() {
 
 		JFileChooser fileChooser = new JFileChooser();
@@ -303,7 +326,12 @@ public class ExtractPart extends JFrame implements ActionListener {
 		
 	}
 
-
+	/**
+	 * This worker gets the part of the video that the user wants with the time they indicated.
+	 * It gives a MP$ output file.
+	 * @author anmol
+	 *
+	 */
 	private class FilterWorker extends SwingWorker<Integer,Void>{
 
 		@Override
@@ -311,7 +339,7 @@ public class ExtractPart extends JFrame implements ActionListener {
 
 			// based on what item is selected, do the respective adding of filter
 			String name = field.getText();
-
+			// make the output a mp4 file
 			if(!name.contains(".mp4")){
 				name = name + ".mp4";
 			}
@@ -337,17 +365,15 @@ public class ExtractPart extends JFrame implements ActionListener {
 			progress.setIndeterminate(false);
 			try {
 				int i = get();
-
+				// let the user know the result of the process.
 				if(i == 0){
 					JOptionPane.showMessageDialog(ExtractPart.this, "The extraction of the part was successful");
 				}else{
 					JOptionPane.showMessageDialog(ExtractPart.this, "The extraction of the part failed!");
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

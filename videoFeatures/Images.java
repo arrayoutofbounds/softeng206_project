@@ -22,6 +22,13 @@ import vamix.InvalidCheck;
 
 
 @SuppressWarnings("serial")
+/**
+ * This class allows the user to get images from a video. A video is put in 
+ * and the images making up that video are made output. This class also makes
+ * the frame for this feature and it can be accessed from the menu bar.
+ * @author anmol
+ *
+ */
 public class Images extends JFrame implements ActionListener{
 
 	private JPanel forInputVideoButton;
@@ -92,20 +99,31 @@ public class Images extends JFrame implements ActionListener{
 	}
 
 	@Override
+	/**
+	 * This method handles all the button presses.
+	 */
 	public void actionPerformed(ActionEvent e) {
+		
+		// if the choose video is pressed
 		if(e.getSource() == chooseVideo){
 			chooseVideoPressed();
 		}
-		
+		// if the choose output is pressed
 		if(e.getSource() == chooseOutput){
 			chooseOutputPressed();
 		}
-		
+		// if the make images button is pressed
 		if(e.getSource() == makeImages){
 			makeImagesPressed();
 		}
 	}
 	
+	/**
+	 * This method checks that all the fields are correctly filled. If not, then the user is warned and 
+	 * the process is not continued till the fields are filled correctly. A warning is 
+	 * given to the user because the number of images created can be large in number. Then 
+	 * the worker that gets the images is called if everything is correct.
+	 */
 	private void makeImagesPressed() {
 		boolean carryOn = true;
 		
@@ -124,6 +142,10 @@ public class Images extends JFrame implements ActionListener{
 		}
 	}
 
+	/**
+	 * This method allows the user to choose a directory to save the output to.
+	 * Only a directory can be chosen
+	 */
 	private void chooseOutputPressed() {
 
 		JFileChooser outputChooser = new JFileChooser();
@@ -136,11 +158,16 @@ public class Images extends JFrame implements ActionListener{
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			
 			showOutput.setText("Output Destination: " + outputDirectory);
 		}
 	}
-
+	
+	/**
+	 * This method allows the user to choose a input video file to get images from. It makes
+	 * sure that only video files are chosen and that they are valid. The user cannot
+	 * get images from the video if the file is not valid.
+	 */
 	private void chooseVideoPressed() {
 
 		JFileChooser fileChooser = new JFileChooser();
@@ -153,7 +180,8 @@ public class Images extends JFrame implements ActionListener{
 
 		// Allows files to be chosen only. Make sure they are video files in the extract part
 		// fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
+		
+		// put filter to ensure that only video files are chosen.
 		fileChooser.setFileFilter(SwingFileFilterFactory.newVideoFileFilter());
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		int returnValue = fileChooser.showOpenDialog(Images.this);
@@ -163,7 +191,7 @@ public class Images extends JFrame implements ActionListener{
 			showVideo.setText("Video chosen: " + selectedFile.getName());
 			InvalidCheck i = new InvalidCheck();
 			boolean isValidMedia = i.invalidCheck(fileChooser.getSelectedFile().getAbsolutePath());
-			
+			// make sure that file is a valid media file.
 			if (!isValidMedia) {
 				JOptionPane.showMessageDialog(Images.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 				makeImages.setEnabled(false);
@@ -173,7 +201,16 @@ public class Images extends JFrame implements ActionListener{
 			}
 		}
 	}
-
+	
+	/**
+	 * This class extends SwingWorker and runs the process that get the images from a video.
+	 * It gives back lots of images. It also shows the user the result of the process via a joption dialog.
+	 * 
+	 * Output : images in jpeg format
+	 * 
+	 * @author anmol
+	 *
+	 */
 	private class ImagesWorker extends SwingWorker<Integer,Void>{
 
 		@Override
@@ -182,7 +219,7 @@ public class Images extends JFrame implements ActionListener{
 			String name = "image-%3d.jpeg";
 			int exitValue = 1;
 			
-			
+			// start the process
 			String cmd = "/usr/bin/avconv -i " + selectedFile.getAbsolutePath().replaceAll(" ", "\\\\ ") + " -r 1 " + outputDirectory.getAbsolutePath().replaceAll(" ", "\\\\ ") + File.separator +name;
 			ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
 			
@@ -196,20 +233,23 @@ public class Images extends JFrame implements ActionListener{
 		}
 
 		@Override
+		/**
+		 * enables the make images button and then gives the user a message that contains
+		 * the result of the process.
+		 */
 		protected void done() {
 			makeImages.setEnabled(true);
 			try {
 				int i = get();
+				// show the user the result
 				if(i == 0){
 					JOptionPane.showMessageDialog(Images.this, "Images created!");
 				}else{
 					JOptionPane.showMessageDialog(Images.this, "Sorry! Failed to create images");
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

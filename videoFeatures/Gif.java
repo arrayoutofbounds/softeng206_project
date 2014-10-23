@@ -22,7 +22,16 @@ import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 
-
+/**
+ * This class has the GUI and the logic to make a GIF file.
+ * It takes in a video file and then makes a gif file.
+ * 
+ * WARNING : TOO large files can cause the program to crash (i.e do not put 10 minute videos to make a gif)
+ *
+ * Output: GIF file	
+ * @author anmol
+ *
+ */
 @SuppressWarnings("serial")
 public class Gif extends JFrame implements ActionListener {
 
@@ -56,7 +65,8 @@ public class Gif extends JFrame implements ActionListener {
 		super("Making a GIF image");
 		setLayout(new GridLayout(7,1));
 
-
+		// initalise and declare all the components
+		
 		forInputVideoButton = new JPanel(new FlowLayout());
 		forInputVideoButton.setBorder(new EmptyBorder(10, 10, 10, 10));
 		forInputVideoLabel = new JPanel(new BorderLayout());
@@ -88,8 +98,6 @@ public class Gif extends JFrame implements ActionListener {
 		labelForOutputName = new JLabel("Choose Output name:");
 		progress = new JProgressBar();
 
-
-
 		forInputVideoButton.add(chooseVideo);
 		forInputVideoLabel.add(showVideo,BorderLayout.WEST);
 		forOutputButton.add(chooseOutput);
@@ -110,6 +118,9 @@ public class Gif extends JFrame implements ActionListener {
 
 
 	@Override
+	/**
+	 * methods for all the button presses
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 		if(e.getSource() == chooseVideo){
@@ -124,7 +135,14 @@ public class Gif extends JFrame implements ActionListener {
 			makeGifPressed();
 		}
 	}
-
+	
+	/**
+	 * if the make gif button is pressed this method checks that all the
+	 * fields are correct and allows the user to override or rename their file if there
+	 * is a clash. A warning is also given to the user for large files.
+	 * 
+	 * Output : gif file
+	 */
 	private void makeGifPressed() {
 		// check that that everything has been filled
 		boolean carryOn = true;
@@ -137,10 +155,6 @@ public class Gif extends JFrame implements ActionListener {
 		if(carryOn){
 			JOptionPane.showMessageDialog(Gif.this,"WARNING! If the video is too small or big, the making of the gif fails!");
 			// call the swing worker and make the gif
-
-
-
-
 			boolean override = false;
 
 			File propFile = new File(outputDirectory,chooseName.getText() + ".gif");
@@ -180,7 +194,9 @@ public class Gif extends JFrame implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * This method allows the user to choose an output directory.
+	 */
 	private void chooseOutputPressed() {
 		JFileChooser outputChooser = new JFileChooser();
 		outputChooser.setCurrentDirectory(new java.io.File("."));
@@ -192,12 +208,16 @@ public class Gif extends JFrame implements ActionListener {
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
+			
 			showOutput.setText("Output Destination: " + outputDirectory);
 		}
 	}
 
-
+	/**
+	 * This method allows the user to choose an input video to make into a gif.
+	 * Only valid media files are processed. ANy invalid media files are not processed
+	 * and the user is warned about them
+	 */
 	private void chooseVideoPressed() {
 		JFileChooser fileChooser = new JFileChooser();
 
@@ -229,9 +249,15 @@ public class Gif extends JFrame implements ActionListener {
 			}
 
 		}
-
 	}
 
+	/**
+	 * This class makes the gif. It extends swingoworker and makes the gif in the background.
+	 * The user is notified of the result of the process.
+	 * This method currently does the gif making on rgb24.
+	 * @author anmol
+	 *
+	 */
 	private class GifWorker extends SwingWorker<Integer, Void>{
 
 		@Override
