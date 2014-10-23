@@ -37,8 +37,14 @@ import javax.swing.border.Border;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 
-
-@SuppressWarnings("serial")
+/**
+ * This class has the edit text frame. It makes the text and puts it onto the video.
+ * It is a seperate frame that shows up in the menu bar.
+ * 
+ * OUTPUt : mp4 file
+ * @author anmol
+ *
+ */
 public class EditTextFrame extends JFrame implements ActionListener {
 	
 	private JPanel topPanel;
@@ -132,7 +138,12 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		
 	}
-
+	
+	
+	/**
+	 * This method saves the project settings made in the text.
+	 * It can be loaded again for future use.
+	 */
 	private void saveProject() {
 		String[] startSettings = leftEditPane.getSettingsArray();
 		String[] endSettings = rightEditPane.getSettingsArray();
@@ -201,8 +212,12 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		
 	}
 	
+	/**
+	 * This loads a project that has been saved before 
+	 */
 	private void loadProject() {
 		
+		// select a file
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("Select project file to load");
@@ -212,7 +227,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		if (response == JFileChooser.APPROVE_OPTION) {
 			chosenFile = chooser.getSelectedFile().getAbsoluteFile();
 		} else {
-			// TODO something went wrong
 			return;
 		}
 		
@@ -262,7 +276,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
@@ -286,6 +299,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		if (e.getSource() == selectInputFileButton) {
 			
 			// Open a file chooser and only allow a video file to be chosen
@@ -430,8 +444,8 @@ public class EditTextFrame extends JFrame implements ActionListener {
 
 		@Override
 		protected Integer doInBackground() throws Exception {
-			// TODO make sure that output directory is specified for default no selection 	
-			// TODO incorrect font is used
+			// make sure that output directory is specified for default no selection 	
+			// incorrect font is used
 			
 			
 			// Check if text overlay for start is enabled
@@ -490,8 +504,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				textProcessBuilder.redirectErrorStream(true);
 				Process textProcess = textProcessBuilder.start();
-
-			
 				textProcess.waitFor();
 				
 				if (startEnabled) {
@@ -511,7 +523,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		@Override
 		protected void done() {
 			progressBar.setIndeterminate(false);
-
 			// Check if process was successful
 			startButton.setEnabled(true);
 			int exitValue = 0;
@@ -520,7 +531,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(EditTextFrame.this, "Adding text was cancelled");
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -538,6 +548,13 @@ public class EditTextFrame extends JFrame implements ActionListener {
 
 
 
+/**
+ * 
+ * This class is a font detector. It gets the fonts 
+ * that are used in the adding of text
+ * @author anmol
+ *
+ */
 class FontDetectorWorker extends SwingWorker<Void, Void> {
 	
 	Vector<String> fontPaths;
@@ -591,7 +608,6 @@ class FontDetectorWorker extends SwingWorker<Void, Void> {
 				Font font = Font.createFont(Font.TRUETYPE_FONT, input);
 				fontList.add(font);
 			} catch (IOException e) {
-				// TODO 
 				e.printStackTrace();
 			}
 		}

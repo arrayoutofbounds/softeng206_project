@@ -17,6 +17,16 @@ import javax.swing.border.EmptyBorder;
 
 import videoFeatures.VideoFilter;
 
+/**
+ * This Class allows the user to MAKE a playlist. It is
+ * a frame that allows the user to choose where to get the playlist.
+ * The playlist is a text file with the paths of the files. But this class
+ * does not go into that detail. It is just a class that has the GUI to 
+ * make UI and get the playlist folder and destination.
+ * 
+ * @author anmol
+ *
+ */
 public class GetPlayList extends JFrame implements ActionListener {
 	
 	private JPanel nameOfPlaylist;
@@ -29,6 +39,7 @@ public class GetPlayList extends JFrame implements ActionListener {
 	private JPanel showOutput;
 	private JLabel outputLabel;
 	private JButton makePlaylist;
+	//set the output directory to the home directory for now.
 	public static  File outputDirectory = (new java.io.File("."));
 	
 	public static String selectedplaylistname;
@@ -92,7 +103,6 @@ public class GetPlayList extends JFrame implements ActionListener {
 
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				outputDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-				//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
 				outputLabel.setText("Output Destination: " + outputDirectory);
 			}
 		}

@@ -52,31 +52,42 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.list.MediaListPlayerMode;
 import videoFeatures.ExtractPart;
 
+/**
+ * This class makes the library GUI and adds functionality to it. 
+ * It allows the user to also interact with the VideoPlayer class. When the files in 
+ * the list are clicked twice, it open that file in the media player.
+ * It also allows the user to get files from a folder
+ * 
+ * WARNING : VLCJ does not support damaged files. So do not put damaged files into the library.
+ * 
+ * In case of damaged files, the file will play but it will not reset to stop after finished. So just hit "stop"
+ * or "pause" and carry on.
+ * 
+ * Errors that vlcj library cannot handle: (caused my damaged audio files)
+ * mpgatofixed32 audio converter error: libmad error: Huffman data overrun
+ * mpgatofixed32 audio converter error: libmad error: bad main_data_begin pointer
+ * Input : media files
+ * 
+ * @author anmol
+ *
+ */
 public class Library extends JPanel implements ActionListener, ListSelectionListener, MouseListener{
 
 	private JButton cancelPlayingList;
 	private JSplitPane splitPane;
-
 	private JList allMedia;
 	private DefaultListModel<Object> l;
-
 	private JTextArea info;
-	private JButton button1;
-	private JButton button2;
+	private JButton add;
+	private JButton remove;
 	private File selectedFile;
-
 	private List s = new ArrayList<>();
-
 	private HashMap paths = new HashMap<>();
 	private HashMap sizes = new HashMap<>();
-
 	private JPanel container;
-
 	private JButton makePlayList;
-
 	List playlist = new ArrayList<>();
 	List allPathPlaylist = new ArrayList<>();
-
 	GetPlayList playlistName = new GetPlayList();
 	private JButton loadPlaylist;
 	private File playlistDirectory;
@@ -93,36 +104,29 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	public Library(){
 
 		setLayout(new BorderLayout());
-
 		l = new DefaultListModel<>();
 		container = new JPanel(new BorderLayout());
-
 		arrangeButtons1 = new JPanel(new FlowLayout());
 		arrangeButtons2 = new JPanel(new FlowLayout());
-
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scroll = new JScrollPane(allMedia);
 		info = new JTextArea();
-		button1 = new JButton("Add Video/Audio");
-		arrangeButtons1.add(button1);
+		add = new JButton("Add Video/Audio");
+		arrangeButtons1.add(add);
 
-		button2 = new JButton("Remove Video/Audio");
-		arrangeButtons1.add(button2);
+		remove = new JButton("Remove Video/Audio");
+		arrangeButtons1.add(remove);
 
 		makePlayList = new JButton("Make a playlist");
 		arrangeButtons1.add(makePlayList);
 		makePlayList.addActionListener(this);
-
-
 		loadPlaylist = new JButton("Load a playlist");
 		arrangeButtons2.add(loadPlaylist);
 		loadPlaylist.addActionListener(this);
-
 		playTheList = new JButton("Play the list");
 		arrangeButtons2.add(playTheList);
 		playTheList.addActionListener(this);
-
 		loadFolder = new JButton("Load a folder");
 		arrangeButtons2.add(loadFolder);
 		loadFolder.addActionListener(this);
@@ -131,7 +135,6 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		arrangeButtons2.add(cancelPlayingList);
 		cancelPlayingList.addActionListener(this);
 		cancelPlayingList.setEnabled(false);
-
 		container.add(arrangeButtons1,BorderLayout.NORTH);
 		container.add(arrangeButtons2,BorderLayout.CENTER);
 
@@ -140,10 +143,8 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		playlistName.setSize(700, 500);
 		playlistName.setLocationRelativeTo(null);
 		playlistName.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		button1.addActionListener(this);
-		button2.addActionListener(this);
-
+		add.addActionListener(this);
+		remove.addActionListener(this);
 		info.append("Name of File:");
 		info.append("\n\n\n\n\n\nPath to File:");
 		info.append("\n\n\n\n\n\n\nFile Size:");
@@ -158,28 +159,27 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 
 	@Override
+	/**
+	 * This method is for all the button clicks present. 
+	 */
 	public void actionPerformed(ActionEvent e) {
 
-		// if the button1 is pressed then open a jfilechooser and add a video or audio to the list;
-		// if the button2 is chosen then remove it from the list;
+		// if the add is pressed then open a jfilechooser and add a video or audio to the list;
+		// if the remove is chosen then remove it from the list;
 		// put a listener on the items in the jlist so when they are clicked their information shows up on the text area.
 
-		if(e.getSource() == button1){
-			button1Pressed();
+		if(e.getSource() == add){
+			addPressed();
 		}
-
-		if(e.getSource() == button2){
-			button2Pressed();
+		if(e.getSource() == remove){
+			removePressed();
 		}
-
 		if(e.getSource() == makePlayList){
 			makeAPlayListPressed();
 		}
-
 		if(e.getSource() == loadPlaylist){
 			loadAPlayListPressed();
 		}
-
 		if(e.getSource() == playTheList){
 			playTheListPressed();
 		}
@@ -191,6 +191,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		}
 	}
 
+	/**
+	 * This method clears the list and stops the media player from 
+	 * playing the list. If it is not stopped then media player will continue
+	 * to play the list till its finished.
+	 */
 	private void cancelPressed() {
 		VideoPlayer.mediaPlayer.stop();
 		l.clear();
@@ -200,7 +205,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		playTheList.setEnabled(true);
 	}
 
-
+	/**
+	 * Allows the user to load a folder. It gets ALL the media files 
+	 * in that folder and puts it on the list.
+	 */
 	private void loadFolderPressed() {
 
 		// open a jfile chooser and then go through the directory chosen
@@ -208,22 +216,24 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 		File chosenDirectory =null;
 
+		// choose a directory only
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("Choose Directory");
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int response = chooser.showOpenDialog(Library.this);
-
 		if (response == JFileChooser.APPROVE_OPTION) {
 			// Chose the directory to save to
 			chosenDirectory = chooser.getSelectedFile().getAbsoluteFile();
 		}
-
 		if(chosenDirectory != null){
-			// go through the chosen directory
+			// go through the chosen directory and get all the files
 			l.clear();
 			File[] directoryListing = chosenDirectory.listFiles();
 			if (directoryListing != null) {
+
+				// check if that file chosen currently is a media file. If it is then
+				// add it to the list
 				InvalidCheck ic = new InvalidCheck();
 
 				for(File f : directoryListing){
@@ -233,22 +243,28 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 						listFolder.add(f);
 					}
 				}
-
 				for(File f2 : listFolder){
 					System.out.println(f2.getName());
 				}
 
+				// get the paths and sizes of the media files.
 				for(File f : listFolder){
-					l.addElement(f.getName());
-					paths.put(f.getName(),f.getAbsoluteFile());
-					sizes.put(f.getName(), f.length());
+					// only put the file in if it is not size 0 so that any bad files are avoided.
+					if(f.length() != 0){
+						l.addElement(f.getName());
+						paths.put(f.getName(),f.getAbsoluteFile());
+						sizes.put(f.getName(), f.length());
+					}
 				}
 			}
-
 		}
 	}
 
-
+	/**
+	 * This method plays the whole list. It only
+	 * plays the list if there are items in it. It plays them in order. The playing is done
+	 * in a swingworker, hence no GUI instability occurs.
+	 */
 	private void playTheListPressed() {
 
 		if(l.size() != 0){
@@ -257,13 +273,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			JOptionPane.showMessageDialog(null,"Once the current item has finished playing, click the play button to play the next item. Repeat it.");
 			@SuppressWarnings("unchecked")
 			SwingWorker<Void,Void> w = new SwingWorker(){
-
 				@Override
 				protected Void doInBackground() throws Exception {
-
 					for(int index = 0;index<l.size();index++){
 						String apath = "" + paths.get(l.get(index));
-						System.out.println(apath);
+						//System.out.println(apath);
 						VideoPlayer.filePath = apath;
 						VideoPlayer.startPlaying();
 						finished = false;
@@ -272,9 +286,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 							// do nothing
 							// once it stops loop again
 						}
-						
 						VideoPlayer.mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-
 							@Override
 							public void finished(MediaPlayer e) {
 								if(VideoPlayer.timeSlider.getValue() == e.getLength()){
@@ -283,8 +295,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 								}
 							}
 						});
-						
-						
+
 					}
 					return null;
 				}
@@ -296,6 +307,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		}
 	}
 
+	/**
+	 * This method loads a playlist. Playlist is existing in a text file called list.txt
+	 * Currently it does not go into detail on that. But it is working towards getting more sophisticated.
+	 * 
+	 */
 	private void loadAPlayListPressed() {
 
 		// go to the selected folder and look for a file called list.txt and then load all the names of the files onto the jlist
@@ -310,9 +326,8 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			playlistDirectory = outputChooser.getSelectedFile().getAbsoluteFile();
-			//JOptionPane.showMessageDialog(ReplaceAudio.this, "Your file will be extracted to " + outputDirectory);
-		}
 
+		}
 
 		// now look in the playlist directory for the list.txt file. If there is one then go to all the paths and then load the file 
 		// names onto the jlist
@@ -330,7 +345,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 			}
 
-
+			// checks if the file exists
 			if(textFileExists){
 
 				try {
@@ -338,8 +353,6 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 					BufferedReader br = new BufferedReader(new FileReader(a));
 					String line = br.readLine();
 					while (line != null) {
-
-
 						String[] split = line.split(File.separator);
 						int last = split.length;
 						String lastString = split[last-1];
@@ -355,15 +368,17 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 					JOptionPane.showMessageDialog(null, "Could not open file", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 
-
 			}else{
 				JOptionPane.showMessageDialog(Library.this, "Sorry, no plyalist exists in this folder!");
 			}
 		}
-
 	}
 
-
+	/**
+	 * This method makes a playlist from the selected files on the list on the left of the library.
+	 * It puts the paths in a list.txt file. It avoids the collision of putting a newplaylist in 
+	 * the same directory by making a folder and then putting the list.txt in that.
+	 */
 	private void makeAPlayListPressed() {
 		// get all the selected options and their file paths and then store them in the file with a each file and its path 
 		// seperated from the next one by a a newline character so they can be split at that point.
@@ -371,35 +386,28 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		playlist = allMedia.getSelectedValuesList();
 
 		// get all the paths of the selected items and put them in a list and make sure that they are not zero
-
 		if(playlist.size() != 0){
 
 			// now open up a jfile chooser and make the user pick a directory and make a folder
 			// with the name of the playlist.. The name of the text file is the location chosen and 
 			// the name of the playlist
-
-
 			// open up a option pane and get the name of a playlist.
-
 			playlistName.setVisible(true);
-
-
 			for(Object o : playlist){
 				allPathPlaylist.add(paths.get(o.toString()));
 			}
-
 			writeToFile();
 		}
 
 	}
 
-
-	private void button2Pressed() {
-
+	/**
+	 * When the remove button is pressed, the selected media file in the list
+	 * is removed from all objects it is in. Multiple objects can also be deleted.
+	 */
+	private void removePressed() {
 		s = allMedia.getSelectedValuesList();
-
 		// now remove all the value that are in the list from the default list model
-
 		for(Object o : s){
 			if(l.contains(o)){
 				l.removeElement(o);
@@ -407,23 +415,20 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		}
 	}
 
-
-	private void button1Pressed() {
+	/**
+	 * When this button is pressed, it adds the chosen media file to the jlist on the left of the library
+	 * assuming it is a valid media file and not of size 0.
+	 */
+	private void addPressed() {
 
 		JFileChooser fc = new JFileChooser();
 		fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 		int returnVal = fc.showOpenDialog(Library.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-
-
 			String newFile = fc.getSelectedFile().getAbsolutePath();
-
 			// Check that file is a video or audio file.
 			InvalidCheck i = new InvalidCheck();
 			boolean isValidMedia = i.invalidCheck(newFile);
-
-
 
 			if (!isValidMedia) {
 				JOptionPane.showMessageDialog(Library.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -437,7 +442,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		}
 	}
 
-
+	/**
+	 * This method is used the playlist is to be made. If the folder
+	 * does not exist, then it adds to that folder.
+	 * @param directoryName
+	 */
 	private void createDirectoryIfNeeded(String directoryName)
 	{
 		File theDir = new File(directoryName);
@@ -463,11 +472,9 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 			BufferedWriter bw = new BufferedWriter(fw);
-
 			// loop through the list of playlist and their paths and add to file
-
 			for(int i = 0;i<playlist.size();i++){
 				//String content = playlist.get(i) + " " + allPathPlaylist.get(i) + "\n";
 				String content = allPathPlaylist.get(i) + "\n";
@@ -480,6 +487,11 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	}
 
 	@Override
+	/**
+	 * if a value is clicked in the list, this method shows its information on the
+	 * right text area. It has to get the specific information and that is what
+	 * this method does.
+	 */
 	public void valueChanged(ListSelectionEvent e) {
 		// see if any value is selected
 
@@ -491,7 +503,8 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			info.append("\n\n\n\n\n\nPath to File:");
 			info.append("\n\n\n\n\n\n\nFile Size:");
 		}
-
+		
+		// get value adjusting is when the value is changing. This ensures that the value got is fixed.
 		if(!e.getValueIsAdjusting()){
 
 			// to ensure that the item is not clicked twice ensure that the value is not adjusting
@@ -500,11 +513,9 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				String name = allMedia.getSelectedValue().toString();
 				// get the value of the selected value and then
 				Object selected = allMedia.getSelectedValue();
-
 				String pathOfFile = paths.get(selected).toString();
 				String size = sizes.get(selected).toString();
 				int megabytes =(int)((Double.parseDouble(size))/1024)/1024;
-
 				info.setText("");
 				info.append("Name of File: " + name);
 				info.append("\n\n\n\n\n\nPath to File: " + pathOfFile);
@@ -514,6 +525,10 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	}
 
 	@Override
+	/**
+	 * When the item is double clicked in the list on the left of the library it started to play in 
+	 * the media player. The tab is switched and the file starts playing.
+	 */
 	public void mouseClicked(MouseEvent e) {
 
 		if(e.getClickCount() == 2){

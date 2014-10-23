@@ -30,6 +30,13 @@ import mediacomponent.VideoPlayer;
 
 
 @SuppressWarnings("serial")
+/**
+ * This class is the main frame. It is the oen that contains all the components.
+ * It has been extended from the jframe and instantiated in the the MainFrame.java.
+ * This has the menu bar and allows the opening of all the features and their frames.
+ * @author anmol
+ *
+ */
 public class ExtendedFrame extends JFrame implements ActionListener, MenuListener {
 	
 	static JTabbedPane tabsPane;
@@ -59,6 +66,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private DownloadFrame downloadFrame;
 
 	private JMenu speed;
+	// made static because it is accessed from the VideoPlayer.java where the playback speed is set
+	// i.e there are 2 ways to set the playback speed
 	private static JRadioButtonMenuItem playingSpeed[];
 	private ButtonGroup group;
 	private JMenuItem videoFilters;
@@ -73,8 +82,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	public ExtendedFrame() {
 		super("Vamix");
 		
-		//Container mainContainer = this.getContentPane(); 
-		//mainContainer.add(new JLabel(new ImageIcon("/home/anmol/Downloads/light_background-wallpaper-1280x800.jpg")));
+		// create all the menu and menu items and other components
 		
 		tabsPane = new JTabbedPane();
 		//downloadTab = new Download();
@@ -154,6 +162,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 
         setJMenuBar(menuBar);
         
+        // add listeners to all the menu items
         extractMenuItem.addActionListener(this);
         editTextMenuItem.addActionListener(this);
         replaceAudio.addActionListener(this);
@@ -188,48 +197,56 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		editTextFrame.setLocationRelativeTo(null);
 		editTextFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the replace/overlay audio frame
 		replaceAudioFrame = new ReplaceAudio();
 		replaceAudioFrame.setResizable(false);
 		replaceAudioFrame.setSize(700, 600);
 		replaceAudioFrame.setLocationRelativeTo(null);
 		replaceAudioFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the make gif frame
 		gifFrame = new Gif();
 		gifFrame.setResizable(false);
 		gifFrame.setSize(700, 500);
 		gifFrame.setLocationRelativeTo(null);
 		gifFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// creat the get images frame
 		i = new Images();
 		i.setResizable(false);
 		i.setSize(500, 400);
 		i.setLocationRelativeTo(null);
 		i.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the help frame
 		helpFrame = new HelpFrame();
 		helpFrame.setResizable(false);
 		helpFrame.setSize(1000, 700);
 		helpFrame.setLocationRelativeTo(null);
 		helpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the download frame.
 		downloadFrame = new DownloadFrame();
 		downloadFrame.setResizable(false);
 		downloadFrame.setSize(700, 500);
 		downloadFrame.setLocationRelativeTo(null);
 		downloadFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the video filter frame
 		v = new VideoFilter();
 		v.setResizable(false);
 		v.setSize(700, 500);
 		v.setLocationRelativeTo(null);
 		v.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the aduio filter frame
 		af = new AudioFilter();
 		af.setResizable(false);
 		af.setSize(700, 500);
 		af.setLocationRelativeTo(null);
 		af.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		// create the extract part of a video frame
 		ep = new ExtractPart();
 		ep.setResizable(false);
 		ep.setSize(700, 500);
@@ -255,6 +272,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 
 	
 	@Override
+	/**
+	 * This method is for all the options that the user can press
+	 * from the menu and its items
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == extractMenuItem) {
 			extractFrame.setVisible(true);
