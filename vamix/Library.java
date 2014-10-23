@@ -56,7 +56,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 	private JButton cancelPlayingList;
 	private JSplitPane splitPane;
-	
+
 	private JList allMedia;
 	private DefaultListModel<Object> l;
 
@@ -85,24 +85,28 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 	private JPanel arrangeButtons1;
 	private JPanel arrangeButtons2;
 	private List<File> listFolder = new ArrayList<>();
-	
+
+	String apath;
+
+	boolean finished = false;
+
 	public Library(){
 
 		setLayout(new BorderLayout());
 
 		l = new DefaultListModel<>();
 		container = new JPanel(new BorderLayout());
-		
+
 		arrangeButtons1 = new JPanel(new FlowLayout());
 		arrangeButtons2 = new JPanel(new FlowLayout());
-		
+
 		allMedia = new JList(l);
 		allMedia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scroll = new JScrollPane(allMedia);
 		info = new JTextArea();
 		button1 = new JButton("Add Video/Audio");
 		arrangeButtons1.add(button1);
-	
+
 		button2 = new JButton("Remove Video/Audio");
 		arrangeButtons1.add(button2);
 
@@ -118,16 +122,16 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		playTheList = new JButton("Play the list");
 		arrangeButtons2.add(playTheList);
 		playTheList.addActionListener(this);
-		
+
 		loadFolder = new JButton("Load a folder");
 		arrangeButtons2.add(loadFolder);
 		loadFolder.addActionListener(this);
-		
+
 		cancelPlayingList = new JButton("Cancel playing the list");
 		arrangeButtons2.add(cancelPlayingList);
 		cancelPlayingList.addActionListener(this);
 		cancelPlayingList.setEnabled(false);
-		
+
 		container.add(arrangeButtons1,BorderLayout.NORTH);
 		container.add(arrangeButtons2,BorderLayout.CENTER);
 
@@ -145,7 +149,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 		info.append("\n\n\n\n\n\n\nFile Size:");
 		allMedia.addListSelectionListener(this);
 		allMedia.addMouseListener(this);
-		
+
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,allMedia,info);
 		add(splitPane,BorderLayout.CENTER);
 		add(container,BorderLayout.SOUTH);
@@ -198,12 +202,12 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 
 
 	private void loadFolderPressed() {
-		
+
 		// open a jfile chooser and then go through the directory chosen
 		// then load all the video and audio files in that directory
-		
+
 		File chosenDirectory =null;
-		
+
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("Choose Directory");
@@ -214,61 +218,73 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 			// Chose the directory to save to
 			chosenDirectory = chooser.getSelectedFile().getAbsoluteFile();
 		}
-		
+
 		if(chosenDirectory != null){
 			// go through the chosen directory
-			  l.clear();
-			  File[] directoryListing = chosenDirectory.listFiles();
-			  if (directoryListing != null) {
-				  InvalidCheck ic = new InvalidCheck();
-					
-					for(File f : directoryListing){
-						boolean isValid = ic.invalidCheck(f.getAbsolutePath());
-						
-						if(isValid){
-							listFolder.add(f);
-						}
-					}
-					
-					for(File f2 : listFolder){
-						System.out.println(f2.getName());
-					}
+			l.clear();
+			File[] directoryListing = chosenDirectory.listFiles();
+			if (directoryListing != null) {
+				InvalidCheck ic = new InvalidCheck();
 
-			    for(File f : listFolder){
-			    	l.addElement(f.getName());
-			    	paths.put(f.getName(),f.getAbsoluteFile());
-			    	sizes.put(f.getName(), f.length());
-			    }
-			  }
-			
+				for(File f : directoryListing){
+					boolean isValid = ic.invalidCheck(f.getAbsolutePath());
+
+					if(isValid){
+						listFolder.add(f);
+					}
+				}
+
+				for(File f2 : listFolder){
+					System.out.println(f2.getName());
+				}
+
+				for(File f : listFolder){
+					l.addElement(f.getName());
+					paths.put(f.getName(),f.getAbsoluteFile());
+					sizes.put(f.getName(), f.length());
+				}
+			}
+
 		}
 	}
 
 
 	private void playTheListPressed() {
-		
+
 		if(l.size() != 0){
 			cancelPlayingList.setEnabled(true);
 			ExtendedFrame.tabsPane.setSelectedIndex(0);
 			JOptionPane.showMessageDialog(null,"Once the current item has finished playing, click the play button to play the next item. Repeat it.");
 			@SuppressWarnings("unchecked")
 			SwingWorker<Void,Void> w = new SwingWorker(){
-				
+
 				@Override
 				protected Void doInBackground() throws Exception {
-					
+
 					for(int index = 0;index<l.size();index++){
 						String apath = "" + paths.get(l.get(index));
 						System.out.println(apath);
 						VideoPlayer.filePath = apath;
 						VideoPlayer.startPlaying();
+						finished = false;
+
 						while((VideoPlayer.mediaPlayer.isPlaying())||(VideoPlayer.timeSlider.getValue() != VideoPlayer.mediaPlayer.getLength())){
 							// do nothing
 							// once it stops loop again
 						}
-						//if(VideoPlayer.mediaPlayer.getTime() == VideoPlayer.timeSlider.getValue()){
-							VideoPlayer.mediaPlayer.stop();
-						//}
+						
+						VideoPlayer.mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+
+							@Override
+							public void finished(MediaPlayer e) {
+								if(VideoPlayer.timeSlider.getValue() == e.getLength()){
+									finished = true;
+									VideoPlayer.mediaPlayer.stop();
+								}
+							}
+						});
+						
+						
 					}
 					return null;
 				}
@@ -344,7 +360,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				JOptionPane.showMessageDialog(Library.this, "Sorry, no plyalist exists in this folder!");
 			}
 		}
-		
+
 	}
 
 

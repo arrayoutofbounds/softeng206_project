@@ -44,7 +44,7 @@ public class VideoExtracter extends SwingWorker<Integer,Void>{
 	protected void done() {
 		try {
 			int i = get();
-
+			// show the success of the process
 			if(i == 0){
 				JOptionPane.showMessageDialog(null, "Video was extracted successfully to your home folder."
 						+ " Name of the video is " + name );

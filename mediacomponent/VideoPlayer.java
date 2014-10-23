@@ -51,9 +51,22 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import vamix.ExtendedFrame;
 import vamix.InvalidCheck;
 
+/**
+ * This class is the main class of the program. It has the media player component, playing features and
+ * a history. This is a component,so that it can be moved to any container and be placed. i.e It can be
+ * placed in a JPanel or a JFrame. The EmbeddedMediaPlayer is part of the component. There are also other 
+ * features like screenshot, forwarding ,rewinding etc. The most detailed feature is that a part of a video
+ * can be extracted by double clicking on the screen when recording has to be started and then double clicked 
+ * when the recording can be stopped. 
+ * @author anmol
+ *
+ */
 @SuppressWarnings("serial")
 public class VideoPlayer extends JPanel  implements ActionListener, ChangeListener, MouseListener{
-
+    
+	//initalise and declare variables
+	
+	
 	public static EmbeddedMediaPlayer mediaPlayer;
 
 	private int clicked = 0;
@@ -152,13 +165,16 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		// Add the media player to the center of the video player panel
 		add(canvas,BorderLayout.CENTER);
-
+		
+		// add the canvas
+		
 		this.add(canvas);
 		videoSurface.canvas().setSize(800, 600);
 		videoSurface.canvas().setBackground(Color.BLACK);
 
 		canvas.addMouseListener(this);
 		
+		// declare all the speed changes
 		popup = new JPopupMenu("Popup");
 		slow = new JMenuItem("0.5x");
 		normalPlay = new JMenuItem("1x");
@@ -167,6 +183,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		twopointfivePlay = new JMenuItem("2.5x");
 		threePlay = new JMenuItem("3x");
 		
+		// add the speeds to the popup
 		popup.add(slow);
 		popup.add(normalPlay);
 		popup.add(onepointfivePlay);
@@ -174,6 +191,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		popup.add(twopointfivePlay);
 		popup.add(threePlay);
 		
+		// add all the listeners to the speed
 		slow.addActionListener(this);
 		normalPlay.addActionListener(this);
 		onepointfivePlay.addActionListener(this);
@@ -191,15 +209,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		skipButtonsPanel = new JPanel(new BorderLayout(5, 5));
 
 		history = new JTextArea();	
-		// history.setPreferredSize(new Dimension(50,50));;
 		history.setEditable(false);
 
-		//scroll = new JScrollPane(history);
-		//scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		//scroll.setPreferredSize(new Dimension(0, 0));
-		//area.add(scroll);
-		// history.setEditable(false); 
 		
 		// Read log file into log panel
 		try {
@@ -217,6 +228,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			JOptionPane.showMessageDialog(null, "Could not open log file: No log available", "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 
+		// get the snapshot image and if not then put the text
 		try {
 			snapshot = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/snapshot.png")));
 		} catch (IllegalArgumentException | IOException e) {
@@ -225,6 +237,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			//muteButton.setText("Mute");
 		}
 
+		// add listeners to the snpashot
 		snapShotButton = new JButton(snapshot);
 		snapShotButton.setToolTipText("Take Screenshot");
 		snapShotButton.addActionListener(this);
@@ -233,6 +246,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		// put it in a grid bag layout
 		everythingElse.setLayout(new GridBagLayout());
 
+		// create the volume label and add it
 		volumeLabel = new JLabel("Volume");
 		GridBagConstraints gb0 = new GridBagConstraints();
 		gb0.gridx = 0;
@@ -289,7 +303,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 		boolean iconLoaded = true;
 
-		// Add back button
+		// Add back button and its icon
 		try {
 			skipback = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/skipback.png")));
 		} catch (IllegalArgumentException | IOException e) {
@@ -323,7 +337,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 
 		rewindBack.setToolTipText("Rewind");
-
+		// add the rewind button to the panel
 		GridBagConstraints gb2 = new GridBagConstraints();
 		gb2.gridx = 3;
 		gb2.gridy = 1;
@@ -342,6 +356,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			// Couldn't load play icon
 			loadedPlayIcon = false;
 		}
+		
+		// add the pause button icon
 
 		try {
 			pause = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/pause.png")));
@@ -366,7 +382,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
         playButton.setToolTipText("Play");
 		everythingElse.add(playButton,gb3);
 
-		// Add forward button
+		// Add forward button icon
 		try {
 			skipforward = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/skipforward.png")));
 		} catch (IllegalArgumentException | IOException e) {
@@ -374,7 +390,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			iconLoaded = false;
 		}
 
-
+		
 		if (iconLoaded) {
 			forwardButton = new JButton(skipforward);
 		} else {
@@ -403,7 +419,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 		fastForwardButton.setToolTipText("Fast Forward");
 
-
+		
+		// add fast forward to the panel
 		GridBagConstraints gb4 = new GridBagConstraints();
 		gb4.gridx = 5;
 		gb4.gridy = 1;
@@ -419,9 +436,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		chooseFileToPlay.setToolTipText("Select a file to play in the video player");
 		chooseFileToPlay.addActionListener(this);
 
-
-
-		// Add time label
+		// Add time label to the panel
 		timeLabel = new JLabel("00:00:00");
 		GridBagConstraints gb5 = new GridBagConstraints();
 		gb5.gridx = 0;
@@ -434,7 +449,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		timeLabel.setToolTipText("Time Elapsed");
 		everythingElse.add(timeLabel,gb5);
 
-		// Add time slider
+		// Add time slider to the panel
 		timeSlider = new JSlider();
 		GridBagConstraints gb6 = new GridBagConstraints();
 		gb6.gridx = 1;
@@ -448,7 +463,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		timeSlider.setToolTipText("Time Slider");
 		everythingElse.add(timeSlider,gb6);
 
-
+		// add image to the stop button and add it to the panel
 		try {
 			stop = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/stop.png")));
 		} catch (IllegalArgumentException | IOException e) {
@@ -471,7 +486,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		stopVideo.setToolTipText("Stop");
 		stopVideo.addActionListener(this);
 
-
+		// add toggle icons 
 		try {
 			show = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/toggleon.png")));
 			collapse = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("resources/toggleoff.png")));
@@ -507,8 +522,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		other.add(skipButtonsPanel,BorderLayout.SOUTH);
 		other.setBorder( new EmptyBorder( 0, 0, 10, 0 ) );
 
-
-
 		// add area to history panel
 		area.add(showHistoryTitle,BorderLayout.NORTH);
 		area.add(history,BorderLayout.CENTER);
@@ -523,9 +536,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		
 		setupListeners();
 	}
-
-
-
+	
+	// setup all the listeners to the buttons and any other components
 	private void setupListeners() {
 
 		playButton.addActionListener(this);
@@ -536,7 +548,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		timeSlider.addChangeListener(this);
 		volumeSlider.addChangeListener(this);
 
-
+		// get the time and convert it to a hh:mm:ss format for avconv
 		ActionListener updater = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -551,27 +563,33 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				timeSlider.setToolTipText(time);
 			}
 		};
-
+		
 		Timer timer = new Timer(100, updater);
 		timer.start();
 
 	}
-
-
+	
 	@Override
+	/**
+	 * This method does the actions for the events generated for the buttons
+	 */
 	public void actionPerformed(ActionEvent e) {
-
+		
+		//For when toggle panel is clicked
 		if(e.getSource() == toggleExtraPanel){
 			togglePanelPressed();
 		}
-
+		
+		// For when the play button is clicked
 		if (e.getSource() == playButton) {
 			playButtonPress();
 		} 
-
+		
+		// For when the mute buttons is pressed
 		if (e.getSource() == muteButton) {
 			muteButtonPress();
-		}		
+		}
+		// for when the forward button is clicked it goes forward 10 seconds
 		if (e.getSource() == forwardButton) {
 			
 			if (mediaPlayer.getTime() + 10000 <= mediaPlayer.getLength()) { // Prevent skipping past end of file
@@ -579,16 +597,19 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			}
 		}
 
+		// for when the back button is clicked it goes back 10 seconds.
 		if (e.getSource() == backButton) {
 			mediaPlayer.skip(-10000);	
 		}
-
+		
+		// for when the choose file button is pressed it ensures that the 
+		// correct file is chosen
 		if (e.getSource() == chooseFileToPlay) {
 			//check if a file is already playing
 			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
 			
-
-					
+				// only allow to choose MEDIA FILES ONLY!
+			
 					final JFileChooser fc = new JFileChooser();
 					fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 					int returnVal = fc.showOpenDialog(VideoPlayer.this);
@@ -622,21 +643,22 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 						}
 
 						 **/
-
+						
+						// only allows the user to choose a valid file. If not, then a warning is shown!
 						if (!isValidMedia) {
 							JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 							return null;
 						} else if (!newFile.equals(filePath)) {
 							
-							
+							// set the path
 							VideoPlayer.this.filePath = newFile;
-
 
 							// before starting the video add it to the log
 
 							LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
 							VideoPlayer.this.hasPlayed = false;
-
+							
+							// start the media
 							mediaPlayer.startMedia(filePath);
 
 						}
@@ -645,6 +667,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				}
 
 				@Override
+				/**
+				 * sets up the volume and time slider
+				 */
 				protected void done() {
 					playButton.setIcon(pause);
 					VideoPlayer.this.hasPlayed = true;
@@ -660,32 +685,42 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			}else{
 				
 			}
-			// Get selection from user
-			
-			
 		}
-
+		
+		// For when the stop video button is clicked. It sets the play rate
+		// back to 1.
+		
 		if(e.getSource() == stopVideo){
 			mediaPlayer.stop();
 			mediaPlayer.setRate(1.0f);
 			playButton.setIcon(play);
 		}
-
+		// when the snapshot button is clicked then it will take a shot of the
+		// current image and saves it to the home folder
 		if(e.getSource() == snapShotButton){
 			snapShotPressed();
 		}
-
+		
+		// When the fast forward is pressed it ensures that rewind button is not pressed and disables
+		// it if its pressed. 
 		if(e.getSource() == fastForwardButton){
 			boolean isr = isRewinding;
 			
 			fastForwardPressed(isr);
 		}
+		
+		// when the rewind is pressed it checks if the forward is pressed and disables it if its is pressed.
+		// Otherwise, it keeps rewinding till disabled.
 		if (e.getSource() == rewindBack) {
 			
 			boolean isf = isFastForwarding;
 			
 			rewindPressed(isf);
 		}
+		
+		// The rest of the methods below all set the speed
+		// of the file as per the users choice
+		// they range from 0.5 to 3.0
 		
 		if(e.getSource() == slow){
 			mediaPlayer.setRate(0.5f);
@@ -718,6 +753,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * When the fast foward button is pressed it fast forwards till it is disabled
+	 * @param isr
+	 */
 	private void fastForwardPressed(boolean isr){
 		
 		if(isr){
@@ -738,6 +777,11 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		
 	}
 	
+	/**
+	 * Rewind buttons rewinds till it is disabled. It also ensures that the fast forward is not enabled at
+	 * the same time.
+	 * @param isf
+	 */
 	private void rewindPressed(boolean isf){
 		
 		if(isf){
@@ -761,6 +805,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		
 	}
 
+	/**
+	 * This has the history, snapshot, skip forward/backwards features.
+	 * It allows the user to toggle the panel.
+	 */
 	private void togglePanelPressed() {
 		boolean visible = extra.isVisible();
 		boolean change = true;
@@ -781,6 +829,11 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * This method gets the image on the current frame and
+	 * stores it in the users home drive. 
+	 * output : A PNG file
+	 */
 	private void snapShotPressed(){
 		BufferedImage image = mediaPlayer.getSnapshot();
 		boolean ifNull = (image == null);
@@ -799,7 +852,14 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 	}
 
 	@Override
+	/**
+	 * This method checks for the time and volume slider and updates them
+	 * as the user manipulates them
+	 */
 	public void stateChanged(ChangeEvent e) {
+		
+		// updates the volume slider and the current volume
+		
 		if (e.getSource() == volumeSlider) {
 			if (e.getSource() instanceof JSlider) {
 				JSlider slider = (JSlider)e.getSource();
@@ -819,6 +879,8 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			}
 		}
 
+		// changes the time as per the time slider
+		
 		if (e.getSource() == timeSlider) {
 			JSlider slider = (JSlider)e.getSource();
 
@@ -842,6 +904,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * This class is for the rewind worker. VLCJ does not have a rewind feature.
+	 * So, this skips back and imitates a rewind. This is done in 
+	 * the background to ensure that the GUI runs fast.
+	 * @author anmol
+	 *
+	 */
 	private class rewindWorker extends SwingWorker<Void, Void>{
 
 		@Override
@@ -855,7 +924,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			}
 			return null;
 		}
-
+		
 		@Override
 		protected void done() {
 			// TODO Auto-generated method stub
@@ -871,6 +940,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 
 
 	@Override
+	/**
+	 * This is a mouse listener. When the right mouse is clicked
+	 * it will allow the user to set the speed of the media file. If the left mouse button is clicked twice
+	 * then the extraction of the media file playing starts
+	 * 
+	 * OUTPUT FROM DOUBLE LEFT CLICK : mp4
+	 */
 	public void mouseClicked(MouseEvent arg0) {
 
 
@@ -879,20 +955,26 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 			
 		}else if(arg0.getModifiers() == MouseEvent.BUTTON1_MASK){
 			clicked++;
+			
+			// start the recording
 			if(clicked == 2){
 				start = mediaPlayer.getTime();
 				startTime = convertTime(mediaPlayer.getTime());
 
 				JOptionPane.showMessageDialog(VideoPlayer.this,"Started video recording");
+				
+				// end the recording
 			}else if(clicked == 4){
 				end = mediaPlayer.getTime();
 				length = end-start;
 				lengthTime = convertTime(length);
-
+				
+				// warns the users that the file will have problems if the time is less than 8 seconds
 				if(length<8000){
 					JOptionPane.showMessageDialog(VideoPlayer.this, "WARNING! Extraction less than 8 seconds may give orthodox results!");
 				}
-
+				
+				// reset the variables to allow the starting of the recording
 				vx = new VideoExtracter(startTime,lengthTime);
 				vx.execute();
 				startTime = "";
@@ -907,7 +989,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 
-
+	/**
+	 * This method is used to convert the time from the media player into the HH:MM:SS format
+	 * This is useful as avconv only accepts the hh:mm:ss format.
+	 * 
+	 * @param milliSeconds
+	 * @return
+	 */
 	private String convertTime(long milliSeconds) {
 		//long milliSeconds = mediaPlayer.getTime();
 		long hours = TimeUnit.MILLISECONDS.toHours(milliSeconds);
@@ -934,21 +1022,26 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		mediaPlayer.setRate(i);
 	}
 	
+	/**
+	 * This method is used by Library.java to play the list
+	 * This just simulates the play button click.
+	 */
 	public static void startPlaying() {
+		// stop the media player to ensure that the previous file is removed
 		mediaPlayer.stop();
-		//getPlayButton().doClick();
-		//mediaPlayer.startMedia();
 		playButton.doClick();
-		//if(!VideoPlayer.mediaPlayer.isPlaying()){
-		//	VideoPlayer.getPlayButton().doClick();
-		
 		AddToFile a = new AddToFile();
 		a.add();
-
 	}
 	
+	/**
+	 * This method is for when the play button is pressed.
+	 * It just sets the rate to 1.0 and also pauses if 
+	 * the media player is currently playing
+	 */
 	private void playButtonPress(){
-
+		
+		// just change the icons depending on what is the current state.
 		if (isRewinding) {
 			worker.cancel(true);
 			isRewinding = false;
@@ -973,8 +1066,11 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				playButton.setText("Pause");
 			}
 		}
+		
+		// pause the media player if it is currently playing
 		mediaPlayer.pause();
-
+		
+		// if the media player is not playable then start the media file.
 		if (!mediaPlayer.isPlayable()) {
 			if (filePath != null) {
 				mediaPlayer.startMedia(filePath);
@@ -990,16 +1086,13 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 					timeSlider.setMaximum((int)mediaPlayer.getLength());
 				}
 			}
+			// if the file has not been played then start playing the loaded media.
 		} else if (!this.hasPlayed) {
 		
 			mediaPlayer.startMedia(filePath);
 			this.hasPlayed = true;
-
 			// check if the file path is the same, if it is then don't add it to the history
-
 			// if file path is not the same then add it to the file path
-
-
 			while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
 				mediaPlayer.setVolume(volumeSlider.getValue());
 				timeSlider.setMaximum((int)mediaPlayer.getLength());
@@ -1007,6 +1100,11 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * This method is for when the mute button is pressed.
+	 * It ensures that when the mute button is pressed the current volume is saved and when unmuted it
+	 * will go back to the saved volume. 
+	 */
 	private void muteButtonPress(){
 		if (volumeSlider.getValue() <= 1) {
 			// The volume is mute so now the user presses unmute so change the icon.
