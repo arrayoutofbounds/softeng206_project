@@ -609,15 +609,12 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		if (e.getSource() == chooseFileToPlay) {
 			//check if a file is already playing
 			boolean a = (mediaPlayer.isPlaying())||(mediaPlayer.isPlayable());
-			
 				// only allow to choose MEDIA FILES ONLY!
-			
 					final JFileChooser fc = new JFileChooser();
 					fc.setFileFilter(SwingFileFilterFactory.newMediaFileFilter());
 					int returnVal = fc.showOpenDialog(VideoPlayer.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						
-						
+
 						/**
 						 * This swingworker is gets the file from the file chooser in the background while the current
 						 * file is still playing. If the file is chosen then it starts it in the background.
@@ -625,10 +622,9 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 						 * Now, everything works on the background thread and runs perfectly and does not hang the GUI.
 						 */
 						SwingWorker worker = new SwingWorker<Void,Void>(){
-
 						@Override
 						protected Void doInBackground() throws Exception {
-							
+
 						String newFile = fc.getSelectedFile().getAbsolutePath();
 						// Check that file is a video or audio file.
 						InvalidCheck i = new InvalidCheck();
@@ -638,23 +634,17 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 							JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
 							return null;
 						} else if (!newFile.equals(filePath)) {
-							
 							// set the path
 							VideoPlayer.this.filePath = newFile;
-
 							// before starting the video add it to the log
-
 							LogFile.writeToLog(VideoPlayer.this.filePath.substring(VideoPlayer.this.filePath.lastIndexOf(File.separator)+1));
 							VideoPlayer.this.hasPlayed = false;
-							
 							// start the media
 							mediaPlayer.startMedia(filePath);
-
+							ExtendedFrame.addSubtitles.setEnabled(true);
 						}
-					
 					return null;
 				}
-
 				@Override
 				/**
 				 * sets up the volume and time slider
@@ -885,7 +875,6 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 				}
 			
 			}
-
 
 			if (slider.getValueIsAdjusting()) {
 				mediaPlayer.setTime(slider.getValue());

@@ -2,23 +2,28 @@ package vamix;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import textHandling.EditTextFrame;
 import tools.DownloadFrame;
 import tools.HelpFrame;
+import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import videoFeatures.ExtractPart;
 import videoFeatures.Gif;
 import videoFeatures.Images;
@@ -81,9 +86,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private ExtractPart ep;
 	private Library library;
 	
-	private JMenuItem subtitles;
+	private JMenuItem makeSubtitles;
 	
 	private Subtitles subframe;
+	private File selectedSrt;
+	
+	public static JMenuItem addSubtitles;
 
 	public ExtendedFrame() {
 		super("Vamix");
@@ -166,8 +174,16 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         replay.setMnemonic('r');
         audioFeatures.add(replay);
         
-        subtitles = new JMenuItem("Add subtitles");
-        videoFeatures.add(subtitles);
+        makeSubtitles = new JMenuItem("Make subtitles");
+        videoFeatures.add(makeSubtitles);
+        
+        addSubtitles = new JMenuItem("Add existing subtitles");
+        videoFeatures.add(addSubtitles);
+        addSubtitles.setEnabled(false);
+        //only enable adding of subtitles if there is a video playing
+        
+       
+
 
         setJMenuBar(menuBar);
         
@@ -181,17 +197,14 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		hide.addActionListener(this);
 		videoFilters.addActionListener(this);
 		audioFilters.addActionListener(this);
-		subtitles.addActionListener(this);
+		makeSubtitles.addActionListener(this);
+		addSubtitles.addActionListener(this);
 
         //tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);
         tabsPane.add("Library",library);
-        
-        
         tabsPane.setSelectedComponent(playTab);
-		
 		add(tabsPane);
-		
 		// Create single extract frame, so that the user can close it, and reopen it
 		// and maintain extraction progress
 		extractFrame = new ExtractFrame();
@@ -268,15 +281,12 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		subframe.setSize(700, 500);
 		subframe.setLocationRelativeTo(null);
 		subframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		
+
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
 		String speeds[] = {"0.5x","1.0x","1.5x","2.0x","2.5x","3.0x"};
 		playingSpeed = new JRadioButtonMenuItem[speeds.length];
-		
 		group = new ButtonGroup();
-		
-		
+
 		for(int count = 0;count<playingSpeed.length;count++){
 			playingSpeed[count] = new JRadioButtonMenuItem(speeds[count]);
 			speed.add(playingSpeed[count]);
@@ -284,10 +294,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			playingSpeed[count].addActionListener(this);
 		}
 		playingSpeed[1].setSelected(true);
-		
 	}
-
-	
 	@Override
 	/**
 	 * This method is for all the options that the user can press
@@ -329,18 +336,32 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			af.setVisible(true);
 		}else if(e.getSource() == extractAPart){
 			ep.setVisible(true);
-		}else if(e.getSource() == subtitles){
+		}else if(e.getSource() == makeSubtitles){
 			subframe.setVisible(true);
+		}else if(e.getSource() == addSubtitles){
+			addSubtitles();
 		}
 	}
-	
+	private void addSubtitles() {
+		// open a jfilechooser and then allow the user to select a srt file and then set that file enabled
+		// to the current video.
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new java.io.File("."));
+		fileChooser.setDialogTitle("Choose Video File");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("SRT FILES", "srt");
+		fileChooser.setFileFilter(filter);
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		int returnValue = fileChooser.showOpenDialog(ExtendedFrame.this);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			selectedSrt = fileChooser.getSelectedFile();
+			VideoPlayer.mediaPlayer.setSubTitleFile(selectedSrt);
+		}
+	}
 	@Override
 	public void menuCanceled(MenuEvent arg0) {
-		
 	}
 	@Override
 	public void menuDeselected(MenuEvent arg0) {
-		
 	}
 	@Override
 	public void menuSelected(MenuEvent arg0) {
@@ -356,7 +377,6 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	public static void setRadioButton(int j) {
 		playingSpeed[j].setSelected(true);
 	}
-
 	/**
 	 * This method returns the value of the replay button. It is public as it 
 	 * is used in VideoPlayer.java class when the media file finished playing.
@@ -366,8 +386,4 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		return replay.isSelected();
 	}
 
-
-	
-
-	
 }

@@ -542,6 +542,7 @@ public class Library extends JPanel implements ActionListener, ListSelectionList
 				VideoPlayer.filePath = apath;
 				VideoPlayer.startPlaying();
 				ExtendedFrame.tabsPane.setSelectedIndex(0);
+				ExtendedFrame.addSubtitles.setEnabled(true);
 			}
 		}	
 	}
