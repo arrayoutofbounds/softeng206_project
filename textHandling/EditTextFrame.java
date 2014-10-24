@@ -125,8 +125,10 @@ public class EditTextFrame extends JFrame implements ActionListener {
 		outputFilenameField = new JTextField();
 		startButton = new JButton("Start");
 		startButton.addActionListener(this);
+		
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(startButton, BorderLayout.NORTH);
+		
 		progressBar = new JProgressBar();
 		panel.add(progressBar, BorderLayout.SOUTH);
 		bottomPanel = new JPanel(new BorderLayout());

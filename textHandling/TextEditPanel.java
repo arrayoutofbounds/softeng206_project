@@ -44,10 +44,13 @@ public class TextEditPanel extends JPanel {
 	private Color[] colorArray = {Color.BLACK, Color.GREEN, Color.RED, Color.BLUE, Color.YELLOW};
 	private JCheckBox enableCheckBox;
 	private boolean isEnabled = false;
-	
+	//protected JComboBox fontPlacement;
+	//private String[] positions = {"Top","Middle","Bottom"};
 	
 	TextEditPanel (String title, Vector<String> fontNames, final ArrayList<Font> fontList) {
 		
+		
+		//fontPlacement = new JComboBox(positions);
 		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		textArea = new JTextArea(10, 26);
@@ -122,6 +125,7 @@ public class TextEditPanel extends JPanel {
 		p2.add(fontSizeField);
 		colorComboBox = new JComboBox<String>(colorStringArray);
 		p2.add(colorComboBox);
+		//p2.add(fontPlacement);
 		subPanel.add(p2, BorderLayout.CENTER);
 	
 		JPanel p3 = new JPanel();

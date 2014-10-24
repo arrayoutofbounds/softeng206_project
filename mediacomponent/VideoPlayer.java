@@ -536,6 +536,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 		add(everythingElse,BorderLayout.SOUTH);
 		
 		setupListeners();
+		
 	}
 	
 	// setup all the listeners to the buttons and any other components

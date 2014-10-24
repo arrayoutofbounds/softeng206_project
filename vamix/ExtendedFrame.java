@@ -22,6 +22,7 @@ import tools.HelpFrame;
 import videoFeatures.ExtractPart;
 import videoFeatures.Gif;
 import videoFeatures.Images;
+import videoFeatures.Subtitles;
 import videoFeatures.VideoFilter;
 import audioFeatures.AudioFilter;
 import audioFeatures.ExtractFrame;
@@ -79,6 +80,10 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 	private JMenuItem extractAPart;
 	private ExtractPart ep;
 	private Library library;
+	
+	private JMenuItem subtitles;
+	
+	private Subtitles subframe;
 
 	public ExtendedFrame() {
 		super("Vamix");
@@ -160,6 +165,9 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
         replay = new JCheckBoxMenuItem("Replay");
         replay.setMnemonic('r');
         audioFeatures.add(replay);
+        
+        subtitles = new JMenuItem("Add subtitles");
+        videoFeatures.add(subtitles);
 
         setJMenuBar(menuBar);
         
@@ -173,6 +181,7 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		hide.addActionListener(this);
 		videoFilters.addActionListener(this);
 		audioFilters.addActionListener(this);
+		subtitles.addActionListener(this);
 
         //tabsPane.add("Download",downloadTab);
         tabsPane.add("Play",playTab);
@@ -253,7 +262,14 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 		ep.setSize(700, 500);
 		ep.setLocationRelativeTo(null);
 		ep.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+		
+		subframe = new Subtitles();
+		subframe.setResizable(false);
+		subframe.setSize(700, 500);
+		subframe.setLocationRelativeTo(null);
+		subframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		
 		// initialise all the speed radio buttons and set the 1x speed to the inital speed
 		String speeds[] = {"0.5x","1.0x","1.5x","2.0x","2.5x","3.0x"};
 		playingSpeed = new JRadioButtonMenuItem[speeds.length];
@@ -313,6 +329,8 @@ public class ExtendedFrame extends JFrame implements ActionListener, MenuListene
 			af.setVisible(true);
 		}else if(e.getSource() == extractAPart){
 			ep.setVisible(true);
+		}else if(e.getSource() == subtitles){
+			subframe.setVisible(true);
 		}
 	}
 	
