@@ -1,4 +1,4 @@
-package vamix;
+package tools;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

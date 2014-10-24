@@ -15,7 +15,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
-import vamix.MediaLengthWorker;
+import textHandling.MediaLengthWorker;
 
 /**
  * This class does the work for the replacing of audio in a video file.

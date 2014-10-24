@@ -25,9 +25,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
+import textHandling.MediaLengthWorker;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
-import vamix.MediaLengthWorker;
 
 
 @SuppressWarnings("serial")

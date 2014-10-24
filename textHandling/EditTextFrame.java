@@ -1,4 +1,4 @@
-package vamix;
+package textHandling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -474,7 +474,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				}
 				
 				String output = outputDirectory.getAbsolutePath() + System.getProperty("file.separator") + fileName;
-				String cmd = "avconv -y -i " + selectedFile.getAbsolutePath() + " -strict experimental -vf \"drawtext=fontfile='" + startFontPath + "':text='" + startText + "':x=main_w/2:y=main_h/2:draw='lt(t\\," + startDuration + "):fontsize=" + startFontSize + ":fontcolor=" + startFontColor + "\" -crf 16 " + "\"" + output + "\"";
+				String cmd = "avconv -y -i " + "\""+selectedFile.getAbsolutePath() + "\"" + " -strict experimental -vf \"drawtext=fontfile='" + startFontPath + "':text='" + startText + "':x=main_w/2:y=main_h/2:draw='lt(t\\," + startDuration + "):fontsize=" + startFontSize + ":fontcolor=" + startFontColor + "\" -crf 16 " + "\"" + output + "\"";
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				textProcessBuilder.redirectErrorStream(true);
 				Process textProcess = textProcessBuilder.start();
@@ -517,7 +517,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				int length = mediaWorker.get();
 				endDuration = length - endDuration;
 				
-				String cmd = "avconv -y -i " + inputFilePath + " -strict experimental -vf \"drawtext=fontfile='" + endFontPath + "':text='" + endText + "':x=main_w/2:y=main_h/2:draw='gt(t," + endDuration + ")':fontsize=" + endFontSize + ":fontcolor=" + endFontColor + "\" -crf 16 " + "\"" + output + "\"";
+				String cmd = "avconv -y -i " +  "\"" + inputFilePath + "\"" + " -strict experimental -vf \"drawtext=fontfile='" + endFontPath + "':text='" + endText + "':x=main_w/2:y=main_h/2:draw='gt(t," + endDuration + ")':fontsize=" + endFontSize + ":fontcolor=" + endFontColor + "\" -crf 16 " + "\"" + output + "\"";
 				ProcessBuilder textProcessBuilder = new ProcessBuilder("/bin/bash", "-c", cmd);
 				textProcessBuilder.redirectErrorStream(true);
 				Process textProcess = textProcessBuilder.start();
@@ -525,7 +525,7 @@ public class EditTextFrame extends JFrame implements ActionListener {
 				textProcess.waitFor();
 				
 				if (startEnabled) {
-					ProcessBuilder pb = new ProcessBuilder("/bin/bash","-c", "mv /tmp/tempOutput.mp4 " + originalOutput);
+					ProcessBuilder pb = new ProcessBuilder("/bin/bash","-c", "mv /tmp/tempOutput.mp4 " +  "\"" + originalOutput+ "\"");
 					Process p = pb.start();
 					p.waitFor();
 				}
@@ -553,7 +553,6 @@ public class EditTextFrame extends JFrame implements ActionListener {
 			} catch (InterruptedException e) {
 				JOptionPane.showMessageDialog(EditTextFrame.this, "Adding text was cancelled");
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

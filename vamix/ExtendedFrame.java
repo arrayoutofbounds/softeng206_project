@@ -1,6 +1,4 @@
 package vamix;
-import help.HelpFrame;
-
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +16,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import textHandling.EditTextFrame;
+import tools.DownloadFrame;
+import tools.HelpFrame;
 import videoFeatures.ExtractPart;
 import videoFeatures.Gif;
 import videoFeatures.Images;

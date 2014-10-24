@@ -15,7 +15,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
-import vamix.MediaLengthWorker;
+import textHandling.MediaLengthWorker;
 
 /**
  * This class has the swingworker that will allow the user to  overlay one audio on another.

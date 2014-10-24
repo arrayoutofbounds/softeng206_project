@@ -1,4 +1,4 @@
-package vamix;
+package textHandling;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +26,7 @@ public class MediaLengthWorker extends SwingWorker<Integer, Void> {
 	protected Integer doInBackground() throws Exception {
 
 		// Process to get length of input file
-		String cmd = "/usr/bin/avconv -i " + pathToFile + " | grep Duration";
+		String cmd = "/usr/bin/avconv -i " + "\""+ pathToFile + "\""+ " | grep Duration";
 
 		ProcessBuilder timeBuilder = new ProcessBuilder("/bin/bash", "-c", cmd).redirectErrorStream(true);
 		Process timeProcess = timeBuilder.start();
