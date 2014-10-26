@@ -27,7 +27,15 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * This class allows the user
+ * to make their own subtitles for a video. It also makes the GUI for the
+ * subtitles window. It write the subtitles to a srt file and stores that
+ * in the same place as the video chosen. Then when the video is played it shows the
+ * subtitles.
+ * @author anmol
+ *
+ */
 public class Subtitles extends JFrame implements ActionListener {
 
 
@@ -47,8 +55,6 @@ public class Subtitles extends JFrame implements ActionListener {
 	private JPanel enterString;
 
 	private JPanel arrangeButtons;
-
-
 	// panels inside the times panel
 	private JPanel startTime;
 	private JPanel endTime;
@@ -83,13 +89,15 @@ public class Subtitles extends JFrame implements ActionListener {
 
 		initial = new JPanel(new BorderLayout());
 		times = new JPanel(new GridLayout(5,1));
-
+		
+		//create all the panels
 		startTime = new JPanel(new FlowLayout());
 		endTime = new JPanel(new FlowLayout());
 		labelPreview = new JPanel(new FlowLayout());
 		chooseInput = new JPanel(new FlowLayout());
 		showInput = new JPanel(new BorderLayout());
 
+		//create all the components
 		startLabel = new JLabel("Start Time (hh:mm:ss): ");
 		endLabel = new JLabel("End Time (hh:mm:ss): ");
 		enterStart = new JTextField(10);
@@ -130,7 +138,9 @@ public class Subtitles extends JFrame implements ActionListener {
 		// this has the times and the area for the user to add string
 		initial.add(times,BorderLayout.NORTH);
 		initial.add(enterString,BorderLayout.CENTER);	
-
+		
+		
+		// add the scroll
 		info = new JTextArea();
 		info.setEditable(false);
 		JScrollPane scroll2 = new JScrollPane(info);
@@ -217,7 +227,12 @@ public class Subtitles extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Writing to the file failed");
 		}
 	}
-
+	
+	/**
+	 *This method checks that all the fields are filled. Then
+	 *it sends a call to the sendToPreview() method, which 
+	 *creates the final srt format.
+	 */
 	private void addPressed() {
 		// first check that all fields are filled
 		// Then ensure that the times entered are correct
@@ -266,7 +281,12 @@ public class Subtitles extends JFrame implements ActionListener {
 		}
 
 	}
-
+	
+	/**
+	 * This method is called when the add to preview
+	 * button is pressed. It converts the string to srt format 
+	 * and puts it on the right side text area, ready to put into a srt file.
+	 */
 	private void sendToPreview() {
 		// Now get the srt format and then make a global counter and add to the preview text area on the right.
 		String starting = enterStart.getText();
@@ -288,11 +308,19 @@ public class Subtitles extends JFrame implements ActionListener {
 		// line
 
 	}
-
+	
+	/**
+	 * This method clears the fields and allows them to be filled again
+	 * after one input.
+	 */
 	private void clear() {
 		left.setText("");
 	}
-
+	
+	/**
+	 * This method allows the user to select a valid video file to add
+	 * subtitles to.
+	 */
 	private void choosingInputPressed() {
 		JFileChooser fileChooser = new JFileChooser();
 

@@ -1,7 +1,7 @@
 README FILE
 
 VAMIX - version 2.0 
-=======
+====================
 
 Main Author : Anmol Desai  
 Subsidary Author : Nicholas Molloy

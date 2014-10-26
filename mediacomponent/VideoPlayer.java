@@ -621,9 +621,10 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 						 * This is reallt crucial as wihtout the swing worker the method would hang any time a file was not chosen.
 						 * Now, everything works on the background thread and runs perfectly and does not hang the GUI.
 						 */
-						SwingWorker worker = new SwingWorker<Void,Void>(){
-						@Override
-						protected Void doInBackground() throws Exception {
+						
+					//  SwingWorker worker = new SwingWorker<Void,Void>(){
+					//	@Override
+					//	protected Void doInBackground() throws Exception {
 
 						String newFile = fc.getSelectedFile().getAbsolutePath();
 						// Check that file is a video or audio file.
@@ -632,7 +633,7 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 						// only allows the user to choose a valid file. If not, then a warning is shown!
 						if (!isValidMedia) {
 							JOptionPane.showMessageDialog(VideoPlayer.this, "You have specified an invalid file.", "Error", JOptionPane.ERROR_MESSAGE);
-							return null;
+							return ;
 						} else if (!newFile.equals(filePath)) {
 							// set the path
 							VideoPlayer.this.filePath = newFile;
@@ -643,27 +644,28 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 							mediaPlayer.startMedia(filePath);
 							ExtendedFrame.addSubtitles.setEnabled(true);
 						}
-					return null;
-				}
-				@Override
+					//return null;
+				//}
+			//	@Override
 				/**
 				 * sets up the volume and time slider
 				 */
-				protected void done() {
+				//protected void done() {
 					playButton.setIcon(pause);
 					VideoPlayer.this.hasPlayed = true;
 					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
 						mediaPlayer.setVolume(volumeSlider.getValue());
 						timeSlider.setMaximum((int)mediaPlayer.getLength());
 					}
-				}
+				//}
 				
-			};
-				worker.execute();
+			//};
+				//worker.execute();
 			
-			}else{
+			//}else{
 				
-			}
+			//}
+		}
 		}
 		
 		// For when the stop video button is clicked. It sets the play rate

@@ -47,13 +47,13 @@ public class HelpFrame extends JFrame{
 		
 		p.add(scroll,BorderLayout.CENTER);
 		add(p,BorderLayout.CENTER);
-		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "help" + File.separator + "README.md");
+		readme = new File(System.getProperty("user.dir") +  File.separator + "src" + File.separator + "tools" + File.separator + "README.md");
 		
 		 
 	}
 	
 	/**
-	 * add the text from the readme file to the frame. Ensures that the 
+	 * this method adds the text from the readme file to the frame. Ensures that the 
 	 * readme file is FOUND even if it a jar file.
 	 */
 	public void appendReadmeFile(){
