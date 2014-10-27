@@ -142,7 +142,7 @@ public class Subtitles extends JFrame implements ActionListener {
 		
 		// add the scroll
 		info = new JTextArea();
-		info.setEditable(false);
+		info.setEditable(true);
 		JScrollPane scroll2 = new JScrollPane(info);
 
 		add = new JButton("Add to subtitles preview ---->");
@@ -187,7 +187,7 @@ public class Subtitles extends JFrame implements ActionListener {
 		if(e.getSource()==helpButton){
 			JOptionPane.showMessageDialog(Subtitles.this,"Add what you want in the text box underneath. \nThen click add to preview to get it in srt format. \n The area"
 					+ " at the bottom is just a place to add a normal sentence or paragraph before adding it to subtitles! \n ONLY THE TEXT FROM THE AREA "
-					+ "ON THE RIGHT IS ADDED AS SUBTITLES! \n\n So remember to click ADD TO PREVIEW before making the subtitles!");
+					+ "ON THE RIGHT IS ADDED AS SUBTITLES! \n\n So remember to click ADD TO PREVIEW before making the subtitles!\n The preview on the right canbe edited if you know srt format!\n PLEASE BE CAREFUL WITH EDITING PREVIEW!");
 		}
 	}
 
@@ -202,7 +202,7 @@ public class Subtitles extends JFrame implements ActionListener {
 		// now make a text file
 		// and send the string to there and make the extension srt.
 
-	
+		JOptionPane.showMessageDialog(Subtitles.this, "WARNING! IF a subtitles file exists for this video then it will be overwritten!");
 		
 		srtFile = new File(selectedFile.getParent() + File.separator + selectedFile.getName()+".srt");
 
@@ -322,6 +322,7 @@ public class Subtitles extends JFrame implements ActionListener {
 	 * subtitles to.
 	 */
 	private void choosingInputPressed() {
+		info.setText("");
 		JFileChooser fileChooser = new JFileChooser();
 
 		fileChooser.setCurrentDirectory(new java.io.File("."));

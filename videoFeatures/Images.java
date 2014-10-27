@@ -139,6 +139,7 @@ public class Images extends JFrame implements ActionListener{
 			worker = new ImagesWorker();
 			makeImages.setEnabled(false);
 			worker.execute();
+			progress.setIndeterminate(true);
 		}
 	}
 
@@ -169,6 +170,7 @@ public class Images extends JFrame implements ActionListener{
 	 * get images from the video if the file is not valid.
 	 */
 	private void chooseVideoPressed() {
+		
 
 		JFileChooser fileChooser = new JFileChooser();
 		
@@ -216,7 +218,7 @@ public class Images extends JFrame implements ActionListener{
 		@Override
 		protected Integer doInBackground() throws Exception {
 			
-			String name = "image-%3d.jpeg";
+			String name = "image-%1d.jpeg";
 			int exitValue = 1;
 			
 			// start the process
@@ -239,6 +241,7 @@ public class Images extends JFrame implements ActionListener{
 		 */
 		protected void done() {
 			makeImages.setEnabled(true);
+			progress.setIndeterminate(false);
 			try {
 				int i = get();
 				// show the user the result
