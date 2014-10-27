@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -61,6 +62,8 @@ public class MainFrame {
 				frame.setLocationRelativeTo(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
+				
+				JOptionPane.showMessageDialog(null, "Welcome to Vamix!\n\nHope you enjoy using vamix!\nFor help, please click in the Help menu.\nRefer to user manual for detailed help.\n");
 			}
 		});
 	}
