@@ -50,6 +50,7 @@ Features given are:
  - replay and set playback speed
  - Make a playlist
  - Play a folder full of media files.
+ - Make and add subtitles
 
 
 INSTRUCTIONS FOR EACH FEATURE
@@ -216,4 +217,19 @@ Library:
 --> Play the list of files in list by clicking on "Play the list" button
 --> Load a folder will allow the user to load all the media files in that folder
 --> Cancel playing the list will remove all the files from the list.
+
+Add subtitles:
+--> Remember, a video has to be playing for this function to work! 
+--> click on"Video Features" menu and go to adding subtitles
+--> choose a srt file
+
+Make Subtitles:
+--> Go to "Video Features" menu
+--> Go to "Make subtitles" -- > A new frame will be opened.
+--> Choose a video file to get started
+--> Enter start and end times
+--> Add text to show for those times
+--> Add to preview
+--> Then make a subtitles file
+--> Remember that only the text from the right hand side text area is added to the subtitles file!
 
