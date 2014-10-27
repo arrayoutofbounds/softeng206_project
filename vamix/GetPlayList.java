@@ -15,8 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import videoFeatures.VideoFilter;
-
 /**
  * This Class allows the user to MAKE a playlist. It is
  * a frame that allows the user to choose where to get the playlist.

@@ -1,19 +1,10 @@
 package audioFeatures;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -22,10 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import textHandling.MediaLengthWorker;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 

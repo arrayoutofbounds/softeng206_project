@@ -1,10 +1,7 @@
 package vamix;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
-
-import mediacomponent.VideoPlayer;
 
 /**
  * This class has a method body that checks the file

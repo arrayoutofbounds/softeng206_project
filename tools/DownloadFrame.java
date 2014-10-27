@@ -1,7 +1,6 @@
 package tools;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  * This is the class that makes the download frame. It calls

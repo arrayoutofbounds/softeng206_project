@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;

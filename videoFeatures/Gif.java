@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 

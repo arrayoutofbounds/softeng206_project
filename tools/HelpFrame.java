@@ -1,10 +1,7 @@
 package tools;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,9 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JViewport;
-
-import mediacomponent.LogFile;
 
 /**
  * This class is there to ensure that the help button shows up the help frame.

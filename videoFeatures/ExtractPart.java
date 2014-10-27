@@ -1,7 +1,6 @@
 package videoFeatures;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,9 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import mediacomponent.VideoPlayer;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import vamix.InvalidCheck;
 

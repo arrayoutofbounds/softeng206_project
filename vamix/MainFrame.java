@@ -1,11 +1,8 @@
 package vamix;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

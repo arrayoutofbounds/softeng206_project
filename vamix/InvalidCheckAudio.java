@@ -1,10 +1,7 @@
 package vamix;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
-
-import mediacomponent.VideoPlayer;
 
 /**
  * This file is similar to the InvalidCheck file. But

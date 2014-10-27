@@ -10,8 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -20,16 +18,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,11 +40,11 @@ import javax.swing.event.ChangeListener;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.TrackDescription;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import vamix.ExtendedFrame;
 import vamix.InvalidCheck;
+import vamix.InvalidCheckAudio;
 
 /**
  * This class is the main class of the program. It has the media player component, playing features and
@@ -643,28 +638,25 @@ public class VideoPlayer extends JPanel  implements ActionListener, ChangeListen
 							// start the media
 							mediaPlayer.startMedia(filePath);
 							ExtendedFrame.addSubtitles.setEnabled(true);
+							
+							InvalidCheckAudio ica = new InvalidCheckAudio();
+							boolean isAudio = ica.invalidCheckAudio(newFile);
+							if(!isAudio){
+								ExtendedFrame.addSubtitles.setEnabled(true);
+							}else{
+								ExtendedFrame.addSubtitles.setEnabled(false);
+							}
 						}
-					//return null;
-				//}
-			//	@Override
 				/**
 				 * sets up the volume and time slider
 				 */
-				//protected void done() {
+		
 					playButton.setIcon(pause);
 					VideoPlayer.this.hasPlayed = true;
 					while (mediaPlayer.getVolume() != volumeSlider.getValue() || mediaPlayer.getLength() != timeSlider.getMaximum()) {
 						mediaPlayer.setVolume(volumeSlider.getValue());
 						timeSlider.setMaximum((int)mediaPlayer.getLength());
 					}
-				//}
-				
-			//};
-				//worker.execute();
-			
-			//}else{
-				
-			//}
 		}
 		}
 		
